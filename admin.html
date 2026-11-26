@@ -6,7 +6,7 @@
 @keyframes slideLeft{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 .shake{animation:shake .4s ease!important}
-#login{max-width:380px;margin:70px auto;padding:28px;background:#111;border-radius:20px;border:2px solid #d4af37;text-align:center;animation:popIn .5s ease}
+#login{max-width:380px;animation:popIn .6s ease both!important;margin:70px auto;padding:28px;background:#111;border-radius:20px;border:2px solid #d4af37;text-align:center;animation:popIn .5s ease}
 #login h1{color:#d4af37;font-size:34px}#login p{color:#888}
 #pin{width:100%;padding:16px;margin:14px 0;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:12px;letter-spacing:10px;font-size:24px;text-align:center;outline:none}
 #pin:focus{border-color:#d4af37}
@@ -90,7 +90,7 @@ let voiceOn=true, peekTimer=null, tempPic='';
 function speak(t){ if(!voiceOn) return; try{ window.speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t); u.lang='en-US'; window.speechSynthesis.speak(u);}catch(e){} }
 function toggleVoice(){ voiceOn=!voiceOn; document.getElementById('voiceBtn').innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF'; if(voiceOn) speak('Voice on'); }
 function updateDots(n){ for(let i=1;i<=4;i++){ document.getElementById('dot'+i).style.color=i<=n?'#d4af37':'#333'; } }
-function doUnlock(){ speak('Welcome back, glitch six fifty'); document.getElementById('login').style.display='none'; let m=document.getElementById('main'); m.style.display='block'; m.style.animation='none'; void m.offsetWidth; m.style.animation='fadeSlideIn .5s ease'; refreshAll(); }
+function doUnlock(){ localStorage.setItem('glitch650_logged_in','yes'); speak('Welcome back, glitch six fifty'); document.getElementById('login').style.display='none'; let m=document.getElementById('main'); m.style.display='block'; m.style.animation='none'; void m.offsetWidth; m.style.animation='fadeSlideIn .5s ease'; refreshAll(); }
 function toggleMenu(){ document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
 const TITLES={home:['🏠 Dashboard','Overview'],messages:['💬 Messages','Customer Care'],notifs:['🔔 Notifications','Visits'],posts:['📝 Posts','Manage'],leads:['🔥 Hot Leads','WhatsApp'],settings:['⚙️ Settings','Control'],control:['🎛️ Full Control','Photo • Theme • Net'],adjust:['🎨 Adjustments','Look'],profile:['👤 Profile','Info'],security:['🔒 Security','PIN']};
 function openSection(id){
@@ -115,6 +115,7 @@ function testSpeed(){ let s=document.getElementById('netSpeed'); s.innerText='Te
 document.addEventListener('DOMContentLoaded', ()=>{
   let pin=document.getElementById('pin'); pin.focus();
   pin.addEventListener('input', ()=>{
+    unlockAudioSilent(); // try silent unlock on typing too
     let v=pin.value; updateDots(v.length);
     pin.type='text'; clearTimeout(peekTimer); peekTimer=setTimeout(()=>{ pin.type='password'; }, 600);
     if(v==='0296'){ setTimeout(doUnlock, 300); }
@@ -122,5 +123,54 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
   let pi=document.getElementById('picInput'); if(pi) pi.addEventListener('change', e=>{ let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=ev=>{ tempPic=ev.target.result; document.getElementById('adminPreview').src=tempPic; }; r.readAsDataURL(f); });
   setTimeout(()=>{ let p=localStorage.getItem('glitch650_profile_pic'); if(p) document.getElementById('adminPreview').src=p; testSpeed(); }, 800);
+});
+</script>
+<script>
+// SMART VOICE SYSTEM
+let voiceOn = true;
+let voiceReady = false;
+let voiceUnlocked = false;
+function unlockAudio(){
+  // Must be called from a TAP - this unlocks voice on phones
+  try{
+    window.speechSynthesis.cancel();
+    let u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0; window.speechSynthesis.speak(u);
+    let ctx = new (window.AudioContext||window.webkitAudioContext)();
+    ctx.resume();
+  }catch(e){}
+  voiceUnlocked = true;
+  document.getElementById('tapToEnable').style.display='none';
+  speak('Voice ready. Type your password.');
+}
+function speak(t){
+  if(!voiceOn) return;
+  if(!voiceUnlocked){ console.log('Voice locked - need tap first'); return; }
+  try{
+    window.speechSynthesis.cancel();
+    let u = new SpeechSynthesisUtterance(t);
+    u.lang='en-US'; u.rate=0.95; u.pitch=1; u.volume=1;
+    // Pick best English voice
+    let voices = window.speechSynthesis.getVoices();
+    let en = voices.find(v=>v.lang.includes('en') && v.name.includes('Google')) || voices.find(v=>v.lang.includes('en-US')) || voices[0];
+    if(en) u.voice = en;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+  // Fallback: also show text loudly
+  let err = document.getElementById('err');
+  if(err && t.includes('Wrong')){ err.style.fontSize='18px'; err.style.fontWeight='800'; }
+}
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged = ()=>{ voiceReady=true; };
+}
+</script>
+<script>
+function unlockAudioSilent(){ try{ let ctx=new (window.AudioContext||window.webkitAudioContext)(); ctx.resume(); }catch(e){} }
+document.addEventListener('DOMContentLoaded', ()=>{
+  // If you already logged in before, auto-open instantly (smart login)
+  if(localStorage.getItem('glitch650_logged_in')==='yes'){
+    // Still show login for 0.8s for animation, then auto open
+    setTimeout(()=>{ speak('Welcome back'); doUnlock(); }, 800);
+  }
 });
 </script></body></html>
