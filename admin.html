@@ -162,6 +162,7 @@ setInterval(updateAdminNet, 3000); setTimeout(()=>{ let p=localStorage.getItem('
 function unlock(){ if(document.getElementById('pin').value==='0296'){ document.getElementById('login').style.display='none'; document.getElementById('main').style.display='block'; refreshAll(); } else document.getElementById('err').innerText='❌ Wrong PIN'; }
 function toggleMenu(){ document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
 const TITLES={home:['🏠 Dashboard','Overview'],messages:['💬 Messages','Customer Care'],notifs:['🔔 Notifications','Visits & Clicks'],posts:['📝 Posts','Manage Posts'],leads:['🔥 Hot Leads','WhatsApp Clicks'],settings:['⚙️ Settings','Control All'],control:['🎛️ Full Control','Photo • Theme • Net'],adjust:['🎨 Adjustments','Look & Design'],profile:['👤 Edit Profile','Your Info'],security:['🔒 Security','PIN & Data']};
+const TITLES={home:['🏠 Dashboard','Overview'],messages:['💬 Messages','Customer Care'],notifs:['🔔 Notifications','Visits & Clicks'],posts:['📝 Posts','Manage Posts'],leads:['🔥 Hot Leads','WhatsApp Clicks'],settings:['⚙️ Settings','Control All'],control:['🎛️ Full Control','Photo • Theme • Net'],adjust:['🎨 Adjustments','Look & Design'],profile:['👤 Edit Profile','Your Info'],security:['🔒 Security','PIN & Data']};
 function openSection(id){
   // HIDE icons, SHOW only this page - full internal page
   document.getElementById('iconGrid').style.display='none';
@@ -174,6 +175,14 @@ function openSection(id){
   document.querySelectorAll('.iconBtn').forEach(b=>b.classList.toggle('active', b.dataset.sec===id));
   window.scrollTo({top:0,behavior:'smooth'});
   if(id==='messages') loadMsgs(); if(id==='notifs'||id==='leads') refreshNotifs();
+}
+function goHome(){
+  document.getElementById('iconGrid').style.display='grid';
+  document.getElementById('pageHeader').style.display='none';
+  document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';});
+  let h=document.getElementById('sec-home'); if(h){h.classList.add('show'); h.style.display='block';}
+  document.querySelectorAll('.iconBtn').forEach(b=>b.classList.toggle('active', b.dataset.sec==='home'));
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 function goHome(){
   document.getElementById('iconGrid').style.display='grid';
