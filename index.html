@@ -45,6 +45,21 @@ body{background:#0f0f0f;color:#fff;font-family:Arial,sans-serif;text-align:cente
 /* Little pop when page loads */
 @keyframes popIn{ 0%{transform:scale(0.9);opacity:0} 100%{transform:scale(1);opacity:1} }
 .btn{ animation: popIn 0.4s ease; }
+
+/* STEADY BOUNCING WHATSAPP BUTTON */
+.whatsapp{
+  animation: whatsappBounce 1.4s ease-in-out infinite !important;
+}
+@keyframes whatsappBounce{
+  0%, 100%{ transform: translateX(-50%) translateY(0) scale(1); }
+  25%{ transform: translateX(-50%) translateY(-10px) scale(1.05); }
+  50%{ transform: translateX(-50%) translateY(0) scale(1); }
+  75%{ transform: translateX(-50%) translateY(-6px) scale(1.03); }
+}
+.whatsapp:active{
+  animation: none !important;
+  transform: translateX(-50%) scale(0.92) !important;
+}
 </style>
 </head>
 <body>
