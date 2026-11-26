@@ -174,8 +174,8 @@ setInterval(updateAdminNet, 3000); setTimeout(()=>{ let p=localStorage.getItem('
 
 <script>
 let peekTimer=null;
-function unlock(){ let v=document.getElementById('pin').value; if(v==='0296'){ doUnlock(); } else { document.getElementById('err').innerText='❌ Wrong PIN'; document.getElementById('login').classList.remove('shake'); void document.getElementById('login').offsetWidth; document.getElementById('login').classList.add('shake'); document.getElementById('pin').value=''; updateDots(0); } }
-function doUnlock(){ document.getElementById('login').style.display='none'; let m=document.getElementById('main'); m.style.display='block'; m.style.animation='none'; void m.offsetWidth; m.style.animation='fadeSlideIn .5s ease'; refreshAll(); }
+function unlock(){ let v=document.getElementById('pin').value; if(v==='0296'){ doUnlock(); } else { document.getElementById('err').innerText='❌ Wrong Password!'; speak('Wrong password, try again'); speak('Wrong password, try again'); document.getElementById('login').classList.remove('shake'); void document.getElementById('login').offsetWidth; document.getElementById('login').classList.add('shake'); document.getElementById('pin').value=''; updateDots(0); } }
+function doUnlock(){ speak('Welcome back, glitch six fifty'); document.getElementById('login').style.display='none'; let m=document.getElementById('main'); m.style.display='block'; m.style.animation='none'; void m.offsetWidth; m.style.animation='fadeSlideIn .5s ease'; refreshAll(); }
 function updateDots(n){ for(let i=1;i<=4;i++){ document.getElementById('dot'+i).style.color = i<=n ? '#d4af37' : '#333'; } }
 // Peek briefly + Auto-open
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     peekTimer=setTimeout(()=>{ pin.type='password'; }, 600);
     // AUTO OPEN when correct
     if(v==='0296'){ setTimeout(doUnlock, 300); }
-    if(v.length===4 && v!=='0296'){ setTimeout(()=>{ document.getElementById('err').innerText='❌ Wrong PIN'; pin.value=''; updateDots(0); pin.type='password'; }, 600); }
+    if(v.length===4 && v!=='0296'){ setTimeout(()=>{ document.getElementById('err').innerText='❌ Wrong Password!'; speak('Wrong password, try again'); speak('Wrong password, try again'); pin.value=''; updateDots(0); pin.type='password'; }, 600); }
   });
   pin.focus();
 });
@@ -232,4 +232,25 @@ function clearMsgs(){ if(confirm('Clear messages?')){localStorage.removeItem('gl
 function clearNotifs(){ if(confirm('Clear notifications?')){localStorage.removeItem('glitch650_notifications'); refreshNotifs();} }
 function sendReportWA(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); let txt='📊 glitch650 REPORT\nVisits: '+(localStorage.getItem('glitch650_visits')||0)+'\nClicks: '+logs.length+'\nLatest: '+logs.slice(0,5).map(l=>l.type+' - '+l.time).join('\n'); window.open('https://wa.me/2349012461903?text='+encodeURIComponent(txt)); }
 function refreshAll(){ loadMsgs(); refreshNotifs(); }
-</script></body></html>
+</script>
+<script>
+// VOICE DICTATE - Wrong Password
+let voiceOn = true;
+function speak(text){
+  if(!voiceOn) return;
+  try{
+    window.speechSynthesis.cancel();
+    let u = new SpeechSynthesisUtterance(text);
+    u.rate = 1; u.pitch = 1; u.volume = 1;
+    u.lang = 'en-US';
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+function toggleVoice(){
+  voiceOn = !voiceOn;
+  let b = document.getElementById('voiceBtn');
+  if(b) b.innerText = voiceOn ? '🔊 Voice: ON' : '🔇 Voice: OFF';
+  if(voiceOn) speak('Voice on');
+}
+</script>
+</body></html>
