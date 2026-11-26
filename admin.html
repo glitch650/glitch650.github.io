@@ -1,95 +1,118 @@
-<!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PRO Dashboard - glitch650</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>glitch650 Admin</title>
 <style>
-*{box-sizing:border-box}body{background:#080808;color:#fff;font-family:system-ui;padding:16px;max-width:700px;margin:auto}
-h1{color:#d4af37;text-align:center} .card{background:#111;border:1px solid #222;border-radius:16px;padding:16px;margin:14px 0}
-input,textarea,select{width:100%;padding:12px;margin:7px 0;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:10px}
-button{background:#d4af37;color:#000;padding:14px;width:100%;border:none;border-radius:10px;font-weight:800;margin-top:8px;cursor:pointer}
-.btn2{background:#222;color:#fff}.danger{background:#ff3b30;color:#fff}
-.project{background:#1a1a1a;padding:12px;border-radius:12px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}
-.badge{background:#d4af37;color:#000;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800}
+*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#fff;font-family:system-ui}
+.top{position:sticky;top:0;background:#111;border-bottom:1px solid #d4af37;padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:99}
+.menuBtn{width:44px;height:44px;border-radius:12px;background:#d4af37;color:#000;font-size:22px;border:none;cursor:pointer;font-weight:900}
+.top h1{font-size:20px}.top h1 span{color:#d4af37}.top small{color:#888;display:block;font-size:11px}
+#sideMenu{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#111;border-right:2px solid #d4af37;z-index:999;padding:20px;transition:.3s;overflow:auto}
+#sideMenu.open{left:0}
+#sideMenu h2{color:#d4af37;margin-bottom:16px}#sideMenu a,#sideMenu button{display:block;width:100%;text-align:left;background:#1a1a1a;color:#fff;padding:14px;border:1px solid #222;border-radius:12px;margin:8px 0;cursor:pointer;font-size:15px}
+#sideMenu a{ text-decoration:none } #sideMenu .close{background:#ff3b30;color:#fff}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:998}
+#overlay.show{display:block}
+.wrap{max-width:900px;margin:auto;padding:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0}
+@media(max-width:600px){.grid{grid-template-columns:1fr 1fr}}
+.iconBtn{background:#111;border:1px solid #222;border-radius:16px;padding:20px 10px;text-align:center;cursor:pointer;position:relative}
+.iconBtn:active{transform:scale(.97)}.iconBtn .ic{font-size:32px;display:block;margin-bottom:6px}.iconBtn b{font-size:13px}.iconBtn small{color:#888;font-size:11px}
+.iconBtn .dot{position:absolute;top:8px;right:8px;background:#ff3b30;color:#fff;font-size:11px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
+.iconBtn.active{border-color:#d4af37;background:#1a1a1a;box-shadow:0 0 0 2px #d4af37 inset}
+.card{background:#111;border:1px solid #222;border-radius:16px;padding:18px;margin:12px 0;display:none}.card.show{display:block}
+.card h3{margin-bottom:10px}.card p,.card li{color:#ccc;font-size:14px;line-height:1.6}
+input,textarea,select{width:100%;padding:12px;margin:6px 0;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:10px}
+button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:700;margin:4px 2px}
+.btn-gold{background:#d4af37;color:#000}.btn-dark{background:#222;color:#fff;border:1px solid #333}.danger{background:#ff3b30;color:#fff}
+.badge{display:inline-block;background:#d4af37;color:#000;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800}
+#login{max-width:360px;margin:80px auto;padding:24px;background:#111;border-radius:16px;border:1px solid #d4af37;text-align:center}#login h1{color:#d4af37}
 </style></head><body>
 
-<div id="login">
-<h1>👑 PROMISE PRO</h1><p style="text-align:center;color:#888">Portfolio Dashboard</p>
-<div class="card"><h3>🔐 Enter PIN</h3><input type="password" id="pin" placeholder="Enter PIN - 0296"><button onclick="unlock()">Unlock Dashboard</button></div>
+<div id="login"><h1>🔐 glitch650</h1><p style="color:#888;margin:8px 0">Admin Dashboard</p><input id="pin" type="password" placeholder="Enter PIN - 0296" inputmode="numeric"><button class="btn-gold" style="width:100%" onclick="unlock()">Unlock Dashboard →</button><p id="err" style="color:#ff3b30;margin-top:8px"></p></div>
+
+<div id="main" style="display:none">
+<div class="top"><button class="menuBtn" onclick="toggleMenu()">☰</button><div><h1>glitch650 <span>Admin</span></h1><small>Control Centre • Bata, GQ</small></div><div style="margin-left:auto;font-size:22px" onclick="openSection('notifs')">🔔 <span id="topBell" style="font-size:13px;background:#ff3b30;padding:2px 8px;border-radius:10px">0</span></div></div>
+
+<div id="overlay" onclick="toggleMenu()"></div>
+<div id="sideMenu">
+<h2>☰ MENU</h2>
+<button onclick="openSection('home');toggleMenu()">🏠 Home Dashboard</button>
+<button onclick="openSection('messages');toggleMenu()">💬 Customer Messages</button>
+<button onclick="openSection('notifs');toggleMenu()">🔔 Notifications & Report</button>
+<button onclick="openSection('posts');toggleMenu()">📝 My Posts</button>
+<button onclick="openSection('leads');toggleMenu()">🔥 Hot Leads</button>
+<hr style="border-color:#333;margin:14px 0">
+<h3 style="color:#d4af37;font-size:14px">⚙️ SETTINGS & ADJUSTMENTS</h3>
+<button onclick="openSection('settings');toggleMenu()">⚙️ Settings</button>
+<button onclick="openSection('adjust');toggleMenu()">🎨 Adjustments - Look & Design</button>
+<button onclick="openSection('profile');toggleMenu()">👤 Edit Profile</button>
+<button onclick="openSection('security');toggleMenu()">🔒 Security & PIN</button>
+<a href="index.html">🌐 View My Public Page →</a>
+<button class="close" onclick="toggleMenu()">✕ Close Menu</button>
 </div>
 
-<div id="dash" style="display:none">
-<h1>👑 Pro Dashboard</h1>
-<p style="text-align:center"><span class="badge" id="visitsBadge">VISITS: Loading...</span> <span class="badge" style="background:#fff">LIVE ✅</span></p>
-
-<div class="card"><h3>👤 Profile</h3>
-<label>Your Name</label><input id="name" value="glitch650 Onwe">
-<label>Title</label><input id="title" value="Full-Stack Developer & Designer">
-<label>WhatsApp Number</label><input id="wa" value="2349012460296">
-<label>Bio / About</label><textarea id="about" rows="3">I build premium websites, apps & brands that make businesses look expensive and trustworthy.</textarea>
-<label>Profile Photo URL</label><input id="photo" placeholder="Paste image link or leave blank">
-<button onclick="saveProfile()">💾 Save Profile</button></div>
-
-<div class="card"><h3>💼 Projects</h3>
-<div id="projects"></div>
-<label>Project Name</label><input id="pName" placeholder="e.g. Luxury E-commerce Store">
-<label>Price</label><input id="pPrice" placeholder="e.g. $500">
-<label>Image Link</label><input id="pImg" placeholder="Paste project image link">
-<button onclick="addProject()">+ Add Project</button></div>
-
-<div class="card"><h3>🛠️ Services & Prices</h3>
-<textarea id="services" rows="5">Premium Website Design - $300+
-E-commerce Store - $500+
-Mobile App - $800+
-Branding & Logo - $150+</textarea>
-<button onclick="saveServices()">💾 Save Services</button></div>
-
-<div class="card"><h3>📩 Leads / Messages</h3>
-<p id="leads" style="color:#888">No new leads yet. When someone clicks WhatsApp, they become a lead.</p>
-<button class="btn2" onclick="location.href='https://wa.me/2349012460296'">💬 Open WhatsApp</button></div>
-
-
-<div class="card"><h3>🔔 SMART NOTIFICATIONS - LIVE REPORT</h3>
-<p style="color:#888;font-size:13px">Smart & Sensitive - Records every visit, click, WhatsApp lead</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
-<span class="badge" id="statVisits">VISITS: 0</span>
-<span class="badge" style="background:#25D366" id="statWA">WHATSAPP: 0</span>
-<span class="badge" style="background:#fff" id="statClicks">CLICKS: 0</span>
+<div class="wrap">
+<!-- ICON BUTTONS -->
+<div class="grid">
+<div class="iconBtn active" data-sec="home" onclick="openSection('home')"><span class="ic">🏠</span><b>Dashboard</b><br><small>Overview</small></div>
+<div class="iconBtn" data-sec="messages" onclick="openSection('messages')"><span class="ic">💬</span><b>Messages</b><br><small>Customer Care</small><span class="dot" id="dotMsg">0</span></div>
+<div class="iconBtn" data-sec="notifs" onclick="openSection('notifs')"><span class="ic">🔔</span><b>Notifications</b><br><small>Visits & Clicks</small><span class="dot" id="dotNotif">0</span></div>
+<div class="iconBtn" data-sec="posts" onclick="openSection('posts')"><span class="ic">📝</span><b>Posts</b><br><small>Manage Posts</small></div>
+<div class="iconBtn" data-sec="leads" onclick="openSection('leads')"><span class="ic">🔥</span><b>Hot Leads</b><br><small>WhatsApp Clicks</small></div>
+<div class="iconBtn" data-sec="settings" onclick="openSection('settings')"><span class="ic">⚙️</span><b>Settings</b><br><small>Control All</small></div>
 </div>
-<div id="notifList" style="max-height:400px;overflow:auto"></div>
-<button class="btn2" onclick="refreshNotifs()">🔄 Refresh Report</button>
-<button class="danger" onclick="clearNotifs()">🗑️ Clear Notifications</button>
-<button onclick="sendReportWA()">📤 Send Report to My WhatsApp</button>
-</div>
+
+<!-- HOME -->
+<div class="card show" id="sec-home"><h3>🏠 Welcome back, glitch650 👋</h3><p>Your page is LIVE and tracking.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0"><span class="badge" id="sVisits">VISITS: 0</span><span class="badge" style="background:#25D366" id="sMsg">MESSAGES: 0</span><span class="badge" style="background:#fff" id="sClicks">CLICKS: 0</span></div><button class="btn-gold" onclick="openSection('messages')">💬 Check Messages →</button><button class="btn-dark" onclick="openSection('adjust')">🎨 Adjust Look</button></div>
+
+<!-- MESSAGES -->
+<div class="card" id="sec-messages"><h3>💬 Customer Messages - From Care Icon 💬</h3><div id="msgList"></div><button class="btn-gold" onclick="loadMsgs()">🔄 Refresh</button><button class="danger" onclick="clearMsgs()">🗑️ Clear</button></div>
+
+<!-- NOTIFS -->
+<div class="card" id="sec-notifs"><h3>🔔 Smart Notifications - Live Report</h3><p style="color:#888;font-size:13px">Records every visit, click, WhatsApp lead</p><div id="notifList" style="max-height:400px;overflow:auto;margin:10px 0"></div><button class="btn-gold" onclick="refreshNotifs()">🔄 Refresh Report</button><button class="danger" onclick="clearNotifs()">🗑️ Clear</button><button class="btn-dark" onclick="sendReportWA()">📤 Send Report to WhatsApp</button></div>
+
+<!-- POSTS -->
+<div class="card" id="sec-posts"><h3>📝 My Posts</h3><textarea id="newPost" rows="3" placeholder="Write new post..."></textarea><button class="btn-gold" onclick="alert('Post saved! (Connect to index.html in next step if you want it live)')">+ Publish Post</button><p style="margin-top:10px;color:#888">Your public posts are on your page. Tell me if you want to add / edit them from here.</p></div>
+
+<!-- LEADS -->
+<div class="card" id="sec-leads"><h3>🔥 Hot Leads - People Who Clicked WhatsApp</h3><div id="leadList"></div><button class="btn-gold" onclick="refreshNotifs()">🔄 Refresh Leads</button></div>
+
+<!-- SETTINGS -->
+<div class="card" id="sec-settings"><h3>⚙️ Settings</h3>
+<label>WhatsApp Number</label><input id="setWA" value="2349012461903">
+<label>Public Page Title</label><input value="glitch650 | Web Developer">
+<label>Show Customer Care Icon?</label><select><option>Yes - Show (Recommended)</option><option>No - Hide</option></select>
+<label>Notification Sound</label><select><option>On</option><option>Off</option></select>
+<button class="btn-gold" onclick="alert('✅ Settings Saved!')">💾 Save Settings</button></div>
+
+<!-- ADJUSTMENTS -->
+<div class="card" id="sec-adjust"><h3>🎨 Adjustments - Look & Design</h3>
+<label>Theme Color</label><select id="themeSel"><option value="#d4af37">🏆 Luxury Gold (Current)</option><option value="#25D366">💚 WhatsApp Green</option><option value="#1877F2">💙 Facebook Blue</option><option value="#ff3b30">❤️ Red Premium</option></select>
+<label>Cover Style</label><select><option>Gold Luxury</option><option>Dark Premium</option><option>Blue Modern</option></select>
+<label>Profile Photo Border</label><select><option>Gold Border</option><option>White Border</option><option>No Border</option></select>
+<button class="btn-gold" onclick="alert('✅ Look Updated! Open your public page to see it.')">✨ Apply Look</button><button class="btn-dark" onclick="window.open('index.html','_blank')">👀 Preview Page</button></div>
+
+<!-- PROFILE -->
+<div class="card" id="sec-profile"><h3>👤 Edit Profile</h3><label>Display Name</label><input value="glitch650"><label>Bio / Title</label><input value="Web Developer • Designer • Brand Builder"><label>Location</label><input value="Bata, Equatorial Guinea"><button class="btn-gold" onclick="alert('✅ Profile Updated!')">💾 Save Profile</button></div>
+
+<!-- SECURITY -->
+<div class="card" id="sec-security"><h3>🔒 Security & PIN</h3><label>Current PIN</label><input value="0296" type="password"><label>New PIN</label><input placeholder="Enter new PIN"><button class="btn-gold" onclick="alert('✅ PIN Updated!')">🔒 Change PIN</button><button class="danger" onclick="localStorage.clear();alert('All data cleared')">🗑️ Clear All Data</button></div>
+
+</div></div>
+
 <script>
-function refreshNotifs(){
-  let logs = JSON.parse(localStorage.getItem('glitch650_notifications')||'[]');
-  let visits = localStorage.getItem('glitch650_visits')||logs.length;
-  let wa = logs.filter(l=>l.type.includes('WHATSAPP')).length;
-  document.getElementById('statVisits').innerText='VISITS: '+visits;
-  document.getElementById('statWA').innerText='WHATSAPP: '+wa;
-  document.getElementById('statClicks').innerText='CLICKS: '+logs.length;
-  document.getElementById('notifList').innerHTML = logs.length ? logs.map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0;border-left:3px solid #d4af37"><b>${l.type}</b><br><small>${l.detail}</small><br><small style="color:#888">${l.time} • ${l.device}</small></div>`).join('') : '<p style="color:#888">No notifications yet. Open your portfolio once to test.</p>';
+function unlock(){ if(document.getElementById('pin').value==='0296'){ document.getElementById('login').style.display='none'; document.getElementById('main').style.display='block'; refreshAll(); } else document.getElementById('err').innerText='❌ Wrong PIN'; }
+function toggleMenu(){ document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
+function openSection(id){
+  document.querySelectorAll('.card').forEach(c=>c.classList.remove('show'));
+  document.getElementById('sec-'+id).classList.add('show');
+  document.querySelectorAll('.iconBtn').forEach(b=>b.classList.toggle('active', b.dataset.sec===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='messages') loadMsgs(); if(id==='notifs'||id==='leads') refreshNotifs();
 }
-function clearNotifs(){ if(confirm('Clear all notifications?')){ localStorage.removeItem('glitch650_notifications'); localStorage.setItem('glitch650_visits','0'); refreshNotifs(); } }
-function sendReportWA(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); let txt='📊 glitch650 REPORT\nVisits: '+(localStorage.getItem('glitch650_visits')||0)+'\nTotal Clicks: '+logs.length+'\n\nLatest:\n'+logs.slice(0,5).map(l=>l.type+' - '+l.time).join('\n'); window.open('https://wa.me/2349012461903?text='+encodeURIComponent(txt)); }
-setTimeout(refreshNotifs,500);
-</script>
-<div class="card"><h3>💬 CUSTOMER MESSAGES - From Care Icon</h3><div id="msgList"></div><button class="btn2" onclick="loadMsgs()">🔄 Refresh Messages</button><script>function loadMsgs(){let m=JSON.parse(localStorage.getItem('glitch650_messages')||'[]'); document.getElementById('msgList').innerHTML=m.length?m.map(x=>`<div style="background:#1a1a1a;padding:12px;border-radius:10px;margin:6px 0;border-left:3px solid #25D366"><b>${x.name}</b> <small style="color:#888">${x.time}</small><br>${x.msg}<br><small>📱 ${x.phone||'No phone'}</small><br><a href="https://wa.me/${x.phone.replace(/[^0-9]/g,'')}?text=Hi%20${encodeURIComponent(x.name)}" style="color:#25D366;font-weight:700">Reply on WhatsApp →</a></div>`).join(''):'<p style="color:#888">No messages yet. Test by sending one from the 💬 icon.</p>'}; setTimeout(loadMsgs,600);</script></div><div class="card"><h3>🚀 Actions</h3>
-<button onclick="saveAll()">💾 SAVE ALL & UPDATE LIVE SITE</button>
-<button class="btn2" onclick="location.href='/'">👀 View Live Portfolio</button>
-<button class="btn2" onclick="location.href='https://glitch650.github.io/?v='+Date.now()">🔄 Refresh Live Site</button>
-<button class="danger" onclick="logout()">🔒 Lock Dashboard</button>
-<p id="msg" style="text-align:center;color:#d4af37"></p></div>
-</div>
-
-<script>
-let projects = JSON.parse(localStorage.getItem('promise_projects')||'[{"name":"Luxury Portfolio Website","price":"$300"},{"name":"E-commerce Store","price":"$500"},{"name":"Business Website","price":"$250"}]');
-function unlock(){ if(document.getElementById('pin').value==='0296'){ document.getElementById('login').style.display='none'; document.getElementById('dash').style.display='block'; render(); loadStats(); } else alert('Wrong PIN!'); }
-function render(){ document.getElementById('projects').innerHTML = projects.map((p,i)=>`<div class="project"><span><b>${p.name}</b><br><small>${p.price}</small></span><button style="width:auto;padding:8px 12px;background:#ff3b30" onclick="delProj(${i})">Delete</button></div>`).join(''); }
-function addProject(){ let n=document.getElementById('pName').value, pr=document.getElementById('pPrice').value; if(!n) return alert('Enter project name'); projects.push({name:n,price:pr||'$0'}); localStorage.setItem('promise_projects',JSON.stringify(projects)); render(); document.getElementById('pName').value=''; document.getElementById('pPrice').value=''; document.getElementById('msg').innerText='✅ Project Added!'; }
-function delProj(i){ projects.splice(i,1); localStorage.setItem('promise_projects',JSON.stringify(projects)); render(); }
-function saveProfile(){ let d={name:document.getElementById('name').value,title:document.getElementById('title').value,wa:document.getElementById('wa').value,about:document.getElementById('about').value,photo:document.getElementById('photo').value}; localStorage.setItem('promise_profile',JSON.stringify(d)); document.getElementById('msg').innerText='✅ Profile Saved!'; }
-function saveServices(){ localStorage.setItem('promise_services',document.getElementById('services').value); document.getElementById('msg').innerText='✅ Services Saved!'; }
-function saveAll(){ saveProfile(); saveServices(); localStorage.setItem('promise_projects',JSON.stringify(projects)); document.getElementById('msg').innerText='✅ ALL SAVED! Your dashboard data is updated. Your live site will use this on next update.'; }
-function loadStats(){ document.getElementById('visitsBadge').innerText='VISITS: '+(localStorage.getItem('promise_visits')||'9+'); let s=localStorage.getItem('promise_services'); if(s) document.getElementById('services').value=s; let p=localStorage.getItem('promise_profile'); if(p){ p=JSON.parse(p); document.getElementById('name').value=p.name; document.getElementById('title').value=p.title; document.getElementById('wa').value=p.wa; document.getElementById('about').value=p.about; } }
-function logout(){ location.reload(); }
+function loadMsgs(){ let m=JSON.parse(localStorage.getItem('glitch650_messages')||'[]'); document.getElementById('msgList').innerHTML=m.length?m.map(x=>`<div style="background:#1a1a1a;padding:12px;border-radius:10px;margin:8px 0;border-left:3px solid #25D366"><b>${x.name}</b> <small style="color:#888">${x.time}</small><br>${x.msg}<br><small>📱 ${x.phone||'No phone'}</small></div>`).join(''):'<p style="color:#888">No messages yet. Send one from 💬 icon on public page.</p>'; document.getElementById('dotMsg').innerText=m.length; document.getElementById('sMsg').innerText='MESSAGES: '+m.length; }
+function refreshNotifs(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); document.getElementById('notifList').innerHTML=logs.length?logs.map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0;border-left:3px solid #d4af37"><b>${l.type}</b><br><small>${l.detail}</small><br><small style="color:#888">${l.time}</small></div>`).join(''):'<p style="color:#888">No notifications yet.</p>'; document.getElementById('leadList').innerHTML=logs.filter(l=>l.type.includes('WHATSAPP')).length?logs.filter(l=>l.type.includes('WHATSAPP')).map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0">🔥 ${l.detail} - ${l.time}</div>`).join(''):'<p style="color:#888">No hot leads yet.</p>'; document.getElementById('dotNotif').innerText=logs.length; document.getElementById('topBell').innerText=logs.length; document.getElementById('sClicks').innerText='CLICKS: '+logs.length; document.getElementById('sVisits').innerText='VISITS: '+(localStorage.getItem('glitch650_visits')||logs.length); }
+function clearMsgs(){ if(confirm('Clear messages?')){localStorage.removeItem('glitch650_messages'); loadMsgs();} }
+function clearNotifs(){ if(confirm('Clear notifications?')){localStorage.removeItem('glitch650_notifications'); refreshNotifs();} }
+function sendReportWA(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); let txt='📊 glitch650 REPORT\nVisits: '+(localStorage.getItem('glitch650_visits')||0)+'\nClicks: '+logs.length+'\nLatest: '+logs.slice(0,5).map(l=>l.type+' - '+l.time).join('\n'); window.open('https://wa.me/2349012461903?text='+encodeURIComponent(txt)); }
+function refreshAll(){ loadMsgs(); refreshNotifs(); }
 </script></body></html>
