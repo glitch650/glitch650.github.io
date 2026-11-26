@@ -194,4 +194,70 @@ document.addEventListener('DOMContentLoaded', ()=>{
     setTimeout(()=>{ speak('Welcome back'); doUnlock(); }, 800);
   }
 });
-</script></body></html>
+</script>
+<script>
+// SMART + STEADY PIN - v2
+let PIN_CORRECT = localStorage.getItem('glitch650_pin') || '0296';
+let pinBusy = false;
+let pinPeekTimer = null;
+function updatePinDots(n){
+  for(let i=1;i<=4;i++){
+    let d=document.getElementById('dot'+i);
+    if(d) d.style.color = i<=n ? '#d4af37' : '#ccc';
+  }
+}
+function sayPin(t){ try{ window.speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=0.95; window.speechSynthesis.speak(u); }catch(e){} }
+function pinWrong(){
+  if(pinBusy) return; pinBusy=true;
+  sayPin('Wrong password, try again');
+  if(navigator.vibrate) navigator.vibrate([60,40,60]);
+  let err=document.getElementById('err'); if(err) err.innerText='❌ Wrong Password! Try again';
+  let login=document.getElementById('login');
+  if(login){ login.classList.remove('shake'); void login.offsetWidth; login.classList.add('shake'); }
+  // STEADY: wait 1.2s before clearing, don't clear instantly
+  setTimeout(()=>{
+    let pin=document.getElementById('pin'); if(pin){ pin.value=''; pin.type='password'; }
+    updatePinDots(0); if(err) err.innerText='';
+    if(login) login.classList.remove('shake');
+    pinBusy=false;
+  }, 1200);
+}
+function pinCorrect(){
+  if(pinBusy) return; pinBusy=true;
+  sayPin('Welcome back, glitch650');
+  if(navigator.vibrate) navigator.vibrate(30);
+  let err=document.getElementById('err'); if(err){ err.style.color='#25D366'; err.innerText='✅ Correct! Opening...'; }
+  setTimeout(()=>{
+    if(typeof doUnlock==='function') doUnlock();
+    else { document.getElementById('login').style.display='none'; document.getElementById('main').style.display='block'; localStorage.setItem('glitch650_logged_in','yes'); }
+    pinBusy=false;
+  }, 500);
+}
+function setupSmartPin(){
+  let pin=document.getElementById('pin'); if(!pin) return;
+  // Remove old listeners by cloning
+  let newPin = pin.cloneNode(true);
+  pin.parentNode.replaceChild(newPin, pin);
+  pin = newPin;
+  pin.focus();
+  pin.addEventListener('input', ()=>{
+    if(pinBusy) return;
+    let v = pin.value.replace(/[^0-9]/g,'').slice(0,4);
+    pin.value = v;
+    updatePinDots(v.length);
+    // STEADY PEEK: show for 800ms, then hide - not flicker
+    pin.type='text';
+    clearTimeout(pinPeekTimer);
+    pinPeekTimer=setTimeout(()=>{ pin.type='password'; }, 800);
+    if(v.length===4){
+      if(v===PIN_CORRECT) pinCorrect();
+      else pinWrong();
+    }
+  });
+  // Allow backspace / steady typing
+  pin.addEventListener('keydown', (e)=>{ if(e.key==='Backspace') updatePinDots(pin.value.length-1); });
+}
+document.addEventListener('DOMContentLoaded', setupSmartPin);
+setTimeout(setupSmartPin, 800);
+</script>
+</body></html>
