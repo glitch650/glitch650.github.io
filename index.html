@@ -36,7 +36,18 @@ a.btn2{background:#1f6feb}
 </div>
 
 <p style="opacity:0.6">© 2026 glitch650</p>
-</body><!-- Private Analytics - No key here -->
+
+<p style="text-align:center; color:#888; font-size:14px;">
+  👀 Visits: <span id="visits">...</span>
+</p>
+<script>
+fetch('https://api.countapi.xyz/hit/glitch650/visits')
+  .then(r => r.json())
+  .then(d => { document.getElementById('visits').textContent = d.value; })
+  .catch(() => { document.getElementById('visits').textContent = '—'; });
+</script>
+</body>
+<!-- Private Analytics - No key here -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -44,7 +55,18 @@ a.btn2{background:#1f6feb}
   gtag('js', new Date());
   gtag('config', 'G-XXXXXXXXXX');
 </script>
+
+<p style="text-align:center; color:#888; font-size:14px;">
+  👀 Visits: <span id="visits">...</span>
+</p>
+<script>
+fetch('https://api.countapi.xyz/hit/glitch650/visits')
+  .then(r => r.json())
+  .then(d => { document.getElementById('visits').textContent = d.value; })
+  .catch(() => { document.getElementById('visits').textContent = '—'; });
+</script>
 </body>
+
 </html>
 <!-- WhatsApp Button -->
 <a href="https://wa.me/2349012461903?text=Hi%20glitch650!%20I%20saw%20your%20portfolio%20and%20want%20to%20work%20with%20you"
