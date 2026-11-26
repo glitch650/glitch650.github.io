@@ -50,9 +50,15 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 <button class="close" onclick="toggleMenu()">✕ Close Menu</button>
 </div>
 
-<div class="wrap">
+
+<div id="pageHeader" style="display:none;padding:14px 16px;background:#111;border-bottom:1px solid #d4af37;position:sticky;top:64px;z-index:90;align-items:center;gap:12px">
+<button onclick="goHome()" style="background:#d4af37;color:#000;width:40px;height:40px;border-radius:50%;font-size:18px;border:none;cursor:pointer">←</button>
+<h2 id="pageTitle" style="font-size:19px">Page</h2>
+<span id="pageSub" style="color:#888;font-size:12px;margin-left:auto"></span>
+</div>
+<div class="wrap" id="mainWrap">
 <!-- FULL CONTROL CENTRE -->
-<div class="card show" id="sec-control" style="display:block">
+<div class="card show" id="sec-control" style="display:none">
 <h3>🎛️ FULL CONTROL CENTRE</h3>
 
 <h4 style="color:#d4af37;margin:12px 0 6px">📸 1. Upload Profile Picture</h4>
@@ -105,7 +111,7 @@ setInterval(updateAdminNet, 3000); setTimeout(()=>{ let p=localStorage.getItem('
 </script>
 
 <!-- ICON BUTTONS -->
-<div class="grid">
+<div class="grid" id="iconGrid">
 <div class="iconBtn active" data-sec="home" onclick="openSection('home')"><span class="ic">🏠</span><b>Dashboard</b><br><small>Overview</small></div>
 <div class="iconBtn" data-sec="messages" onclick="openSection('messages')"><span class="ic">💬</span><b>Messages</b><br><small>Customer Care</small><span class="dot" id="dotMsg">0</span></div>
 <div class="iconBtn" data-sec="notifs" onclick="openSection('notifs')"><span class="ic">🔔</span><b>Notifications</b><br><small>Visits & Clicks</small><span class="dot" id="dotNotif">0</span></div>
@@ -115,7 +121,7 @@ setInterval(updateAdminNet, 3000); setTimeout(()=>{ let p=localStorage.getItem('
 </div>
 
 <!-- HOME -->
-<div class="card show" id="sec-home"><h3>🏠 Welcome back, glitch650 👋</h3><p>Your page is LIVE and tracking.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0"><span class="badge" id="sVisits">VISITS: 0</span><span class="badge" style="background:#25D366" id="sMsg">MESSAGES: 0</span><span class="badge" style="background:#fff" id="sClicks">CLICKS: 0</span></div><button class="btn-gold" onclick="openSection('messages')">💬 Check Messages →</button><button class="btn-dark" onclick="openSection('adjust')">🎨 Adjust Look</button></div>
+<div class="card show" id="sec-home" style="display:block"><h3>🏠 Welcome back, glitch650 👋</h3><p>Your page is LIVE and tracking.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0"><span class="badge" id="sVisits">VISITS: 0</span><span class="badge" style="background:#25D366" id="sMsg">MESSAGES: 0</span><span class="badge" style="background:#fff" id="sClicks">CLICKS: 0</span></div><button class="btn-gold" onclick="openSection('messages')">💬 Check Messages →</button><button class="btn-dark" onclick="openSection('adjust')">🎨 Adjust Look</button></div>
 
 <!-- MESSAGES -->
 <div class="card" id="sec-messages"><h3>💬 Customer Messages - From Care Icon 💬</h3><div id="msgList"></div><button class="btn-gold" onclick="loadMsgs()">🔄 Refresh</button><button class="danger" onclick="clearMsgs()">🗑️ Clear</button></div>
@@ -155,12 +161,27 @@ setInterval(updateAdminNet, 3000); setTimeout(()=>{ let p=localStorage.getItem('
 <script>
 function unlock(){ if(document.getElementById('pin').value==='0296'){ document.getElementById('login').style.display='none'; document.getElementById('main').style.display='block'; refreshAll(); } else document.getElementById('err').innerText='❌ Wrong PIN'; }
 function toggleMenu(){ document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
+const TITLES={home:['🏠 Dashboard','Overview'],messages:['💬 Messages','Customer Care'],notifs:['🔔 Notifications','Visits & Clicks'],posts:['📝 Posts','Manage Posts'],leads:['🔥 Hot Leads','WhatsApp Clicks'],settings:['⚙️ Settings','Control All'],control:['🎛️ Full Control','Photo • Theme • Net'],adjust:['🎨 Adjustments','Look & Design'],profile:['👤 Edit Profile','Your Info'],security:['🔒 Security','PIN & Data']};
 function openSection(id){
-  document.querySelectorAll('.card').forEach(c=>c.classList.remove('show'));
-  document.getElementById('sec-'+id).classList.add('show');
+  // HIDE icons, SHOW only this page - full internal page
+  document.getElementById('iconGrid').style.display='none';
+  document.getElementById('pageHeader').style.display='flex';
+  document.getElementById('pageTitle').innerText = TITLES[id] ? TITLES[id][0] : id;
+  document.getElementById('pageSub').innerText = TITLES[id] ? TITLES[id][1] : '';
+  document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';});
+  let sec=document.getElementById('sec-'+id);
+  if(sec){ sec.classList.add('show'); sec.style.display='block'; }
   document.querySelectorAll('.iconBtn').forEach(b=>b.classList.toggle('active', b.dataset.sec===id));
   window.scrollTo({top:0,behavior:'smooth'});
   if(id==='messages') loadMsgs(); if(id==='notifs'||id==='leads') refreshNotifs();
+}
+function goHome(){
+  document.getElementById('iconGrid').style.display='grid';
+  document.getElementById('pageHeader').style.display='none';
+  document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';});
+  let h=document.getElementById('sec-home'); if(h){h.classList.add('show'); h.style.display='block';}
+  document.querySelectorAll('.iconBtn').forEach(b=>b.classList.toggle('active', b.dataset.sec==='home'));
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 function loadMsgs(){ let m=JSON.parse(localStorage.getItem('glitch650_messages')||'[]'); document.getElementById('msgList').innerHTML=m.length?m.map(x=>`<div style="background:#1a1a1a;padding:12px;border-radius:10px;margin:8px 0;border-left:3px solid #25D366"><b>${x.name}</b> <small style="color:#888">${x.time}</small><br>${x.msg}<br><small>📱 ${x.phone||'No phone'}</small></div>`).join(''):'<p style="color:#888">No messages yet. Send one from 💬 icon on public page.</p>'; document.getElementById('dotMsg').innerText=m.length; document.getElementById('sMsg').innerText='MESSAGES: '+m.length; }
 function refreshNotifs(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); document.getElementById('notifList').innerHTML=logs.length?logs.map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0;border-left:3px solid #d4af37"><b>${l.type}</b><br><small>${l.detail}</small><br><small style="color:#888">${l.time}</small></div>`).join(''):'<p style="color:#888">No notifications yet.</p>'; document.getElementById('leadList').innerHTML=logs.filter(l=>l.type.includes('WHATSAPP')).length?logs.filter(l=>l.type.includes('WHATSAPP')).map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0">🔥 ${l.detail} - ${l.time}</div>`).join(''):'<p style="color:#888">No hot leads yet.</p>'; document.getElementById('dotNotif').innerText=logs.length; document.getElementById('topBell').innerText=logs.length; document.getElementById('sClicks').innerText='CLICKS: '+logs.length; document.getElementById('sVisits').innerText='VISITS: '+(localStorage.getItem('glitch650_visits')||logs.length); }
