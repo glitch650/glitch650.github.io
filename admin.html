@@ -46,6 +46,33 @@ Branding & Logo - $150+</textarea>
 <p id="leads" style="color:#888">No new leads yet. When someone clicks WhatsApp, they become a lead.</p>
 <button class="btn2" onclick="location.href='https://wa.me/2349012460296'">💬 Open WhatsApp</button></div>
 
+
+<div class="card"><h3>🔔 SMART NOTIFICATIONS - LIVE REPORT</h3>
+<p style="color:#888;font-size:13px">Smart & Sensitive - Records every visit, click, WhatsApp lead</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+<span class="badge" id="statVisits">VISITS: 0</span>
+<span class="badge" style="background:#25D366" id="statWA">WHATSAPP: 0</span>
+<span class="badge" style="background:#fff" id="statClicks">CLICKS: 0</span>
+</div>
+<div id="notifList" style="max-height:400px;overflow:auto"></div>
+<button class="btn2" onclick="refreshNotifs()">🔄 Refresh Report</button>
+<button class="danger" onclick="clearNotifs()">🗑️ Clear Notifications</button>
+<button onclick="sendReportWA()">📤 Send Report to My WhatsApp</button>
+</div>
+<script>
+function refreshNotifs(){
+  let logs = JSON.parse(localStorage.getItem('glitch650_notifications')||'[]');
+  let visits = localStorage.getItem('glitch650_visits')||logs.length;
+  let wa = logs.filter(l=>l.type.includes('WHATSAPP')).length;
+  document.getElementById('statVisits').innerText='VISITS: '+visits;
+  document.getElementById('statWA').innerText='WHATSAPP: '+wa;
+  document.getElementById('statClicks').innerText='CLICKS: '+logs.length;
+  document.getElementById('notifList').innerHTML = logs.length ? logs.map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0;border-left:3px solid #d4af37"><b>${l.type}</b><br><small>${l.detail}</small><br><small style="color:#888">${l.time} • ${l.device}</small></div>`).join('') : '<p style="color:#888">No notifications yet. Open your portfolio once to test.</p>';
+}
+function clearNotifs(){ if(confirm('Clear all notifications?')){ localStorage.removeItem('glitch650_notifications'); localStorage.setItem('glitch650_visits','0'); refreshNotifs(); } }
+function sendReportWA(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); let txt='📊 glitch650 REPORT\nVisits: '+(localStorage.getItem('glitch650_visits')||0)+'\nTotal Clicks: '+logs.length+'\n\nLatest:\n'+logs.slice(0,5).map(l=>l.type+' - '+l.time).join('\n'); window.open('https://wa.me/2349012461903?text='+encodeURIComponent(txt)); }
+setTimeout(refreshNotifs,500);
+</script>
 <div class="card"><h3>🚀 Actions</h3>
 <button onclick="saveAll()">💾 SAVE ALL & UPDATE LIVE SITE</button>
 <button class="btn2" onclick="location.href='/'">👀 View Live Portfolio</button>

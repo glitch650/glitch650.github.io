@@ -90,4 +90,41 @@ input,textarea{width:100%;padding:12px;margin:8px 0;background:#1a1a1a;border:1p
 <div class="card" style="text-align:center"><h3>Ready to Go Premium?</h3><p>Your business deserves to look expensive.</p><a class="btn-gold" style="display:inline-block;margin-top:10px" href="https://wa.me/2349012461903?text=Hi%20glitch650!%20I%20want%20a%20premium%20website">💬 Start Your Project on WhatsApp →</a><p style="margin-top:10px;color:#888;font-size:12px">© 2026 glitch650 • glitch650.github.io • Admin: /admin.html PIN 0296</p></div>
 </div>
 </div>
+
+<!-- SMART NOTIFICATION SYSTEM - glitch650 -->
+<div id="notifBell" style="position:fixed;top:70px;right:14px;z-index:999;background:#111;border:1px solid #d4af37;padding:10px 14px;border-radius:20px;font-size:13px;box-shadow:0 5px 20px rgba(0,0,0,.5)">🔔 <span id="bellCount">0</span> New • <a href="admin.html" style="color:#d4af37;font-weight:800">View Report</a></div>
+<script>
+function glitchNotify(type, detail){
+  try{
+    let logs = JSON.parse(localStorage.getItem('glitch650_notifications')||'[]');
+    let now = new Date();
+    logs.unshift({type:type, detail:detail, time: now.toLocaleString(), device: navigator.userAgent.slice(0,60), page: location.pathname});
+    if(logs.length>200) logs = logs.slice(0,200);
+    localStorage.setItem('glitch650_notifications', JSON.stringify(logs));
+    let visits = parseInt(localStorage.getItem('glitch650_visits')||'0')+1;
+    localStorage.setItem('glitch650_visits', visits);
+    let el = document.getElementById('bellCount'); if(el) el.innerText = logs.length;
+  }catch(e){}
+}
+function glitchShowCount(){
+  let logs = JSON.parse(localStorage.getItem('glitch650_notifications')||'[]');
+  let el = document.getElementById('bellCount'); if(el) el.innerText = logs.length;
+}
+// AUTO TRACK
+glitchNotify('👀 PROFILE VISIT', 'Someone opened glitch650 profile page');
+glitchShowCount();
+// TRACK CLICKS
+document.addEventListener('click', function(e){
+  let t = e.target.closest('a,button,img');
+  if(!t) return;
+  let txt = (t.innerText||'').slice(0,40) || t.alt || 'Element';
+  if(t.tagName==='IMG' && t.classList.contains('avatar')) glitchNotify('👆 PROFILE PHOTO CLICK', 'Someone clicked your profile photo');
+  else if(t.href && t.href.includes('wa.me')) glitchNotify('💬 WHATSAPP CLICK', 'Someone clicked WhatsApp - HOT LEAD! - '+txt);
+  else if(t.href && t.href.includes('facebook')) glitchNotify('👍 FACEBOOK CLICK', 'Someone clicked Follow on Facebook');
+  else if(txt.toLowerCase().includes('project')) glitchNotify('💼 PROJECT CLICK', 'Clicked: '+txt);
+  else if(txt.toLowerCase().includes('service')) glitchNotify('🛠️ SERVICE CLICK', 'Clicked: '+txt);
+  else if(txt.toLowerCase().includes('hire')) glitchNotify('🔥 HIRE CLICK', 'Clicked Hire Me - VERY HOT LEAD!');
+  else glitchNotify('👆 CLICK', 'Clicked: '+txt);
+});
+</script>
 </body></html>
