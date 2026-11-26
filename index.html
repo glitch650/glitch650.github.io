@@ -20,6 +20,31 @@ body{background:#0f0f0f;color:#fff;font-family:Arial,sans-serif;text-align:cente
 .card p{color:#ddd;font-size:17px;line-height:1.6}
 .card b{color:#fff}
 .whatsapp{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#25D366;color:#fff;padding:12px 22px;border-radius:30px;font-weight:bold;text-decoration:none;font-size:16px;white-space:nowrap;z-index:1000;box-shadow:0 4px 15px rgba(0,0,0,0.5)}
+
+/* CLICK ANIMATION FOR ALL BUTTONS */
+.btn, .whatsapp{
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  user-select: none;
+}
+.btn:hover, .whatsapp:hover{
+  filter: brightness(1.15);
+  transform: scale(1.03);
+}
+.btn:active{
+  transform: scale(0.92) translateY(2px);
+  filter: brightness(1.25);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+.whatsapp:active{
+  transform: translateX(-50%) scale(0.92) translateY(2px);
+  filter: brightness(1.25);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+/* Little pop when page loads */
+@keyframes popIn{ 0%{transform:scale(0.9);opacity:0} 100%{transform:scale(1);opacity:1} }
+.btn{ animation: popIn 0.4s ease; }
 </style>
 </head>
 <body>
