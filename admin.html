@@ -73,7 +73,7 @@ function clearNotifs(){ if(confirm('Clear all notifications?')){ localStorage.re
 function sendReportWA(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); let txt='📊 glitch650 REPORT\nVisits: '+(localStorage.getItem('glitch650_visits')||0)+'\nTotal Clicks: '+logs.length+'\n\nLatest:\n'+logs.slice(0,5).map(l=>l.type+' - '+l.time).join('\n'); window.open('https://wa.me/2349012461903?text='+encodeURIComponent(txt)); }
 setTimeout(refreshNotifs,500);
 </script>
-<div class="card"><h3>🚀 Actions</h3>
+<div class="card"><h3>💬 CUSTOMER MESSAGES - From Care Icon</h3><div id="msgList"></div><button class="btn2" onclick="loadMsgs()">🔄 Refresh Messages</button><script>function loadMsgs(){let m=JSON.parse(localStorage.getItem('glitch650_messages')||'[]'); document.getElementById('msgList').innerHTML=m.length?m.map(x=>`<div style="background:#1a1a1a;padding:12px;border-radius:10px;margin:6px 0;border-left:3px solid #25D366"><b>${x.name}</b> <small style="color:#888">${x.time}</small><br>${x.msg}<br><small>📱 ${x.phone||'No phone'}</small><br><a href="https://wa.me/${x.phone.replace(/[^0-9]/g,'')}?text=Hi%20${encodeURIComponent(x.name)}" style="color:#25D366;font-weight:700">Reply on WhatsApp →</a></div>`).join(''):'<p style="color:#888">No messages yet. Test by sending one from the 💬 icon.</p>'}; setTimeout(loadMsgs,600);</script></div><div class="card"><h3>🚀 Actions</h3>
 <button onclick="saveAll()">💾 SAVE ALL & UPDATE LIVE SITE</button>
 <button class="btn2" onclick="location.href='/'">👀 View Live Portfolio</button>
 <button class="btn2" onclick="location.href='https://glitch650.github.io/?v='+Date.now()">🔄 Refresh Live Site</button>
