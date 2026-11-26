@@ -260,4 +260,74 @@ function setupSmartPin(){
 document.addEventListener('DOMContentLoaded', setupSmartPin);
 setTimeout(setupSmartPin, 800);
 </script>
+
+<script>
+// ONE SETTINGS - ALL INSIDE ONE
+function openOneSettings(){
+  // Hide everything else
+  document.querySelectorAll('.fbCard, .card, #sec-home, #sec-messages, #sec-posts, #sec-leads, #sec-control, #sec-settings, #sec-adjust, #sec-profile, #sec-security, #sec-notifs, #sec-settingsHub').forEach(el=>{ el.style.display='none'; });
+  let hub = document.getElementById('oneSettings');
+  if(!hub){
+    hub = document.createElement('div');
+    hub.id = 'oneSettings';
+    hub.innerHTML = `
+    <div style="background:var(--card,#242526);border-radius:14px;padding:16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:10px"><button onclick="goHome()" style="background:#d4af37;color:#000;width:36px;height:36px;border-radius:50%;border:none;font-size:18px">←</button><div><h3 style="margin:0">⚙️ Settings</h3><p style="color:#888;font-size:13px;margin:0">All settings in one place</p></div></div>
+      <div id="oneSettingsList" style="margin-top:14px"></div>
+      <div id="oneSettingsPage" style="display:none;margin-top:14px"></div>
+    </div>`;
+    let center = document.querySelector('.fbCenter') || document.querySelector('.wrap') || document.getElementById('main');
+    if(center) center.appendChild(hub); else document.body.appendChild(hub);
+  }
+  hub.style.display='block';
+  showOneSettingsList();
+  window.scrollTo({top:0});
+}
+function showOneSettingsList(){
+  document.getElementById('oneSettingsList').style.display='block';
+  document.getElementById('oneSettingsPage').style.display='none';
+  let items = [
+    ['👤','Profile Settings','Name, Bio, Photo','profile'],
+    ['🔒','Security & Login','PIN, Smart Login, Logout','security'],
+    ['🎨','Appearance & Theme','Dark / Light / Auto Smart','adjust'],
+    ['🎛️','Full Control','Photo, Theme, Internet, Speed','control'],
+    ['💬','Messages & Notifications','Customer Care','messages'],
+    ['📝','Posts Settings','Create & Manage Posts','posts'],
+    ['🔥','Hot Leads','WhatsApp Leads','leads'],
+    ['🔔','Notifications','All alerts','notifs'],
+  ];
+  document.getElementById('oneSettingsList').innerHTML = items.map(i=>`
+    <div onclick="openOneSub('${i[3]}','${i[1]}')" style="display:flex;gap:12px;align-items:center;padding:14px;background:#1a1a1a;background:var(--bg,#1a1a1a);border-radius:12px;margin:8px 0;cursor:pointer">
+      <span style="width:44px;height:44px;border-radius:50%;background:#3a3b3c;display:flex;align-items:center;justify-content:center;font-size:22px">${i[0]}</span>
+      <div><b>${i[1]}</b><br><small style="color:#888">${i[2]}</small></div>
+      <span style="margin-left:auto;font-size:22px;color:#888">›</span>
+    </div>`).join('');
+}
+function openOneSub(id, title){
+  document.getElementById('oneSettingsList').style.display='none';
+  let page = document.getElementById('oneSettingsPage');
+  page.style.display='block';
+  // Try to reuse your existing section content, clone it inside Settings
+  let orig = document.getElementById('sec-'+id);
+  let content = orig ? orig.innerHTML : '<p style="color:#888">Coming soon</p>';
+  page.innerHTML = `
+    <button onclick="showOneSettingsList()" style="background:#d4af37;color:#000;padding:8px 14px;border-radius:20px;border:none;font-weight:700;margin-bottom:12px">← Back to Settings</button>
+    <h3>${title}</h3>
+    <div style="margin-top:10px">${content}</div>
+    <button onclick="showOneSettingsList()" style="background:#333;color:#fff;padding:10px 16px;border-radius:10px;border:none;margin-top:14px">← Back to All Settings</button>`;
+  // Re-bind buttons inside cloned content if needed
+  if(id==='messages' && typeof loadMsgs==='function') setTimeout(loadMsgs,100);
+  if((id==='notifs'||id==='leads') && typeof refreshNotifs==='function') setTimeout(refreshNotifs,100);
+  window.scrollTo({top:0});
+}
+// Make ALL Settings buttons open ONE Settings
+document.addEventListener('DOMContentLoaded', ()=>{
+  setTimeout(()=>{
+    document.querySelectorAll('[data-menu="settings"], [onclick*="openSection(\'settings\')"]').forEach(el=>{
+      el.onclick = (e)=>{ e.preventDefault(); openOneSettings(); };
+    });
+  }, 500);
+});
+function openSettingsHub(){ openOneSettings(); }
+</script>
 </body></html>
