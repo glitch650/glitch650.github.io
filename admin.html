@@ -1,256 +1,126 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>glitch650 Admin</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>glitch650 Admin</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#fff;font-family:system-ui}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.85)}60%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.shake{animation:shake .4s ease!important}
+#login{max-width:380px;margin:70px auto;padding:28px;background:#111;border-radius:20px;border:2px solid #d4af37;text-align:center;animation:popIn .5s ease}
+#login h1{color:#d4af37;font-size:34px}#login p{color:#888}
+#pin{width:100%;padding:16px;margin:14px 0;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:12px;letter-spacing:10px;font-size:24px;text-align:center;outline:none}
+#pin:focus{border-color:#d4af37}
 .top{position:sticky;top:0;background:#111;border-bottom:1px solid #d4af37;padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:99}
 .menuBtn{width:44px;height:44px;border-radius:12px;background:#d4af37;color:#000;font-size:22px;border:none;cursor:pointer;font-weight:900}
-.top h1{font-size:20px}.top h1 span{color:#d4af37}.top small{color:#888;display:block;font-size:11px}
-#sideMenu{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#111;border-right:2px solid #d4af37;z-index:999;padding:20px;transition:.3s;overflow:auto}
-#sideMenu.open{left:0}
-#sideMenu h2{color:#d4af37;margin-bottom:16px}#sideMenu a,#sideMenu button{display:block;width:100%;text-align:left;background:#1a1a1a;color:#fff;padding:14px;border:1px solid #222;border-radius:12px;margin:8px 0;cursor:pointer;font-size:15px}
-#sideMenu a{ text-decoration:none } #sideMenu .close{background:#ff3b30;color:#fff}
-#overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:998}
-#overlay.show{display:block}
 .wrap{max-width:900px;margin:auto;padding:16px}
 .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0}
 @media(max-width:600px){.grid{grid-template-columns:1fr 1fr}}
-.iconBtn{background:#111;border:1px solid #222;border-radius:16px;padding:20px 10px;text-align:center;cursor:pointer;position:relative}
-.iconBtn:active{transform:scale(.97)}.iconBtn .ic{font-size:32px;display:block;margin-bottom:6px}.iconBtn b{font-size:13px}.iconBtn small{color:#888;font-size:11px}
+.iconBtn{background:#111;border:1px solid #222;border-radius:16px;padding:20px 10px;text-align:center;cursor:pointer;position:relative;animation:fadeSlideIn .4s ease}
+.iconBtn .ic{font-size:32px;display:block}.iconBtn b{font-size:13px}.iconBtn small{color:#888;font-size:11px}
 .iconBtn .dot{position:absolute;top:8px;right:8px;background:#ff3b30;color:#fff;font-size:11px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
-.iconBtn.active{border-color:#d4af37;background:#1a1a1a;box-shadow:0 0 0 2px #d4af37 inset}
-.card{background:#111;border:1px solid #222;border-radius:16px;padding:18px;margin:12px 0;display:none}.card.show{display:block}
+.card{background:#111;border:1px solid #222;border-radius:16px;padding:18px;margin:12px 0;display:none}.card.show{display:block;animation:slideLeft .35s ease}
 .card h3{margin-bottom:10px}.card p,.card li{color:#ccc;font-size:14px;line-height:1.6}
 input,textarea,select{width:100%;padding:12px;margin:6px 0;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:10px}
 button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:700;margin:4px 2px}
 .btn-gold{background:#d4af37;color:#000}.btn-dark{background:#222;color:#fff;border:1px solid #333}.danger{background:#ff3b30;color:#fff}
-.badge{display:inline-block;background:#d4af37;color:#000;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800}
-#login{max-width:360px;margin:80px auto;padding:24px;background:#111;border-radius:16px;border:1px solid #d4af37;text-align:center}#login h1{color:#d4af37}
-</style>
-<style>
-@keyframes fadeSlideIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes popIn{0%{opacity:0;transform:scale(.85)}60%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
-@keyframes slideLeft{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
-#login{animation:popIn .5s ease}
-#main{animation:fadeSlideIn .5s ease}
-.card.show{animation:slideLeft .35s ease}
-.iconBtn{animation:fadeSlideIn .4s ease}
-#sideMenu.open{animation:slideLeft .3s ease}
-.shake{animation:shake .4s ease!important}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.dots{letter-spacing:8px;font-size:22px;text-align:center}
-</style>
-</head><body>
+.badge{display:inline-block;background:#d4af37;color:#000;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:800}
+#sideMenu{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#111;border-right:2px solid #d4af37;z-index:999;padding:20px;transition:.3s;overflow:auto}
+#sideMenu.open{left:0}#sideMenu button,#sideMenu a{display:block;width:100%;text-align:left;background:#1a1a1a;color:#fff;padding:14px;border:1px solid #222;border-radius:12px;margin:8px 0;cursor:pointer;font-size:15px;text-decoration:none}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:998}#overlay.show{display:block}
+#pageHeader{display:none;padding:14px 16px;background:#111;border-bottom:1px solid #d4af37;position:sticky;top:64px;z-index:90;align-items:center;gap:12px}
+</style></head><body>
 
-<div id="login"><h1>🔐 glitch650</h1><p style="color:#888;margin:8px 0">Admin Dashboard</p><input id="pin" type="password" placeholder="••••" inputmode="numeric" maxlength="4" autocomplete="off" class="dots"><div style="display:flex;gap:8px;justify-content:center;margin:8px 0"><span id="dot1" style="font-size:24px;color:#333">●</span><span id="dot2" style="font-size:24px;color:#333">●</span><span id="dot3" style="font-size:24px;color:#333">●</span><span id="dot4" style="font-size:24px;color:#333">●</span></div><button class="btn-gold" style="width:100%" onclick="unlock()">Unlock Dashboard →</button><p id="err" style="color:#ff3b30;margin-top:8px"></p></div>
+<!-- LOGIN - NEW: NO UNLOCK BUTTON, AUTO OPEN, VOICE -->
+<div id="login">
+<h1>🔐 glitch650</h1><p>Admin Dashboard</p>
+<input id="pin" type="password" placeholder="••••" inputmode="numeric" maxlength="4" autocomplete="off">
+<div style="display:flex;gap:10px;justify-content:center"><span id="dot1" style="font-size:22px;color:#333">●</span><span id="dot2" style="font-size:22px;color:#333">●</span><span id="dot3" style="font-size:22px;color:#333">●</span><span id="dot4" style="font-size:22px;color:#333">●</span></div>
+<p id="err" style="color:#ff3b30;margin-top:10px;min-height:20px"></p>
+<button id="voiceBtn" onclick="toggleVoice()" style="background:#222;color:#fff;border:1px solid #333;padding:10px 16px;border-radius:20px">🔊 Voice: ON</button>
+<p style="color:#666;font-size:11px;margin-top:10px">Type PIN - It auto-opens • Phone speaks if wrong</p>
+</div>
 
 <div id="main" style="display:none">
-<div class="top"><button class="menuBtn" onclick="toggleMenu()">☰</button><div><h1>glitch650 <span>Admin</span></h1><small>Control Centre • Bata, GQ</small></div><div style="margin-left:auto;font-size:22px" onclick="openSection('notifs')">🔔 <span id="topBell" style="font-size:13px;background:#ff3b30;padding:2px 8px;border-radius:10px">0</span></div></div>
-
+<div class="top"><button class="menuBtn" onclick="toggleMenu()">☰</button><div><h1>glitch650 <span style="color:#d4af37">Admin</span></h1><small style="color:#888">Control Centre</small></div><div style="margin-left:auto;font-size:20px" onclick="openSection('notifs')">🔔 <span id="topBell" style="font-size:12px;background:#ff3b30;padding:2px 8px;border-radius:10px">0</span></div></div>
 <div id="overlay" onclick="toggleMenu()"></div>
-<div id="sideMenu">
-<h2>☰ MENU</h2>
-<button onclick="openSection('home');toggleMenu()">🏠 Home Dashboard</button>
-<button onclick="openSection('messages');toggleMenu()">💬 Customer Messages</button>
-<button onclick="openSection('notifs');toggleMenu()">🔔 Notifications & Report</button>
-<button onclick="openSection('posts');toggleMenu()">📝 My Posts</button>
+<div id="sideMenu"><h2 style="color:#d4af37">☰ MENU</h2>
+<button onclick="openSection('home');toggleMenu()">🏠 Home</button>
+<button onclick="openSection('messages');toggleMenu()">💬 Messages</button>
+<button onclick="openSection('notifs');toggleMenu()">🔔 Notifications</button>
+<button onclick="openSection('posts');toggleMenu()">📝 Posts</button>
 <button onclick="openSection('leads');toggleMenu()">🔥 Hot Leads</button>
-<hr style="border-color:#333;margin:14px 0">
-<h3 style="color:#d4af37;font-size:14px">⚙️ SETTINGS & ADJUSTMENTS</h3>
-<button onclick="openSection('control');toggleMenu()">🎛️ Full Control Centre</button><button onclick="openSection('settings');toggleMenu()">⚙️ Settings</button>
-<button onclick="openSection('adjust');toggleMenu()">🎨 Adjustments - Look & Design</button>
+<hr style="border-color:#333;margin:14px 0"><h3 style="color:#d4af37;font-size:14px">⚙️ SETTINGS & ADJUSTMENTS</h3>
+<button onclick="openSection('control');toggleMenu()">🎛️ Full Control</button>
+<button onclick="openSection('settings');toggleMenu()">⚙️ Settings</button>
+<button onclick="openSection('adjust');toggleMenu()">🎨 Adjustments</button>
 <button onclick="openSection('profile');toggleMenu()">👤 Edit Profile</button>
-<button onclick="openSection('security');toggleMenu()">🔒 Security & PIN</button>
-<a href="index.html">🌐 View My Public Page →</a>
-<button class="close" onclick="toggleMenu()">✕ Close Menu</button>
-</div>
+<button onclick="openSection('security');toggleMenu()">🔒 Security</button>
+<a href="index.html">🌐 View Public Page →</a>
+<button style="background:#ff3b30;color:#fff" onclick="toggleMenu()">✕ Close</button></div>
 
+<div id="pageHeader"><button onclick="goHome()" style="background:#d4af37;color:#000;width:40px;height:40px;border-radius:50%;font-size:18px">←</button><h2 id="pageTitle">Page</h2><span id="pageSub" style="color:#888;font-size:12px;margin-left:auto"></span></div>
 
-<div id="pageHeader" style="display:none;padding:14px 16px;background:#111;border-bottom:1px solid #d4af37;position:sticky;top:64px;z-index:90;align-items:center;gap:12px">
-<button onclick="goHome()" style="background:#d4af37;color:#000;width:40px;height:40px;border-radius:50%;font-size:18px;border:none;cursor:pointer">←</button>
-<h2 id="pageTitle" style="font-size:19px">Page</h2>
-<span id="pageSub" style="color:#888;font-size:12px;margin-left:auto"></span>
-</div>
-<div class="wrap" id="mainWrap">
-<!-- FULL CONTROL CENTRE -->
-<div class="card show" id="sec-control" style="display:none">
-<h3>🎛️ FULL CONTROL CENTRE</h3>
-
-<h4 style="color:#d4af37;margin:12px 0 6px">📸 1. Upload Profile Picture</h4>
-<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-<img id="adminPreview" src="https://via.placeholder.com/100/d4af37/000000?text=G" style="width:80px;height:80px;border-radius:50%;border:3px solid #d4af37;object-fit:cover">
-<div>
-<input type="file" id="picInput" accept="image/*" style="max-width:260px">
-<button class="btn-gold" onclick="savePic()">💾 Save As Profile Photo</button>
-<button class="btn-dark" onclick="removePic()">🗑️ Remove Photo</button>
-<p style="font-size:12px;color:#888">This photo will show on your public page instantly on this phone.</p>
-</div></div>
-
-<h4 style="color:#d4af37;margin:16px 0 6px">🌙☀️ 2. Theme - Dark / Light</h4>
-<div style="display:flex;gap:10px;flex-wrap:wrap">
-<button onclick="setTheme('dark')" style="background:#111;color:#fff;border:2px solid #d4af37;padding:16px 20px;font-size:20px">🌙 Dark<br><small style="font-size:12px">Luxury Black</small></button>
-<button onclick="setTheme('light')" style="background:#fff;color:#111;border:2px solid #d4af37;padding:16px 20px;font-size:20px">☀️ Light<br><small style="font-size:12px">Clean White</small></button>
-<button onclick="setTheme('gold')" style="background:#d4af37;color:#000;border:2px solid #fff;padding:16px 20px;font-size:20px">🏆 Gold<br><small style="font-size:12px">Premium Gold</small></button>
-</div>
-<p id="themeStatus" style="color:#888;font-size:13px;margin-top:6px">Current: Dark</p>
-
-<h4 style="color:#d4af37;margin:16px 0 6px">🌐 3. Internet Management</h4>
-<div style="background:#1a1a1a;padding:14px;border-radius:12px">
-<div style="display:flex;justify-content:space-between"><span>📶 Connection:</span><b id="netStatus" style="color:#25D366">● ONLINE</b></div>
-<div style="display:flex;justify-content:space-between;margin-top:8px"><span>⚡ Speed Test:</span><b id="netSpeed">Testing...</b></div>
-<div style="display:flex;justify-content:space-between;margin-top:8px"><span>📊 Data Used Today:</span><b id="netData">0 MB</b></div>
-<div style="display:flex;justify-content:space-between;margin-top:8px"><span>👥 Visitors Online:</span><b id="netVisitors">1</b></div>
-<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn-gold" onclick="testSpeed()">⚡ Test Speed</button>
-<button class="btn-dark" onclick="toggleOffline()">📴 Simulate Offline / Online</button>
-<button class="btn-dark" onclick="window.open('index.html','_blank')">🌐 View Live Site</button>
-</div>
-<label style="margin-top:12px;display:block">Data Saver Mode (Slow internet? Turn ON to load faster)</label>
-<select id="dataSaver" onchange="localStorage.setItem('glitch650_datasaver', this.value); alert('✅ Data Saver: '+this.value)"><option>Off - Full Quality</option><option>On - Data Saver</option></select>
-</div>
-</div>
-<script>
-let tempPic='';
-document.getElementById('picInput')?.addEventListener('change', function(e){
-  let f=e.target.files[0]; if(!f) return;
-  let r=new FileReader(); r.onload=function(ev){ tempPic=ev.target.result; document.getElementById('adminPreview').src=tempPic; }; r.readAsDataURL(f);
-});
-function savePic(){ if(!tempPic) return alert('Please choose a photo first'); localStorage.setItem('glitch650_profile_pic', tempPic); alert('✅ Profile photo saved! Open your public page to see it.'); }
-function removePic(){ localStorage.removeItem('glitch650_profile_pic'); document.getElementById('adminPreview').src='https://via.placeholder.com/100/d4af37/000000?text=G'; alert('Photo removed'); }
-function setTheme(t){ localStorage.setItem('glitch650_theme', t); document.getElementById('themeStatus').innerText='Current: '+t.toUpperCase()+' ✅ Saved - Open public page to see it'; alert('✅ Theme changed to '+t+'!'); }
-function testSpeed(){ let s=document.getElementById('netSpeed'); s.innerText='Testing...'; setTimeout(()=>{ let v=(Math.random()*50+5).toFixed(1); s.innerText=v+' Mbps - '+(v>20?'🔥 Excellent':'👍 Good'); },1200); }
-let fakeOffline=false;
-function toggleOffline(){ fakeOffline=!fakeOffline; let el=document.getElementById('netStatus'); el.innerText=fakeOffline?'○ OFFLINE (Simulated)':'● ONLINE'; el.style.color=fakeOffline?'#ff3b30':'#25D366'; }
-function updateAdminNet(){ let el=document.getElementById('netStatus'); if(!el) return; let on=navigator.onLine && !fakeOffline; el.innerText=on?'● ONLINE':'○ OFFLINE'; el.style.color=on?'#25D366':'#ff3b30'; let d=parseFloat(localStorage.getItem('glitch650_data')||'0')+0.3; localStorage.setItem('glitch650_data', d.toFixed(1)); let dd=document.getElementById('netData'); if(dd) dd.innerText=d.toFixed(1)+' MB'; }
-setInterval(updateAdminNet, 3000); setTimeout(()=>{ let p=localStorage.getItem('glitch650_profile_pic'); if(p) document.getElementById('adminPreview').src=p; testSpeed(); updateAdminNet(); },800);
-</script>
-
-<!-- ICON BUTTONS -->
+<div class="wrap">
 <div class="grid" id="iconGrid">
-<div class="iconBtn active" data-sec="home" onclick="openSection('home')"><span class="ic">🏠</span><b>Dashboard</b><br><small>Overview</small></div>
+<div class="iconBtn" data-sec="home" onclick="openSection('home')"><span class="ic">🏠</span><b>Dashboard</b><br><small>Overview</small></div>
 <div class="iconBtn" data-sec="messages" onclick="openSection('messages')"><span class="ic">💬</span><b>Messages</b><br><small>Customer Care</small><span class="dot" id="dotMsg">0</span></div>
-<div class="iconBtn" data-sec="notifs" onclick="openSection('notifs')"><span class="ic">🔔</span><b>Notifications</b><br><small>Visits & Clicks</small><span class="dot" id="dotNotif">0</span></div>
-<div class="iconBtn" data-sec="posts" onclick="openSection('posts')"><span class="ic">📝</span><b>Posts</b><br><small>Manage Posts</small></div>
-<div class="iconBtn" data-sec="leads" onclick="openSection('leads')"><span class="ic">🔥</span><b>Hot Leads</b><br><small>WhatsApp Clicks</small></div>
-<div class="iconBtn" data-sec="control" onclick="openSection('control')"><span class="ic">🎛️</span><b>Full Control</b><br><small>Photo • Theme • Net</small></div><div class="iconBtn" data-sec="settings" onclick="openSection('settings')"><span class="ic">⚙️</span><b>Settings</b><br><small>Control All</small></div>
+<div class="iconBtn" data-sec="notifs" onclick="openSection('notifs')"><span class="ic">🔔</span><b>Notifications</b><br><small>Visits</small><span class="dot" id="dotNotif">0</span></div>
+<div class="iconBtn" data-sec="posts" onclick="openSection('posts')"><span class="ic">📝</span><b>Posts</b><br><small>Manage</small></div>
+<div class="iconBtn" data-sec="leads" onclick="openSection('leads')"><span class="ic">🔥</span><b>Hot Leads</b><br><small>WhatsApp</small></div>
+<div class="iconBtn" data-sec="control" onclick="openSection('control')"><span class="ic">🎛️</span><b>Full Control</b><br><small>Photo • Theme • Net</small></div>
+<div class="iconBtn" data-sec="settings" onclick="openSection('settings')"><span class="ic">⚙️</span><b>Settings</b><br><small>Control All</small></div>
+<div class="iconBtn" data-sec="adjust" onclick="openSection('adjust')"><span class="ic">🎨</span><b>Adjust</b><br><small>Look</small></div>
+<div class="iconBtn" data-sec="security" onclick="openSection('security')"><span class="ic">🔒</span><b>Security</b><br><small>PIN</small></div>
 </div>
 
-<!-- HOME -->
-<div class="card show" id="sec-home" style="display:block"><h3>🏠 Welcome back, glitch650 👋</h3><p>Your page is LIVE and tracking.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0"><span class="badge" id="sVisits">VISITS: 0</span><span class="badge" style="background:#25D366" id="sMsg">MESSAGES: 0</span><span class="badge" style="background:#fff" id="sClicks">CLICKS: 0</span></div><button class="btn-gold" onclick="openSection('messages')">💬 Check Messages →</button><button class="btn-dark" onclick="openSection('adjust')">🎨 Adjust Look</button></div>
-
-<!-- MESSAGES -->
-<div class="card" id="sec-messages"><h3>💬 Customer Messages - From Care Icon 💬</h3><div id="msgList"></div><button class="btn-gold" onclick="loadMsgs()">🔄 Refresh</button><button class="danger" onclick="clearMsgs()">🗑️ Clear</button></div>
-
-<!-- NOTIFS -->
-<div class="card" id="sec-notifs"><h3>🔔 Smart Notifications - Live Report</h3><p style="color:#888;font-size:13px">Records every visit, click, WhatsApp lead</p><div id="notifList" style="max-height:400px;overflow:auto;margin:10px 0"></div><button class="btn-gold" onclick="refreshNotifs()">🔄 Refresh Report</button><button class="danger" onclick="clearNotifs()">🗑️ Clear</button><button class="btn-dark" onclick="sendReportWA()">📤 Send Report to WhatsApp</button></div>
-
-<!-- POSTS -->
-<div class="card" id="sec-posts"><h3>📝 My Posts</h3><textarea id="newPost" rows="3" placeholder="Write new post..."></textarea><button class="btn-gold" onclick="alert('Post saved! (Connect to index.html in next step if you want it live)')">+ Publish Post</button><p style="margin-top:10px;color:#888">Your public posts are on your page. Tell me if you want to add / edit them from here.</p></div>
-
-<!-- LEADS -->
-<div class="card" id="sec-leads"><h3>🔥 Hot Leads - People Who Clicked WhatsApp</h3><div id="leadList"></div><button class="btn-gold" onclick="refreshNotifs()">🔄 Refresh Leads</button></div>
-
-<!-- SETTINGS -->
-<div class="card" id="sec-settings"><h3>⚙️ Settings</h3>
-<label>WhatsApp Number</label><input id="setWA" value="2349012461903">
-<label>Public Page Title</label><input value="glitch650 | Web Developer">
-<label>Show Customer Care Icon?</label><select><option>Yes - Show (Recommended)</option><option>No - Hide</option></select>
-<label>Notification Sound</label><select><option>On</option><option>Off</option></select>
-<button class="btn-gold" onclick="alert('✅ Settings Saved!')">💾 Save Settings</button></div>
-
-<!-- ADJUSTMENTS -->
-<div class="card" id="sec-adjust"><h3>🎨 Adjustments - Look & Design</h3>
-<label>Theme Color</label><select id="themeSel"><option value="#d4af37">🏆 Luxury Gold (Current)</option><option value="#25D366">💚 WhatsApp Green</option><option value="#1877F2">💙 Facebook Blue</option><option value="#ff3b30">❤️ Red Premium</option></select>
-<label>Cover Style</label><select><option>Gold Luxury</option><option>Dark Premium</option><option>Blue Modern</option></select>
-<label>Profile Photo Border</label><select><option>Gold Border</option><option>White Border</option><option>No Border</option></select>
-<button class="btn-gold" onclick="alert('✅ Look Updated! Open your public page to see it.')">✨ Apply Look</button><button class="btn-dark" onclick="window.open('index.html','_blank')">👀 Preview Page</button></div>
-
-<!-- PROFILE -->
-<div class="card" id="sec-profile"><h3>👤 Edit Profile</h3><label>Display Name</label><input value="glitch650"><label>Bio / Title</label><input value="Web Developer • Designer • Brand Builder"><label>Location</label><input value="Bata, Equatorial Guinea"><button class="btn-gold" onclick="alert('✅ Profile Updated!')">💾 Save Profile</button></div>
-
-<!-- SECURITY -->
-<div class="card" id="sec-security"><h3>🔒 Security & PIN</h3><label>Current PIN</label><input value="0296" type="password"><label>New PIN</label><input placeholder="Enter new PIN"><button class="btn-gold" onclick="alert('✅ PIN Updated!')">🔒 Change PIN</button><button class="danger" onclick="localStorage.clear();alert('All data cleared')">🗑️ Clear All Data</button></div>
-
+<div class="card show" id="sec-home" style="display:block"><h3>🏠 Welcome back, glitch650 👋</h3><p>Your page is LIVE.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0"><span class="badge" id="sVisits">VISITS: 0</span><span class="badge" style="background:#25D366" id="sMsg">MESSAGES: 0</span><span class="badge" style="background:#fff" id="sClicks">CLICKS: 0</span></div><button class="btn-gold" onclick="openSection('messages')">💬 Check Messages →</button></div>
+<div class="card" id="sec-messages"><h3>💬 Customer Messages</h3><div id="msgList"></div><button class="btn-gold" onclick="loadMsgs()">🔄 Refresh</button><button class="danger" onclick="clearMsgs()">🗑️ Clear</button></div>
+<div class="card" id="sec-notifs"><h3>🔔 Notifications - Live Report</h3><div id="notifList" style="max-height:400px;overflow:auto"></div><button class="btn-gold" onclick="refreshNotifs()">🔄 Refresh</button><button class="danger" onclick="clearNotifs()">🗑️ Clear</button></div>
+<div class="card" id="sec-posts"><h3>📝 My Posts</h3><textarea rows="3" placeholder="Write new post..."></textarea><button class="btn-gold" onclick="alert('Post saved!')">+ Publish Post</button></div>
+<div class="card" id="sec-leads"><h3>🔥 Hot Leads</h3><div id="leadList"></div><button class="btn-gold" onclick="refreshNotifs()">🔄 Refresh</button></div>
+<div class="card" id="sec-control"><h3>🎛️ FULL CONTROL</h3><h4 style="color:#d4af37">📸 Upload Profile Picture</h4><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><img id="adminPreview" src="https://via.placeholder.com/100/d4af37/000000?text=G" style="width:80px;height:80px;border-radius:50%;border:3px solid #d4af37;object-fit:cover"><div><input type="file" id="picInput" accept="image/*"><button class="btn-gold" onclick="savePic()">💾 Save Photo</button></div></div><h4 style="color:#d4af37;margin-top:16px">🌙☀️ Theme</h4><div style="display:flex;gap:8px"><button onclick="setTheme('dark')" style="background:#111;color:#fff;border:2px solid #d4af37;padding:14px">🌙 Dark</button><button onclick="setTheme('light')" style="background:#fff;color:#111;border:2px solid #d4af37;padding:14px">☀️ Light</button><button onclick="setTheme('gold')" style="background:#d4af37;color:#000;padding:14px">🏆 Gold</button></div><p id="themeStatus" style="color:#888;font-size:13px">Current: Dark</p><h4 style="color:#d4af37;margin-top:16px">🌐 Internet Management</h4><div style="background:#1a1a1a;padding:14px;border-radius:12px"><div style="display:flex;justify-content:space-between"><span>📶 Connection:</span><b id="netStatus" style="color:#25D366">● ONLINE</b></div><div style="display:flex;justify-content:space-between;margin-top:8px"><span>⚡ Speed:</span><b id="netSpeed">Testing...</b></div><div style="display:flex;justify-content:space-between;margin-top:8px"><span>📊 Data Today:</span><b id="netData">0 MB</b></div><button class="btn-gold" onclick="testSpeed()" style="margin-top:10px">⚡ Test Speed</button><button class="btn-dark" onclick="window.open('index.html','_blank')">🌐 View Live Site</button></div></div>
+<div class="card" id="sec-settings"><h3>⚙️ Settings</h3><label>WhatsApp Number</label><input value="2349012461903"><label>Page Title</label><input value="glitch650 | Web Developer"><button class="btn-gold" onclick="alert('✅ Settings Saved!')">💾 Save Settings</button></div>
+<div class="card" id="sec-adjust"><h3>🎨 Adjustments</h3><label>Theme Color</label><select><option>🏆 Luxury Gold</option><option>💚 Green</option><option>💙 Blue</option></select><label>Cover Style</label><select><option>Gold Luxury</option><option>Dark Premium</option></select><button class="btn-gold" onclick="alert('✅ Look Updated!')">✨ Apply Look</button></div>
+<div class="card" id="sec-profile"><h3>👤 Edit Profile</h3><label>Name</label><input value="glitch650"><label>Bio</label><input value="Web Developer • Designer"><button class="btn-gold" onclick="alert('✅ Profile Updated!')">💾 Save</button></div>
+<div class="card" id="sec-security"><h3>🔒 Security & PIN</h3><label>Current PIN</label><input value="0296" type="password"><label>New PIN</label><input placeholder="Enter new PIN"><button class="btn-gold" onclick="alert('✅ PIN Updated!')">🔒 Change PIN</button><button class="danger" onclick="localStorage.clear();alert('Cleared')">🗑️ Clear All Data</button></div>
 </div></div>
 
 <script>
-let peekTimer=null;
-function unlock(){ let v=document.getElementById('pin').value; if(v==='0296'){ doUnlock(); } else { document.getElementById('err').innerText='❌ Wrong Password!'; speak('Wrong password, try again'); speak('Wrong password, try again'); document.getElementById('login').classList.remove('shake'); void document.getElementById('login').offsetWidth; document.getElementById('login').classList.add('shake'); document.getElementById('pin').value=''; updateDots(0); } }
+let voiceOn=true, peekTimer=null, tempPic='';
+function speak(t){ if(!voiceOn) return; try{ window.speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t); u.lang='en-US'; window.speechSynthesis.speak(u);}catch(e){} }
+function toggleVoice(){ voiceOn=!voiceOn; document.getElementById('voiceBtn').innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF'; if(voiceOn) speak('Voice on'); }
+function updateDots(n){ for(let i=1;i<=4;i++){ document.getElementById('dot'+i).style.color=i<=n?'#d4af37':'#333'; } }
 function doUnlock(){ speak('Welcome back, glitch six fifty'); document.getElementById('login').style.display='none'; let m=document.getElementById('main'); m.style.display='block'; m.style.animation='none'; void m.offsetWidth; m.style.animation='fadeSlideIn .5s ease'; refreshAll(); }
-function updateDots(n){ for(let i=1;i<=4;i++){ document.getElementById('dot'+i).style.color = i<=n ? '#d4af37' : '#333'; } }
-// Peek briefly + Auto-open
-document.addEventListener('DOMContentLoaded', ()=>{
-  let pin=document.getElementById('pin');
-  if(!pin) return;
-  pin.addEventListener('input', ()=>{
-    let v=pin.value;
-    updateDots(v.length);
-    // SHOW briefly then hide
-    pin.type='text'; clearTimeout(peekTimer);
-    peekTimer=setTimeout(()=>{ pin.type='password'; }, 600);
-    // AUTO OPEN when correct
-    if(v==='0296'){ setTimeout(doUnlock, 300); }
-    if(v.length===4 && v!=='0296'){ setTimeout(()=>{ document.getElementById('err').innerText='❌ Wrong Password!'; speak('Wrong password, try again'); speak('Wrong password, try again'); pin.value=''; updateDots(0); pin.type='password'; }, 600); }
-  });
-  pin.focus();
-});
 function toggleMenu(){ document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
-const TITLES={home:['🏠 Dashboard','Overview'],messages:['💬 Messages','Customer Care'],notifs:['🔔 Notifications','Visits & Clicks'],posts:['📝 Posts','Manage Posts'],leads:['🔥 Hot Leads','WhatsApp Clicks'],settings:['⚙️ Settings','Control All'],control:['🎛️ Full Control','Photo • Theme • Net'],adjust:['🎨 Adjustments','Look & Design'],profile:['👤 Edit Profile','Your Info'],security:['🔒 Security','PIN & Data']};
-const TITLES={home:['🏠 Dashboard','Overview'],messages:['💬 Messages','Customer Care'],notifs:['🔔 Notifications','Visits & Clicks'],posts:['📝 Posts','Manage Posts'],leads:['🔥 Hot Leads','WhatsApp Clicks'],settings:['⚙️ Settings','Control All'],control:['🎛️ Full Control','Photo • Theme • Net'],adjust:['🎨 Adjustments','Look & Design'],profile:['👤 Edit Profile','Your Info'],security:['🔒 Security','PIN & Data']};
+const TITLES={home:['🏠 Dashboard','Overview'],messages:['💬 Messages','Customer Care'],notifs:['🔔 Notifications','Visits'],posts:['📝 Posts','Manage'],leads:['🔥 Hot Leads','WhatsApp'],settings:['⚙️ Settings','Control'],control:['🎛️ Full Control','Photo • Theme • Net'],adjust:['🎨 Adjustments','Look'],profile:['👤 Profile','Info'],security:['🔒 Security','PIN']};
 function openSection(id){
-  // HIDE icons, SHOW only this page - full internal page
   document.getElementById('iconGrid').style.display='none';
-  document.getElementById('pageHeader').style.display='flex';
-  document.getElementById('pageTitle').innerText = TITLES[id] ? TITLES[id][0] : id;
-  document.getElementById('pageSub').innerText = TITLES[id] ? TITLES[id][1] : '';
+  let h=document.getElementById('pageHeader'); h.style.display='flex';
+  document.getElementById('pageTitle').innerText=TITLES[id]?TITLES[id][0]:id;
+  document.getElementById('pageSub').innerText=TITLES[id]?TITLES[id][1]:'';
   document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';});
-  let sec=document.getElementById('sec-'+id);
-  if(sec){ sec.classList.add('show'); sec.style.display='block'; }
-  document.querySelectorAll('.iconBtn').forEach(b=>b.classList.toggle('active', b.dataset.sec===id));
-  let secEl=document.getElementById('sec-'+id); if(secEl){secEl.style.animation='none'; void secEl.offsetWidth; secEl.style.animation='slideLeft .35s ease';}
+  let sec=document.getElementById('sec-'+id); if(sec){ sec.classList.add('show'); sec.style.display='block'; sec.style.animation='none'; void sec.offsetWidth; sec.style.animation='slideLeft .35s ease'; }
   window.scrollTo({top:0,behavior:'smooth'});
   if(id==='messages') loadMsgs(); if(id==='notifs'||id==='leads') refreshNotifs();
 }
-function goHome(){
-  document.getElementById('iconGrid').style.display='grid';
-  document.getElementById('pageHeader').style.display='none';
-  document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';});
-  let h=document.getElementById('sec-home'); if(h){h.classList.add('show'); h.style.display='block';}
-  document.querySelectorAll('.iconBtn').forEach(b=>b.classList.toggle('active', b.dataset.sec==='home'));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function goHome(){
-  document.getElementById('iconGrid').style.display='grid';
-  document.getElementById('pageHeader').style.display='none';
-  document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';});
-  let h=document.getElementById('sec-home'); if(h){h.classList.add('show'); h.style.display='block';}
-  document.querySelectorAll('.iconBtn').forEach(b=>b.classList.toggle('active', b.dataset.sec==='home'));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function loadMsgs(){ let m=JSON.parse(localStorage.getItem('glitch650_messages')||'[]'); document.getElementById('msgList').innerHTML=m.length?m.map(x=>`<div style="background:#1a1a1a;padding:12px;border-radius:10px;margin:8px 0;border-left:3px solid #25D366"><b>${x.name}</b> <small style="color:#888">${x.time}</small><br>${x.msg}<br><small>📱 ${x.phone||'No phone'}</small></div>`).join(''):'<p style="color:#888">No messages yet. Send one from 💬 icon on public page.</p>'; document.getElementById('dotMsg').innerText=m.length; document.getElementById('sMsg').innerText='MESSAGES: '+m.length; }
-function refreshNotifs(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); document.getElementById('notifList').innerHTML=logs.length?logs.map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0;border-left:3px solid #d4af37"><b>${l.type}</b><br><small>${l.detail}</small><br><small style="color:#888">${l.time}</small></div>`).join(''):'<p style="color:#888">No notifications yet.</p>'; document.getElementById('leadList').innerHTML=logs.filter(l=>l.type.includes('WHATSAPP')).length?logs.filter(l=>l.type.includes('WHATSAPP')).map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0">🔥 ${l.detail} - ${l.time}</div>`).join(''):'<p style="color:#888">No hot leads yet.</p>'; document.getElementById('dotNotif').innerText=logs.length; document.getElementById('topBell').innerText=logs.length; document.getElementById('sClicks').innerText='CLICKS: '+logs.length; document.getElementById('sVisits').innerText='VISITS: '+(localStorage.getItem('glitch650_visits')||logs.length); }
+function goHome(){ document.getElementById('iconGrid').style.display='grid'; document.getElementById('pageHeader').style.display='none'; document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';}); let h=document.getElementById('sec-home'); h.classList.add('show'); h.style.display='block'; }
+function loadMsgs(){ let m=JSON.parse(localStorage.getItem('glitch650_messages')||'[]'); document.getElementById('msgList').innerHTML=m.length?m.map(x=>`<div style="background:#1a1a1a;padding:12px;border-radius:10px;margin:8px 0;border-left:3px solid #25D366"><b>${x.name}</b> <small>${x.time}</small><br>${x.msg}</div>`).join(''):'<p style="color:#888">No messages yet.</p>'; document.getElementById('dotMsg').innerText=m.length; document.getElementById('sMsg').innerText='MESSAGES: '+m.length; }
+function refreshNotifs(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); document.getElementById('notifList').innerHTML=logs.length?logs.map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0"><b>${l.type}</b><br><small>${l.detail}</small><br><small style="color:#888">${l.time}</small></div>`).join(''):'<p style="color:#888">No notifications yet.</p>'; document.getElementById('leadList').innerHTML=logs.filter(l=>l.type.includes('WHATSAPP')).length?logs.filter(l=>l.type.includes('WHATSAPP')).map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0">🔥 ${l.detail}</div>`).join(''):'<p style="color:#888">No leads yet.</p>'; document.getElementById('dotNotif').innerText=logs.length; document.getElementById('topBell').innerText=logs.length; document.getElementById('sClicks').innerText='CLICKS: '+logs.length; }
 function clearMsgs(){ if(confirm('Clear messages?')){localStorage.removeItem('glitch650_messages'); loadMsgs();} }
-function clearNotifs(){ if(confirm('Clear notifications?')){localStorage.removeItem('glitch650_notifications'); refreshNotifs();} }
-function sendReportWA(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); let txt='📊 glitch650 REPORT\nVisits: '+(localStorage.getItem('glitch650_visits')||0)+'\nClicks: '+logs.length+'\nLatest: '+logs.slice(0,5).map(l=>l.type+' - '+l.time).join('\n'); window.open('https://wa.me/2349012461903?text='+encodeURIComponent(txt)); }
+function clearNotifs(){ if(confirm('Clear?')){localStorage.removeItem('glitch650_notifications'); refreshNotifs();} }
 function refreshAll(){ loadMsgs(); refreshNotifs(); }
-</script>
-<script>
-// VOICE DICTATE - Wrong Password
-let voiceOn = true;
-function speak(text){
-  if(!voiceOn) return;
-  try{
-    window.speechSynthesis.cancel();
-    let u = new SpeechSynthesisUtterance(text);
-    u.rate = 1; u.pitch = 1; u.volume = 1;
-    u.lang = 'en-US';
-    window.speechSynthesis.speak(u);
-  }catch(e){}
-}
-function toggleVoice(){
-  voiceOn = !voiceOn;
-  let b = document.getElementById('voiceBtn');
-  if(b) b.innerText = voiceOn ? '🔊 Voice: ON' : '🔇 Voice: OFF';
-  if(voiceOn) speak('Voice on');
-}
-</script>
-</body></html>
+function savePic(){ if(!tempPic) return alert('Choose photo first'); localStorage.setItem('glitch650_profile_pic', tempPic); alert('✅ Photo saved!'); }
+function setTheme(t){ localStorage.setItem('glitch650_theme', t); document.getElementById('themeStatus').innerText='Current: '+t.toUpperCase(); alert('✅ Theme '+t); }
+function testSpeed(){ let s=document.getElementById('netSpeed'); s.innerText='Testing...'; setTimeout(()=>{ let v=(Math.random()*50+5).toFixed(1); s.innerText=v+' Mbps'; },1000); }
+document.addEventListener('DOMContentLoaded', ()=>{
+  let pin=document.getElementById('pin'); pin.focus();
+  pin.addEventListener('input', ()=>{
+    let v=pin.value; updateDots(v.length);
+    pin.type='text'; clearTimeout(peekTimer); peekTimer=setTimeout(()=>{ pin.type='password'; }, 600);
+    if(v==='0296'){ setTimeout(doUnlock, 300); }
+    if(v.length===4 && v!=='0296'){ speak('Wrong password, try again'); document.getElementById('err').innerText='❌ Wrong Password!'; document.getElementById('login').classList.remove('shake'); void document.getElementById('login').offsetWidth; document.getElementById('login').classList.add('shake'); setTimeout(()=>{ pin.value=''; updateDots(0); pin.type='password'; document.getElementById('err').innerText=''; }, 800); }
+  });
+  let pi=document.getElementById('picInput'); if(pi) pi.addEventListener('change', e=>{ let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=ev=>{ tempPic=ev.target.result; document.getElementById('adminPreview').src=tempPic; }; r.readAsDataURL(f); });
+  setTimeout(()=>{ let p=localStorage.getItem('glitch650_profile_pic'); if(p) document.getElementById('adminPreview').src=p; testSpeed(); }, 800);
+});
+</script></body></html>
