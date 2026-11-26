@@ -28,7 +28,18 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 #sideMenu.open{left:0}#sideMenu button,#sideMenu a{display:block;width:100%;text-align:left;background:#1a1a1a;color:#fff;padding:14px;border:1px solid #222;border-radius:12px;margin:8px 0;cursor:pointer;font-size:15px;text-decoration:none}
 #overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:998}#overlay.show{display:block}
 #pageHeader{display:none;padding:14px 16px;background:#111;border-bottom:1px solid #d4af37;position:sticky;top:64px;z-index:90;align-items:center;gap:12px}
-</style></head><body>
+</style>
+<style>
+.topBellWrap{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#1a1a1a,#0f0f0f);border:1px solid #d4af37;border-radius:50%;cursor:pointer;box-shadow:0 0 12px rgba(212,175,55,.35);transition:.2s;flex-shrink:0}
+.topBellWrap:active{transform:scale(.88);box-shadow:0 0 20px rgba(212,175,55,.8)}
+.topBellWrap .bellIcon{font-size:22px;line-height:1;filter:drop-shadow(0 0 4px rgba(212,175,55,.8))}
+.topBellWrap .bellBadge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;background:linear-gradient(145deg,#ff3b30,#cc0000);color:#fff;font-size:11px;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #0a0a0a;box-shadow:0 2px 8px rgba(255,59,48,.6)}
+.topBellWrap.has-new{animation:bellPulse 1.2s infinite}
+@keyframes bellPulse{0%,100%{box-shadow:0 0 12px rgba(212,175,55,.35)}50%{box-shadow:0 0 22px rgba(212,175,55,.9);transform:scale(1.05)}}
+.topBellWrap.has-new .bellIcon{animation:bellRing 1.2s infinite}
+@keyframes bellRing{0%,100%{transform:rotate(0)}10%{transform:rotate(15deg)}20%{transform:rotate(-15deg)}30%{transform:rotate(10deg)}40%{transform:rotate(-10deg)}50%{transform:rotate(0)}}
+</style>
+</head><body>
 
 <!-- LOGIN - NEW: NO UNLOCK BUTTON, AUTO OPEN, VOICE -->
 <div id="login">
@@ -41,7 +52,7 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 </div>
 
 <div id="main" style="display:none">
-<div class="top"><button class="menuBtn" onclick="toggleMenu()">☰</button><div><h1>glitch650 <span style="color:#d4af37">Admin</span></h1><small style="color:#888">Control Centre</small></div><div style="margin-left:auto;font-size:20px" onclick="openSection('notifs')">🔔 <span id="topBell" style="font-size:12px;background:#ff3b30;padding:2px 8px;border-radius:10px">0</span></div></div>
+<div class="top"><button class="menuBtn" onclick="toggleMenu()">☰</button><div><h1>glitch650 <span style="color:#d4af37">Admin</span></h1><small style="color:#888">Control Centre</small></div><div class="topBellWrap" id="topBellWrap" onclick="openTopNotif(event)"><span class="bellIcon">🔔</span><span class="bellBadge" id="topBell">0</span></div></div>
 <div id="overlay" onclick="toggleMenu()"></div>
 <div id="sideMenu"><h2 style="color:#d4af37">☰ MENU</h2>
 <button onclick="openSection('home');toggleMenu()">🏠 Home</button>
@@ -64,7 +75,6 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 <div class="grid" id="iconGrid">
 <div class="iconBtn" data-sec="home" onclick="openSection('home')"><span class="ic">🏠</span><b>Dashboard</b><br><small>Overview</small></div>
 <div class="iconBtn" data-sec="messages" onclick="openSection('messages')"><span class="ic">💬</span><b>Messages</b><br><small>Customer Care</small><span class="dot" id="dotMsg">0</span></div>
-<div class="iconBtn" data-sec="notifs" onclick="openSection('notifs')"><span class="ic">🔔</span><b>Notifications</b><br><small>Visits</small><span class="dot" id="dotNotif">0</span></div>
 <div class="iconBtn" data-sec="posts" onclick="openSection('posts')"><span class="ic">📝</span><b>Posts</b><br><small>Manage</small></div>
 <div class="iconBtn" data-sec="leads" onclick="openSection('leads')"><span class="ic">🔥</span><b>Hot Leads</b><br><small>WhatsApp</small></div>
 <div class="iconBtn" data-sec="control" onclick="openSection('control')"><span class="ic">🎛️</span><b>Full Control</b><br><small>Photo • Theme • Net</small></div>
@@ -105,7 +115,7 @@ function openSection(id){
 }
 function goHome(){ document.getElementById('iconGrid').style.display='grid'; document.getElementById('pageHeader').style.display='none'; document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';}); let h=document.getElementById('sec-home'); h.classList.add('show'); h.style.display='block'; }
 function loadMsgs(){ let m=JSON.parse(localStorage.getItem('glitch650_messages')||'[]'); document.getElementById('msgList').innerHTML=m.length?m.map(x=>`<div style="background:#1a1a1a;padding:12px;border-radius:10px;margin:8px 0;border-left:3px solid #25D366"><b>${x.name}</b> <small>${x.time}</small><br>${x.msg}</div>`).join(''):'<p style="color:#888">No messages yet.</p>'; document.getElementById('dotMsg').innerText=m.length; document.getElementById('sMsg').innerText='MESSAGES: '+m.length; }
-function refreshNotifs(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); document.getElementById('notifList').innerHTML=logs.length?logs.map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0"><b>${l.type}</b><br><small>${l.detail}</small><br><small style="color:#888">${l.time}</small></div>`).join(''):'<p style="color:#888">No notifications yet.</p>'; document.getElementById('leadList').innerHTML=logs.filter(l=>l.type.includes('WHATSAPP')).length?logs.filter(l=>l.type.includes('WHATSAPP')).map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0">🔥 ${l.detail}</div>`).join(''):'<p style="color:#888">No leads yet.</p>'; document.getElementById('dotNotif').innerText=logs.length; document.getElementById('topBell').innerText=logs.length; document.getElementById('sClicks').innerText='CLICKS: '+logs.length; }
+function refreshNotifs(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); document.getElementById('notifList').innerHTML=logs.length?logs.map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0"><b>${l.type}</b><br><small>${l.detail}</small><br><small style="color:#888">${l.time}</small></div>`).join(''):'<p style="color:#888">No notifications yet.</p>'; document.getElementById('leadList').innerHTML=logs.filter(l=>l.type.includes('WHATSAPP')).length?logs.filter(l=>l.type.includes('WHATSAPP')).map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0">🔥 ${l.detail}</div>`).join(''):'<p style="color:#888">No leads yet.</p>'; document.getElementById('dotNotif').innerText=logs.length; updateTopBell(logs.length); document.getElementById('sClicks').innerText='CLICKS: '+logs.length; }
 function clearMsgs(){ if(confirm('Clear messages?')){localStorage.removeItem('glitch650_messages'); loadMsgs();} }
 function clearNotifs(){ if(confirm('Clear?')){localStorage.removeItem('glitch650_notifications'); refreshNotifs();} }
 function refreshAll(){ loadMsgs(); refreshNotifs(); }
