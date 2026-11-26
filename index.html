@@ -41,7 +41,7 @@ input,textarea{width:100%;padding:12px;margin:6px 0;background:#1a1a1a;border:1p
 
 <div class="cover"><div class="cover-text"><h2>PREMIUM WEBSITES<br>THAT MAKE YOU<br>LOOK RICH.</h2><p>✨ Trusted • Fast • Luxurious</p></div><div class="cover-badge">✦ OFFICIAL PAGE • VERIFIED ✓</div></div>
 <div class="profile-head">
-<img class="avatar" src="https://via.placeholder.com/300/d4af37/000000?text=G" alt="glitch650">
+<img id="mainAvatar" class="avatar" src="https://via.placeholder.com/300/d4af37/000000?text=G" alt="glitch650">
 <h1>glitch650 <span class="verified">✓</span></h1>
 <p class="subtitle">Web Developer • Designer • Brand Builder</p>
 <p class="stats">⭐ 5.0 (127 reviews) • 💼 50+ Projects • 📍 Bata, Equatorial Guinea</p>
@@ -78,5 +78,26 @@ function sendCare(){
 }
 // Silent tracking - no bell on public site
 try{let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); logs.unshift({type:'👀 PROFILE VISIT', detail:'Someone opened glitch650 profile', time:new Date().toLocaleString(), device:navigator.userAgent.slice(0,50)}); localStorage.setItem('glitch650_notifications', JSON.stringify(logs));}catch(e){}
+</script>
+
+<script>
+// FULL CONTROL - Load from Admin
+(function(){
+  try{
+    // 1. Profile Picture from Admin
+    let pic = localStorage.getItem('glitch650_profile_pic');
+    if(pic){ let av=document.getElementById('mainAvatar'); if(av) av.src=pic; }
+    // 2. Theme from Admin
+    let theme = localStorage.getItem('glitch650_theme') || 'dark';
+    applyTheme(theme);
+    // 3. Internet status
+    function updateNet(){ localStorage.setItem('glitch650_online', navigator.onLine ? 'online':'offline'); }
+    window.addEventListener('online', updateNet); window.addEventListener('offline', updateNet); updateNet();
+  }catch(e){}
+  function applyTheme(t){
+    if(t==='light'){ document.body.style.background='#f5f5f5'; document.body.style.color='#111'; document.querySelectorAll('.card,.post,.profile-head').forEach(el=>{el.style.background='#fff'; el.style.color='#111'; el.style.borderColor='#ddd';}); }
+    else { document.body.style.background='#0a0a0a'; document.body.style.color='#fff'; document.querySelectorAll('.card,.post,.profile-head').forEach(el=>{el.style.background='#111'; el.style.color='#fff'; el.style.borderColor='#222';}); }
+  }
+})();
 </script>
 </body></html>

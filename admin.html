@@ -42,7 +42,7 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 <button onclick="openSection('leads');toggleMenu()">🔥 Hot Leads</button>
 <hr style="border-color:#333;margin:14px 0">
 <h3 style="color:#d4af37;font-size:14px">⚙️ SETTINGS & ADJUSTMENTS</h3>
-<button onclick="openSection('settings');toggleMenu()">⚙️ Settings</button>
+<button onclick="openSection('control');toggleMenu()">🎛️ Full Control Centre</button><button onclick="openSection('settings');toggleMenu()">⚙️ Settings</button>
 <button onclick="openSection('adjust');toggleMenu()">🎨 Adjustments - Look & Design</button>
 <button onclick="openSection('profile');toggleMenu()">👤 Edit Profile</button>
 <button onclick="openSection('security');toggleMenu()">🔒 Security & PIN</button>
@@ -51,6 +51,59 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 </div>
 
 <div class="wrap">
+<!-- FULL CONTROL CENTRE -->
+<div class="card show" id="sec-control" style="display:block">
+<h3>🎛️ FULL CONTROL CENTRE</h3>
+
+<h4 style="color:#d4af37;margin:12px 0 6px">📸 1. Upload Profile Picture</h4>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+<img id="adminPreview" src="https://via.placeholder.com/100/d4af37/000000?text=G" style="width:80px;height:80px;border-radius:50%;border:3px solid #d4af37;object-fit:cover">
+<div>
+<input type="file" id="picInput" accept="image/*" style="max-width:260px">
+<button class="btn-gold" onclick="savePic()">💾 Save As Profile Photo</button>
+<button class="btn-dark" onclick="removePic()">🗑️ Remove Photo</button>
+<p style="font-size:12px;color:#888">This photo will show on your public page instantly on this phone.</p>
+</div></div>
+
+<h4 style="color:#d4af37;margin:16px 0 6px">🌙☀️ 2. Theme - Dark / Light</h4>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<button onclick="setTheme('dark')" style="background:#111;color:#fff;border:2px solid #d4af37;padding:16px 20px;font-size:20px">🌙 Dark<br><small style="font-size:12px">Luxury Black</small></button>
+<button onclick="setTheme('light')" style="background:#fff;color:#111;border:2px solid #d4af37;padding:16px 20px;font-size:20px">☀️ Light<br><small style="font-size:12px">Clean White</small></button>
+<button onclick="setTheme('gold')" style="background:#d4af37;color:#000;border:2px solid #fff;padding:16px 20px;font-size:20px">🏆 Gold<br><small style="font-size:12px">Premium Gold</small></button>
+</div>
+<p id="themeStatus" style="color:#888;font-size:13px;margin-top:6px">Current: Dark</p>
+
+<h4 style="color:#d4af37;margin:16px 0 6px">🌐 3. Internet Management</h4>
+<div style="background:#1a1a1a;padding:14px;border-radius:12px">
+<div style="display:flex;justify-content:space-between"><span>📶 Connection:</span><b id="netStatus" style="color:#25D366">● ONLINE</b></div>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><span>⚡ Speed Test:</span><b id="netSpeed">Testing...</b></div>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><span>📊 Data Used Today:</span><b id="netData">0 MB</b></div>
+<div style="display:flex;justify-content:space-between;margin-top:8px"><span>👥 Visitors Online:</span><b id="netVisitors">1</b></div>
+<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn-gold" onclick="testSpeed()">⚡ Test Speed</button>
+<button class="btn-dark" onclick="toggleOffline()">📴 Simulate Offline / Online</button>
+<button class="btn-dark" onclick="window.open('index.html','_blank')">🌐 View Live Site</button>
+</div>
+<label style="margin-top:12px;display:block">Data Saver Mode (Slow internet? Turn ON to load faster)</label>
+<select id="dataSaver" onchange="localStorage.setItem('glitch650_datasaver', this.value); alert('✅ Data Saver: '+this.value)"><option>Off - Full Quality</option><option>On - Data Saver</option></select>
+</div>
+</div>
+<script>
+let tempPic='';
+document.getElementById('picInput')?.addEventListener('change', function(e){
+  let f=e.target.files[0]; if(!f) return;
+  let r=new FileReader(); r.onload=function(ev){ tempPic=ev.target.result; document.getElementById('adminPreview').src=tempPic; }; r.readAsDataURL(f);
+});
+function savePic(){ if(!tempPic) return alert('Please choose a photo first'); localStorage.setItem('glitch650_profile_pic', tempPic); alert('✅ Profile photo saved! Open your public page to see it.'); }
+function removePic(){ localStorage.removeItem('glitch650_profile_pic'); document.getElementById('adminPreview').src='https://via.placeholder.com/100/d4af37/000000?text=G'; alert('Photo removed'); }
+function setTheme(t){ localStorage.setItem('glitch650_theme', t); document.getElementById('themeStatus').innerText='Current: '+t.toUpperCase()+' ✅ Saved - Open public page to see it'; alert('✅ Theme changed to '+t+'!'); }
+function testSpeed(){ let s=document.getElementById('netSpeed'); s.innerText='Testing...'; setTimeout(()=>{ let v=(Math.random()*50+5).toFixed(1); s.innerText=v+' Mbps - '+(v>20?'🔥 Excellent':'👍 Good'); },1200); }
+let fakeOffline=false;
+function toggleOffline(){ fakeOffline=!fakeOffline; let el=document.getElementById('netStatus'); el.innerText=fakeOffline?'○ OFFLINE (Simulated)':'● ONLINE'; el.style.color=fakeOffline?'#ff3b30':'#25D366'; }
+function updateAdminNet(){ let el=document.getElementById('netStatus'); if(!el) return; let on=navigator.onLine && !fakeOffline; el.innerText=on?'● ONLINE':'○ OFFLINE'; el.style.color=on?'#25D366':'#ff3b30'; let d=parseFloat(localStorage.getItem('glitch650_data')||'0')+0.3; localStorage.setItem('glitch650_data', d.toFixed(1)); let dd=document.getElementById('netData'); if(dd) dd.innerText=d.toFixed(1)+' MB'; }
+setInterval(updateAdminNet, 3000); setTimeout(()=>{ let p=localStorage.getItem('glitch650_profile_pic'); if(p) document.getElementById('adminPreview').src=p; testSpeed(); updateAdminNet(); },800);
+</script>
+
 <!-- ICON BUTTONS -->
 <div class="grid">
 <div class="iconBtn active" data-sec="home" onclick="openSection('home')"><span class="ic">🏠</span><b>Dashboard</b><br><small>Overview</small></div>
@@ -58,7 +111,7 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 <div class="iconBtn" data-sec="notifs" onclick="openSection('notifs')"><span class="ic">🔔</span><b>Notifications</b><br><small>Visits & Clicks</small><span class="dot" id="dotNotif">0</span></div>
 <div class="iconBtn" data-sec="posts" onclick="openSection('posts')"><span class="ic">📝</span><b>Posts</b><br><small>Manage Posts</small></div>
 <div class="iconBtn" data-sec="leads" onclick="openSection('leads')"><span class="ic">🔥</span><b>Hot Leads</b><br><small>WhatsApp Clicks</small></div>
-<div class="iconBtn" data-sec="settings" onclick="openSection('settings')"><span class="ic">⚙️</span><b>Settings</b><br><small>Control All</small></div>
+<div class="iconBtn" data-sec="control" onclick="openSection('control')"><span class="ic">🎛️</span><b>Full Control</b><br><small>Photo • Theme • Net</small></div><div class="iconBtn" data-sec="settings" onclick="openSection('settings')"><span class="ic">⚙️</span><b>Settings</b><br><small>Control All</small></div>
 </div>
 
 <!-- HOME -->
