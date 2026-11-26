@@ -330,4 +330,104 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 function openSettingsHub(){ openOneSettings(); }
 </script>
+
+<style id="fbStyle">
+:root{--fb-bg:#f0f2f5;--fb-card:#fff;--fb-text:#050505;--fb-sub:#65676b;--fb-line:#ced0d4}
+body.dark{--fb-bg:#18191a;--fb-card:#242526;--fb-text:#e4e6eb;--fb-sub:#b0b3b8;--fb-line:#3a3b3c}
+body{background:var(--fb-bg)!important;color:var(--fb-text)!important}
+.fbTop{position:sticky;top:0;z-index:100;background:var(--fb-card);display:flex;align-items:center;gap:10px;padding:8px 14px;box-shadow:0 1px 4px rgba(0,0,0,.15);border-radius:0 0 12px 12px}
+.fbLogo{width:40px;height:40px;background:linear-gradient(145deg,#d4af37,#b8962e);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#000;cursor:pointer;flex-shrink:0}
+.fbSearch{flex:1;max-width:300px;background:var(--fb-bg);border-radius:20px;padding:9px 12px;display:flex;gap:8px;color:var(--fb-sub);font-size:14px}
+.fbSearch input{background:transparent;border:none;outline:none;color:var(--fb-text);width:100%}
+.fbIcon{width:40px;height:40px;border-radius:50%;background:var(--fb-bg);display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;border:1px solid var(--fb-line);position:relative;flex-shrink:0}
+.fbIcon:active{transform:scale(.9)}
+.fbIcon .badge{position:absolute;top:-4px;right:-4px;background:#e41e3f;color:#fff;font-size:11px;min-width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;font-weight:700}
+.fbLayout{display:flex;gap:14px;max-width:1200px;margin:14px auto;padding:0 14px}
+.fbLeft{width:260px;flex-shrink:0;position:sticky;top:68px;height:fit-content}
+.fbCenter{flex:1;min-width:0}
+.fbRight{width:280px;flex-shrink:0;position:sticky;top:68px;height:fit-content}
+.fbMenu{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;cursor:pointer}
+.fbMenu:hover{background:var(--fb-bg)} .fbMenu.active{background:var(--fb-bg);border-left:4px solid #1877f2;font-weight:700}
+.fbMenu .mi{width:36px;height:36px;border-radius:50%;background:var(--fb-bg);display:flex;align-items:center;justify-content:center;font-size:18px}
+.fbCard2{background:var(--fb-card);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.themeSwitch{display:flex;background:var(--fb-bg);border-radius:20px;padding:4px;gap:4px}
+.themeOpt{flex:1;padding:10px;border-radius:16px;text-align:center;cursor:pointer;font-size:13px;font-weight:700}
+.themeOpt.active{background:var(--fb-card);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+@media(max-width:900px){.fbRight{display:none}}
+@media(max-width:700px){.fbLeft{display:none}.fbSearch{display:none}}
+</style>
+<script>
+// FACEBOOK LAYOUT + SMART THEME
+function buildFacebookLayout(){
+  if(document.getElementById('fbTopBar')) return;
+  let main=document.getElementById('main'); if(!main) return;
+  // Create Top Bar
+  let top=document.createElement('div'); top.id='fbTopBar'; top.className='fbTop';
+  top.innerHTML=`<div class="fbLogo" onclick="goHomeFb()">G</div>
+  <div class="fbSearch">🔍 <input placeholder="Search settings, messages..." oninput="fbSearchSmart(this.value)"></div>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <div class="fbIcon" id="fbThemeBtn" onclick="toggleSmartTheme()" title="Smart Theme">🌙</div>
+    <div class="fbIcon" onclick="openSectionFb('messages')">💬<span class="badge" id="fbMsgBadge">0</span></div>
+    <div class="fbIcon" onclick="openTopNotif(event)" style="border:1px solid #d4af37">🔔<span class="badge" id="fbBellBadge">0</span></div>
+    <div class="fbIcon" onclick="openOneSettings()" style="background:#d4af37">👤</div>
+  </div>`;
+  main.prepend(top);
+  // Wrap existing content into FB Layout if not already
+  let wrap=document.createElement('div'); wrap.className='fbLayout';
+  let left=document.createElement('div'); left.className='fbLeft';
+  left.innerHTML=`<div class="fbCard2"><div style="display:flex;gap:10px;align-items:center"><div style="width:48px;height:48px;border-radius:50%;background:#d4af37;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#000">G</div><div><b>glitch650 <span style="color:#1d9bf0">✓</span></b><br><small style="color:#888">Web Developer • Admin</small></div></div></div>
+  <div class="fbMenu active" onclick="openSectionFb('home',this)"><span class="mi">🏠</span> Home</div>
+  <div class="fbMenu" onclick="openSectionFb('messages',this)"><span class="mi">💬</span> Messages</div>
+  <div class="fbMenu" onclick="openSectionFb('posts',this)"><span class="mi">📝</span> Posts</div>
+  <div class="fbMenu" onclick="openSectionFb('leads',this)"><span class="mi">🔥</span> Hot Leads</div>
+  <hr><p style="font-size:12px;color:#888;padding:0 12px;font-weight:700">SETTINGS & PRIVACY</p>
+  <div class="fbMenu" onclick="openOneSettings()"><span class="mi">⚙️</span> Settings (All in One)</div>
+  <div class="fbMenu" onclick="openOneSub('adjust','Appearance & Theme')"><span class="mi">🎨</span> Appearance</div>
+  <div class="fbMenu" onclick="openOneSub('profile','Profile Settings')"><span class="mi">👤</span> Edit Profile</div>
+  <div class="fbMenu" onclick="openOneSub('security','Security & Login')"><span class="mi">🔒</span> Security & Login</div>
+  <div class="fbCard2" style="margin-top:12px"><b>🌙 Smart Theme</b><p style="font-size:12px;color:#888">Auto by time & system</p>
+  <div class="themeSwitch" style="margin-top:10px"><div class="themeOpt" id="fbLight" onclick="setSmartTheme('light')">☀️ Light</div><div class="themeOpt" id="fbDark" onclick="setSmartTheme('dark')">🌙 Dark</div><div class="themeOpt" id="fbAuto" onclick="setSmartTheme('auto')">🤖 Auto</div></div>
+  <p id="fbThemeStatus" style="font-size:12px;color:#888;margin-top:8px"></p></div>`;
+  let center=document.createElement('div'); center.className='fbCenter';
+  let right=document.createElement('div'); right.className='fbRight';
+  right.innerHTML=`<div class="fbCard2"><h3>📊 Insights</h3><p id="fbStats" style="color:#888;font-size:14px">Visits • Clicks • Messages</p><button onclick="openTopNotif(event)" style="width:100%;padding:10px;border-radius:8px;background:#1877f2;color:#fff;border:none;font-weight:700;margin-top:8px">View Notifications →</button></div>
+  <div class="fbCard2"><h3>⚡ Quick Actions</h3><button onclick="openSectionFb('posts')" style="width:100%;padding:10px;border-radius:8px;background:#1877f2;color:#fff;border:none;font-weight:700;margin:4px 0">+ New Post</button><button onclick="openSectionFb('messages')" style="width:100%;padding:10px;border-radius:8px;background:#d4af37;color:#000;border:none;font-weight:700;margin:4px 0">💬 Messages</button><button onclick="openOneSettings()" style="width:100%;padding:10px;border-radius:8px;background:#333;color:#fff;border:none;font-weight:700;margin:4px 0">⚙️ All Settings</button></div>
+  <div class="fbCard2"><h3>🌙 Theme</h3><p id="fbRightTheme" style="color:#888">Smart Auto</p><button onclick="toggleSmartTheme()" style="width:100%;padding:10px;border-radius:8px;background:#333;color:#fff;border:none;font-weight:700">🔄 Switch Theme</button></div>`;
+  // Move all old children (except top) into center
+  let olds=[...main.childNodes].filter(n=>n!==top);
+  olds.forEach(n=>center.appendChild(n));
+  wrap.appendChild(left); wrap.appendChild(center); wrap.appendChild(right);
+  main.appendChild(wrap);
+}
+function goHomeFb(){ if(typeof openSection==='function') openSection('home'); document.querySelectorAll('.fbMenu').forEach(m=>m.classList.remove('active')); }
+function openSectionFb(id, el){ if(el){ document.querySelectorAll('.fbMenu').forEach(m=>m.classList.remove('active')); el.classList.add('active'); } if(typeof openSection==='function') openSection(id); if(id==='home') goHomeFb(); }
+function fbSearchSmart(q){ q=q.toLowerCase(); if(!q) return; if(q.includes('mess')) openSectionFb('messages'); else if(q.includes('post')) openSectionFb('posts'); else if(q.includes('theme')||q.includes('appear')) openOneSub('adjust','Appearance & Theme'); else if(q.includes('secur')||q.includes('pin')) openOneSub('security','Security & Login'); else if(q.includes('profile')) openOneSub('profile','Profile Settings'); else if(q.includes('set')) openOneSettings(); }
+// SMART THEME - Facebook + Smarter
+function setSmartTheme(mode){
+  localStorage.setItem('glitch650_theme_mode', mode);
+  if(mode==='auto') applySmartTheme();
+  else applyFbTheme(mode);
+  ['fbLight','fbDark','fbAuto'].forEach(id=>{ let el=document.getElementById(id); if(el) el.classList.toggle('active', (id==='fbLight'&&mode==='light')||(id==='fbDark'&&mode==='dark')||(id==='fbAuto'&&mode==='auto')); });
+  let st=document.getElementById('fbThemeStatus'); if(st) st.innerText = mode==='auto' ? 'Auto Smart • Follows time & system' : 'Current: '+mode;
+}
+function applyFbTheme(t){
+  document.body.classList.toggle('dark', t==='dark');
+  let btn=document.getElementById('fbThemeBtn'); if(btn) btn.innerText = t==='dark' ? '🌙' : '☀️';
+  let rt=document.getElementById('fbRightTheme'); if(rt) rt.innerText = t==='dark' ? 'Dark - Night Luxury' : 'Light - Day Bright';
+}
+function applySmartTheme(){
+  let mode=localStorage.getItem('glitch650_theme_mode')||'auto';
+  if(mode!=='auto'){ applyFbTheme(mode); return; }
+  let hour=new Date().getHours();
+  let isNight = hour>=18 || hour<6;
+  let sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let shouldDark = isNight || sysDark;
+  applyFbTheme(shouldDark?'dark':'light');
+  let st=document.getElementById('fbThemeStatus'); if(st) st.innerText='Auto Smart: '+(shouldDark?'Dark (Night/System)':'Light (Day)')+' • '+hour+':00';
+  let a=document.getElementById('fbAuto'); if(a) a.classList.add('active');
+}
+function toggleSmartTheme(){ let cur=document.body.classList.contains('dark')?'dark':'light'; setSmartTheme(cur==='dark'?'light':'dark'); }
+document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(()=>{ buildFacebookLayout(); applySmartTheme(); }, 600); });
+if(window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=>{ if(localStorage.getItem('glitch650_theme_mode')==='auto') applySmartTheme(); });
+</script>
 </body></html>
