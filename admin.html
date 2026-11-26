@@ -6,7 +6,7 @@
 @keyframes slideLeft{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 .shake{animation:shake .4s ease!important}
-#login{max-width:380px;animation:popIn .6s ease both!important;margin:70px auto;padding:28px;background:#111;border-radius:20px;border:2px solid #d4af37;text-align:center;animation:popIn .5s ease}
+#login{max-width:380px;animation:popIn .6s ease both!important;animation:popIn .6s ease both!important;margin:70px auto;padding:28px;background:#111;border-radius:20px;border:2px solid #d4af37;text-align:center;animation:popIn .5s ease}
 #login h1{color:#d4af37;font-size:34px}#login p{color:#888}
 #pin{width:100%;padding:16px;margin:14px 0;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:12px;letter-spacing:10px;font-size:24px;text-align:center;outline:none}
 #pin:focus{border-color:#d4af37}
@@ -90,7 +90,7 @@ let voiceOn=true, peekTimer=null, tempPic='';
 function speak(t){ if(!voiceOn) return; try{ window.speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t); u.lang='en-US'; window.speechSynthesis.speak(u);}catch(e){} }
 function toggleVoice(){ voiceOn=!voiceOn; document.getElementById('voiceBtn').innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF'; if(voiceOn) speak('Voice on'); }
 function updateDots(n){ for(let i=1;i<=4;i++){ document.getElementById('dot'+i).style.color=i<=n?'#d4af37':'#333'; } }
-function doUnlock(){ localStorage.setItem('glitch650_logged_in','yes'); speak('Welcome back, glitch six fifty'); document.getElementById('login').style.display='none'; let m=document.getElementById('main'); m.style.display='block'; m.style.animation='none'; void m.offsetWidth; m.style.animation='fadeSlideIn .5s ease'; refreshAll(); }
+function doUnlock(){ localStorage.setItem('glitch650_logged_in','yes'); localStorage.setItem('glitch650_logged_in','yes'); speak('Welcome back, glitch six fifty'); document.getElementById('login').style.display='none'; let m=document.getElementById('main'); m.style.display='block'; m.style.animation='none'; void m.offsetWidth; m.style.animation='fadeSlideIn .5s ease'; refreshAll(); }
 function toggleMenu(){ document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
 const TITLES={home:['🏠 Dashboard','Overview'],messages:['💬 Messages','Customer Care'],notifs:['🔔 Notifications','Visits'],posts:['📝 Posts','Manage'],leads:['🔥 Hot Leads','WhatsApp'],settings:['⚙️ Settings','Control'],control:['🎛️ Full Control','Photo • Theme • Net'],adjust:['🎨 Adjustments','Look'],profile:['👤 Profile','Info'],security:['🔒 Security','PIN']};
 function openSection(id){
@@ -115,6 +115,7 @@ function testSpeed(){ let s=document.getElementById('netSpeed'); s.innerText='Te
 document.addEventListener('DOMContentLoaded', ()=>{
   let pin=document.getElementById('pin'); pin.focus();
   pin.addEventListener('input', ()=>{
+    unlockAudioSilent(); // try silent unlock on typing too
     unlockAudioSilent(); // try silent unlock on typing too
     let v=pin.value; updateDots(v.length);
     pin.type='text'; clearTimeout(peekTimer); peekTimer=setTimeout(()=>{ pin.type='password'; }, 600);
