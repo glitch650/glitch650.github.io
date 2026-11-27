@@ -44,7 +44,27 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 #fbTopBar .fbLogo { display:none !important; }
 /* Hide Control Center big header */
 .adminHeader, .adminTitle, #adminHeader, .glitchAdmin { display:none !important; }
-</style><style>.postAvatar,.post-avatar,.avatar,.feedAvatar{width:48px!important;height:48px!important;border-radius:50%!important;object-fit:cover!important;background:#333!important;border:2px solid #d4af37!important;flex-shrink:0!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important}</style></head><body>
+</style><style>.postAvatar,.post-avatar,.avatar,.feedAvatar{width:48px!important;height:48px!important;border-radius:50%!important;object-fit:cover!important;background:#333!important;border:2px solid #d4af37!important;flex-shrink:0!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important}</style><style>
+.waSettings{background:#0b141a;min-height:100vh;color:#e9edef;padding:0 0 30px;font-family:inherit}
+.waTop{display:flex;align-items:center;gap:18px;padding:14px 16px}
+.waTop .ic{font-size:22px;cursor:pointer;color:#e9edef}
+.waProfile{text-align:center;padding:6px 16px 10px}
+.waPill{display:inline-flex;gap:6px;align-items:center;background:#233138;color:#aebac1;font-size:13px;padding:6px 14px;border-radius:20px;margin-bottom:14px}
+.waPic{width:150px;height:150px;border-radius:50%;object-fit:cover;margin:0 auto;display:block;border:3px solid #222d34}
+.waName{font-size:30px;font-weight:600;margin:14px 0 2px;display:flex;align-items:center;justify-content:center;gap:8px}
+.waHandle{color:#8696a0;font-size:15px;margin-bottom:18px}
+.waGreen{width:12px;height:12px;background:#00a884;border-radius:50%;display:inline-block;border:2px solid #0b141a}
+.waRow{display:flex;gap:18px;align-items:flex-start;padding:16px 18px;cursor:pointer}
+.waRow:active{background:#202c33}
+.waRow .wic{font-size:22px;color:#8696a0;width:28px;text-align:center;flex-shrink:0;margin-top:2px}
+.waRow b{font-size:17px;font-weight:400;display:block}
+.waRow small{color:#8696a0;font-size:14px;display:block;margin-top:2px;line-height:1.3}
+.waDetail{background:#111b21;border-radius:12px;padding:18px;margin:12px 16px}
+.waDetail label{color:#8696a0;font-size:13px}
+.waDetail input,.waDetail textarea,.waDetail select{width:100%;padding:12px;border-radius:10px;background:#202c33;color:#fff;border:none;margin:8px 0 14px;outline:none}
+.waBtn{width:100%;padding:13px;border-radius:10px;background:#00a884;color:#fff;border:none;font-weight:700;font-size:15px;margin-top:8px}
+.waBtn2{width:100%;padding:13px;border-radius:10px;background:#233138;color:#fff;border:none;font-weight:700;font-size:15px;margin-top:8px}
+</style></head><body>
 
 <!-- LOGIN - NEW: NO UNLOCK BUTTON, AUTO OPEN, VOICE -->
 <div id="login">
@@ -557,5 +577,81 @@ document.addEventListener('DOMContentLoaded', ()=>{
 // Re-apply when new posts render
 let _obs = new MutationObserver(()=> applyProfilePicToAllPosts());
 document.addEventListener('DOMContentLoaded', ()=>{ _obs.observe(document.body, {childList:true, subtree:true}); });
+</script>
+
+<script>
+// WHATSAPP SETTINGS - Like Screenshot
+function openOneSettings(){
+  document.querySelectorAll('.fbCard, .card, #sec-home, #sec-messages, #sec-posts, #sec-leads, #sec-control, #sec-settings, #oneSettingsDetailed, #oneSettings').forEach(el=>{ if(el) el.style.display='none'; });
+  let hub=document.getElementById('waSettingsHub');
+  if(!hub){
+    hub=document.createElement('div'); hub.id='waSettingsHub'; hub.className='waSettings';
+    hub.innerHTML=`
+    <div class="waTop"><span class="ic" onclick="goHome()">←</span><div style="flex:1"></div><span class="ic" onclick="fbSearchSmart('')">🔍</span><span class="ic">⊞</span><span class="ic" onclick="openSettingDetail(0)">✏️</span></div>
+    <div id="waList"></div><div id="waDetail" style="display:none"></div>`;
+    (document.querySelector('.fbCenter')||document.getElementById('main')).appendChild(hub);
+  }
+  hub.style.display='block';
+  showWaList();
+  window.scrollTo({top:0});
+}
+function showWaList(){
+  document.getElementById('waList').style.display='block';
+  document.getElementById('waDetail').style.display='none';
+  let pic = localStorage.getItem('glitch650_profile_pic') || document.querySelector('#profilePic')?.src || 'profile.jpg';
+  let name = localStorage.getItem('glitch650_name') || 'PROMISE';
+  let status = localStorage.getItem('glitch650_status') || 'At work';
+  let handle = localStorage.getItem('glitch650_handle') || '@jerrygucci';
+  let items=[
+    ['💎','Subscriptions','Explore premium benefits'],
+    ['💻','Linked devices','Use WhatsApp on other devices'],
+    ['🔑','Account','Security notifications, change number'],
+    ['🔒','Privacy','Blocked accounts, disappearing messages'],
+    ['👥','Lists','Manage people and groups'],
+    ['💬','Chats','Chat history, backup'],
+    ['🎨','Appearance','Chat theme, app icon, app theme'],
+    ['🔔','Notifications','Message, group & call tones'],
+    ['💾','Storage and data','Manage storage, network usage'],
+    ['🌐','Internet & Data','Speed, Offline, Cache'],
+    ['❓','Help','Help center, contact us, privacy policy'],
+  ];
+  let rows = items.map((it,i)=>`<div class="waRow" onclick="openWaDetail(${i})"><span class="wic">${it[0]}</span><div><b>${it[1]}</b><small>${it[2]}</small></div></div>`).join('');
+  document.getElementById('waList').innerHTML=`
+    <div class="waProfile">
+      <div class="waPill">📶 ${status}</div><br>
+      <img src="${pic}" class="waPic" onclick="openSettingDetail(0)" onerror="this.src='profile.jpg'">
+      <div class="waName">${name} <span style="font-size:18px;color:#8696a0">˅</span> <span class="waGreen"></span></div>
+      <div class="waHandle">${handle}</div>
+    </div>
+    ${rows}
+    <p style="text-align:center;color:#8696a0;font-size:12px;margin-top:20px">glitch650 • Control Center<br>Version 1.0 • Premium</p>`;
+  window._waItems = items;
+}
+function openWaDetail(i){
+  let it = window._waItems[i];
+  document.getElementById('waList').style.display='none';
+  let d=document.getElementById('waDetail'); d.style.display='block';
+  let content='';
+  if(it[1]==='Appearance') content=`<p id="themeStatus" style="color:#8696a0">Auto Smart: Following time + system</p><button class="waBtn" onclick="setThemeSmart('light');alert('Light ☀️')">☀️ Light Theme</button><button class="waBtn2" onclick="setThemeSmart('dark');alert('Dark 🌙')">🌙 Dark Theme</button><button class="waBtn" onclick="setThemeSmart('auto');alert('Auto Smart 🤖')">🤖 Auto Smart (Night=Dark, Day=Light)</button><p style="color:#8696a0;font-size:13px;margin-top:12px">Auto: 6pm-6am Dark, Day Light, follows phone system</p>`;
+  else if(it[1]==='Account') content=`<label>Display Name</label><input id="waName" value="${localStorage.getItem('glitch650_name')||'PROMISE'}"><label>Status</label><input id="waStatus" value="${localStorage.getItem('glitch650_status')||'At work'}"><label>Handle</label><input id="waHandle" value="${localStorage.getItem('glitch650_handle')||'@jerrygucci'}"><label>New PIN</label><input id="waPin" maxlength="4" placeholder="4 digits" inputmode="numeric"><button class="waBtn" onclick="saveWaAccount()">Save Account</button><button class="waBtn2" onclick="logoutSmart()">Logout</button>`;
+  else if(it[1]==='Privacy') content=`<label><input type="checkbox" checked> Blocked accounts - Manage</label><br><label><input type="checkbox" checked> Disappearing messages</label><br><label><input type="checkbox" checked> Read receipts</label><br><label><input type="checkbox" checked> Last seen - Everyone</label><button class="waBtn" onclick="alert('Privacy saved ✅')">Save Privacy</button>`;
+  else if(it[1]==='Chats') content=`<button class="waBtn" onclick="openSection('messages')">Open Chats →</button><label style="display:block;margin-top:14px"><input type="checkbox" checked> Chat backup - Daily</label><label><input type="checkbox" checked> Keep messages</label>`;
+  else if(it[1]==='Notifications') content=`<label><input type="checkbox" checked> Message tones</label><br><label><input type="checkbox" checked> Group tones</label><br><label><input type="checkbox" checked> Vibrate on new lead</label><button class="waBtn" onclick="alert('Notifications saved ✅')">Save</button>`;
+  else if(it[1]==='Storage and data') content=`<p>Storage: <b>Auto</b></p><button class="waBtn2" onclick="localStorage.clear();alert('Cache cleared ✅')">Clear Cache</button><button class="waBtn" onclick="checkNet()">Test Internet</button><p id="netStatus" style="color:#8696a0"></p>`;
+  else if(it[1]==='Linked devices') content=`<p style="color:#8696a0">Use on other devices</p><p><b>This device</b> - Chrome • Active now 🟢</p><button class="waBtn" onclick="alert('Link new device - Scan QR')">+ Link New Device</button>`;
+  else if(it[1]==='Subscriptions') content=`<p>💎 <b>Premium</b> - Active</p><p style="color:#8696a0">Explore premium benefits: Faster speed, More storage, Priority support</p><button class="waBtn">Upgrade to Premium</button>`;
+  else if(it[1]==='Help') content=`<p>Help Center • Contact Us • Privacy Policy</p><button class="waBtn" onclick="openSection('messages')">Contact Support →</button>`;
+  else content=`<p style="color:#8696a0">${it[2]}</p><button class="waBtn" onclick="showWaList()">Back</button>`;
+  d.innerHTML=`<div class="waTop"><span class="ic" onclick="showWaList()">←</span><b style="font-size:18px">${it[1]}</b></div><div class="waDetail">${content}<button class="waBtn2" onclick="showWaList()">← Back to Settings</button></div>`;
+  window.scrollTo({top:0});
+}
+function saveWaAccount(){
+  localStorage.setItem('glitch650_name', document.getElementById('waName').value);
+  localStorage.setItem('glitch650_status', document.getElementById('waStatus').value);
+  localStorage.setItem('glitch650_handle', document.getElementById('waHandle').value);
+  let pin=document.getElementById('waPin').value; if(pin.length===4) localStorage.setItem('glitch650_pin', pin);
+  alert('Account saved ✅'); showWaList();
+}
+function openSettingDetail(i){ openOneSettings(); }
 </script>
 </body></html>
