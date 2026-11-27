@@ -41,6 +41,33 @@ button:disabled, .btn:disabled, .btn2:disabled { opacity:.55; cursor:not-allowed
 .g650-hover-off button:hover, .g650-hover-off .btn:hover { box-shadow:none !important; transform:none !important; }
 </style>
 
+
+<style id="g650-wa-bounce">
+/* ===== WHATSAPP BOUNCE - Only WhatsApp button bounces ===== */
+a[href*="wa.me"], a[href*="whatsapp"], .wa-btn, .whatsapp-btn, [data-wa] {
+  animation: g650-wa-bounce 2s ease-in-out infinite;
+  will-change: transform;
+  box-shadow: 0 0 22px rgba(37,211,102,.55), 0 4px 14px rgba(0,0,0,.4) !important;
+}
+@keyframes g650-wa-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-6px) scale(1.03); }
+  50% { transform: translateY(0) scale(1); }
+  75% { transform: translateY(-3px) scale(1.01); }
+}
+/* Pause bounce on hover so user can click easily, then resume */
+a[href*="wa.me"]:hover, a[href*="whatsapp"]:hover, .wa-btn:hover {
+  animation-play-state: paused;
+  transform: scale(1.08) !important;
+  box-shadow: 0 0 30px rgba(37,211,102,.75) !important;
+}
+/* Stop bounce when user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  a[href*="wa.me"], a[href*="whatsapp"], .wa-btn { animation: none !important; }
+}
+.g650-motion-off a[href*="wa.me"], .g650-motion-off .wa-btn { animation: none !important; }
+</style>
+
 </head>
 <body>
 <div class="top"><button onclick="document.querySelector('.side').classList.toggle('open')" style="background:none;border:1px solid #292929;color:#fff;padding:8px;border-radius:8px">☰</button><div class="logo">GLITCH<span>650</span> COMMAND CENTER 2.0</div><button class="btn" onclick="localStorage.removeItem('g650_session');location.reload()">Logout</button></div>

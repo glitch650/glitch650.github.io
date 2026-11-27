@@ -60,6 +60,33 @@ button:disabled, .btn:disabled, .btn2:disabled { opacity:.55; cursor:not-allowed
 .g650-hover-off button:hover, .g650-hover-off .btn:hover { box-shadow:none !important; transform:none !important; }
 </style>
 
+
+<style id="g650-wa-bounce">
+/* ===== WHATSAPP BOUNCE - Only WhatsApp button bounces ===== */
+a[href*="wa.me"], a[href*="whatsapp"], .wa-btn, .whatsapp-btn, [data-wa] {
+  animation: g650-wa-bounce 2s ease-in-out infinite;
+  will-change: transform;
+  box-shadow: 0 0 22px rgba(37,211,102,.55), 0 4px 14px rgba(0,0,0,.4) !important;
+}
+@keyframes g650-wa-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-6px) scale(1.03); }
+  50% { transform: translateY(0) scale(1); }
+  75% { transform: translateY(-3px) scale(1.01); }
+}
+/* Pause bounce on hover so user can click easily, then resume */
+a[href*="wa.me"]:hover, a[href*="whatsapp"]:hover, .wa-btn:hover {
+  animation-play-state: paused;
+  transform: scale(1.08) !important;
+  box-shadow: 0 0 30px rgba(37,211,102,.75) !important;
+}
+/* Stop bounce when user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  a[href*="wa.me"], a[href*="whatsapp"], .wa-btn { animation: none !important; }
+}
+.g650-motion-off a[href*="wa.me"], .g650-motion-off .wa-btn { animation: none !important; }
+</style>
+
 </head>
 <body>
 <header><div class="wrap nav">
@@ -95,12 +122,12 @@ button:disabled, .btn:disabled, .btn2:disabled { opacity:.55; cursor:not-allowed
 <section id="achievements"><div class="wrap"><p class="eyebrow">Achievements</p><h2>Results that <span>matter.</span></h2><div class="grid3"><div class="card stat"><b>20+</b><span>Completed Projects</span></div><div class="card stat"><b>3+</b><span>Years of Experience</span></div><div class="card stat"><b>5+</b><span>Business Partnerships</span></div></div><p style="color:var(--gray);font-size:13px;margin-top:16px">Figures reflect completed work and ongoing partnerships. References available on request. Client satisfaction is measured per project, not claimed as a generic percentage.</p></div></section>
 <section id="reviews"><div class="wrap"><p class="eyebrow">Reviews</p><h2>What clients <span>say.</span></h2><div class="grid3"><div class="card"><p class="quote">“GLITCH650 rebuilt our website and it finally looks like a real business. Customers trust us more now.”</p><small>— Business Owner, Bata<br>Website Redesign</small></div><div class="card"><p class="quote">“Clean, fast and professional. Communication was clear from start to finish.”</p><small>— Founder<br>Business Website</small></div><div class="card"><p class="quote">“Our new site is simple, elegant and easy to use. We get more inquiries through WhatsApp.”</p><small>— Client<br>WhatsApp + Website</small></div></div><p style="color:var(--gray);font-size:13px;margin-top:16px">Testimonials shared with client permission. Replace names / quotes with your real approved testimonials — do not invent ratings.</p></div></section>
 <section id="contact"><div class="wrap"><p class="eyebrow">Contact</p><h2>Start your <span>project.</span></h2><p class="lead" style="font-size:16px">Tell us about your business. We reply within 24 hours.</p><div class="grid2">
-<div><div class="card" style="margin-bottom:16px"><h3>Contact Details</h3><p style="margin-top:10px"><b style="color:#fff">WhatsApp:</b> <a href="https://wa.me/2349012461903" target="_blank" rel="noopener" style="color:var(--gold)">Chat on WhatsApp →</a><br><b style="color:#fff">Email:</b> hello@glitch650.com<br><b style="color:#fff">Location:</b> Bata, Equatorial Guinea — Working Worldwide<br><b style="color:#fff">Social:</b> <a href="https://instagram.com/glitch650" target="_blank" rel="noopener" style="color:var(--gold)">Instagram</a> • <a href="https://facebook.com/glitch650" target="_blank" rel="noopener" style="color:var(--gold)">Facebook</a></p></div><div class="card"><h3>What happens next?</h3><p>1. You send your idea<br>2. We send a proposal + timeline<br>3. We design, build and launch</p></div></div>
+<div><div class="card" style="margin-bottom:16px"><h3>Contact Details</h3><p style="margin-top:10px"><b style="color:#fff">WhatsApp:</b> <a class="wa-btn" href="https://wa.me/2349012461903" target="_blank" rel="noopener" style="color:var(--gold)">Chat on WhatsApp →</a><br><b style="color:#fff">Email:</b> hello@glitch650.com<br><b style="color:#fff">Location:</b> Bata, Equatorial Guinea — Working Worldwide<br><b style="color:#fff">Social:</b> <a href="https://instagram.com/glitch650" target="_blank" rel="noopener" style="color:var(--gold)">Instagram</a> • <a href="https://facebook.com/glitch650" target="_blank" rel="noopener" style="color:var(--gold)">Facebook</a></p></div><div class="card"><h3>What happens next?</h3><p>1. You send your idea<br>2. We send a proposal + timeline<br>3. We design, build and launch</p></div></div>
 <form id="contactForm" novalidate><input id="cfName" placeholder="Your Name *" required><input id="cfEmail" type="email" placeholder="Email *" required><select id="cfService" required><option value="">Select Service</option><option>Premium Website Development</option><option>E-commerce Development</option><option>UI/UX Design</option><option>Brand Identity Design</option><option>Website Redesign</option><option>Business Digital Solutions</option></select><textarea id="cfMsg" rows="4" placeholder="Tell us about your project *" required></textarea><p id="cfError" style="color:#ff6b6b;font-size:13px;display:none;margin-bottom:10px"></p><button class="btn" type="submit" style="width:100%">Send Inquiry</button><p style="color:var(--gray);font-size:12px;margin-top:10px">By sending, you agree to be contacted about your project. No spam.</p></form>
 </div></div></section>
 </main>
 <footer><div class="wrap foot"><div><b style="color:#fff;letter-spacing:2px">GLITCH650</b><br>Building Digital Experiences That Matter.</div><div>Precision. Creativity. Excellence.</div><div>© 2026 GLITCH650. All rights reserved.</div></div></footer>
-<a class="whatsapp" href="https://wa.me/2349012461903" target="_blank" rel="noopener">WhatsApp Us</a>
+<a class="wa-btn whatsapp" href="https://wa.me/2349012461903" target="_blank" rel="noopener">WhatsApp Us</a>
 <script>
 document.getElementById('contactForm').addEventListener('submit', function(e){
  e.preventDefault();
