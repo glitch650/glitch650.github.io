@@ -24,7 +24,7 @@ input,textarea{width:100%;padding:12px;margin:6px 0;background:#1a1a1a;border:1p
 .card{background:#111;border:1px solid #222;border-radius:16px;padding:18px}.card h3{margin-bottom:12px}.card p,.card li{color:#ccc;font-size:14px;line-height:1.6}.card li{margin:6px 0;list-style:none}
 .post{background:#111;border:1px solid #222;border-radius:16px;padding:16px;margin-bottom:16px}.post-head{display:flex;gap:10px;align-items:center}.post-head img{width:46px;height:46px;border-radius:50%;border:2px solid #d4af37}.post-head small{color:#888}.post p{margin:12px 0;line-height:1.6}.post-img{width:100%;border-radius:12px;margin:8px 0}.post-actions{display:flex;justify-content:space-around;border-top:1px solid #222;padding-top:12px;color:#aaa;font-weight:600;font-size:14px}
 .badge{display:inline-block;background:#d4af37;color:#000;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800}.price{color:#d4af37;font-weight:800}
-</style><style>.verifiedBadge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#1d9bf0;border-radius:50%;color:#fff;font-size:14px;font-weight:900;line-height:1;margin-left:6px;vertical-align:middle;box-shadow:0 0 8px rgba(29,155,240,.6);border:1.5px solid #fff;flex-shrink:0}.verifiedBadgeBig{width:26px;height:26px;font-size:16px}</style><style>.metaBadge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#0082FB;border-radius:50%;color:#fff;font-size:14px;font-weight:900;margin-left:8px;vertical-align:middle;box-shadow:0 0 0 2px #000;flex-shrink:0}.metaBadge svg{width:14px;height:14px;fill:#fff}</style></head><body>
+</style><style>.verifiedBadge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#1d9bf0;border-radius:50%;color:#fff;font-size:14px;font-weight:900;line-height:1;margin-left:6px;vertical-align:middle;box-shadow:0 0 8px rgba(29,155,240,.6);border:1.5px solid #fff;flex-shrink:0}.verifiedBadgeBig{width:26px;height:26px;font-size:16px}</style><style>.metaBadge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:#0082FB;border-radius:50%;color:#fff;font-size:14px;font-weight:900;margin-left:8px;vertical-align:middle;box-shadow:0 0 0 2px #000;flex-shrink:0}.metaBadge svg{width:14px;height:14px;fill:#fff}</style><style>.postAvatar,.post-avatar,.avatar,.feedAvatar{width:48px!important;height:48px!important;border-radius:50%!important;object-fit:cover!important;background:#333!important;border:2px solid #d4af37!important;flex-shrink:0!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important}</style></head><body>
 
 <!-- CUSTOMER CARE ICON - TOP RIGHT - BOUNCING -->
 <div id="careBtn" onclick="toggleCare()">💬<span>1</span></div>
@@ -99,5 +99,54 @@ try{let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); 
     else { document.body.style.background='#0a0a0a'; document.body.style.color='#fff'; document.querySelectorAll('.card,.post,.profile-head').forEach(el=>{el.style.background='#111'; el.style.color='#fff'; el.style.borderColor='#222';}); }
   }
 })();
+</script>
+
+<script>
+// ALL POSTS BEAR PROFILE PICTURE
+function getMyProfilePic(){
+  // 1. From saved profile pic
+  let saved = localStorage.getItem('glitch650_profile_pic') || localStorage.getItem('profilePic') || localStorage.getItem('glitch650_photo');
+  if(saved) return saved;
+  // 2. From main profile picture on page
+  let main = document.querySelector('#profilePic, .profile-pic, .profilePic, #mainProfileImg, .heroImg, .profileImg');
+  if(main && main.src && !main.src.includes('data:')) return main.src;
+  // 3. From any img with glitch650 / profile in src
+  let imgs = document.querySelectorAll('img');
+  for(let im of imgs){ if(im.src.includes('profile') || im.src.includes('avatar') || im.src.includes('glitch')) return im.src; }
+  // 4. Fallback - your uploaded file names (common)
+  return 'profile.jpg';
+}
+function applyProfilePicToAllPosts(){
+  let pic = getMyProfilePic();
+  // Replace all post avatars
+  document.querySelectorAll('.postAvatar, .post-avatar, .avatar, .feedAvatar, .postHeader img, .post-card img, .post img').forEach(el=>{
+    // Only avatars - small round ones, not post content images
+    if(el.tagName==='IMG' && (el.className.includes('avatar') || el.className.includes('Avatar') || el.closest('.postHeader') || el.closest('.post-header') || el.closest('.postTop'))){
+      if(el.src !== pic && !el.dataset.postContent) el.src = pic;
+    }
+    // If avatar is a DIV with letter "a" / initial, replace with IMG
+    if(el.tagName==='DIV' && el.textContent.trim().length<=2 && (el.className.includes('avatar') || el.className.includes('Avatar'))){
+      let img=document.createElement('img');
+      img.src=pic; img.className=el.className+' postAvatar'; img.style.cssText='width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #d4af37';
+      el.replaceWith(img);
+    }
+  });
+  // Also fix any div avatar that shows "a"
+  document.querySelectorAll('div').forEach(div=>{
+    if(div.textContent.trim()==='a' && div.offsetWidth<=60 && div.offsetHeight<=60 && div.style.borderRadius==='50%'){
+      let img=document.createElement('img');
+      img.src=pic; img.style.cssText='width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #d4af37';
+      div.replaceWith(img);
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  applyProfilePicToAllPosts();
+  setTimeout(applyProfilePicToAllPosts, 800);
+  setTimeout(applyProfilePicToAllPosts, 2000);
+});
+// Re-apply when new posts render
+let _obs = new MutationObserver(()=> applyProfilePicToAllPosts());
+document.addEventListener('DOMContentLoaded', ()=>{ _obs.observe(document.body, {childList:true, subtree:true}); });
 </script>
 </body></html>

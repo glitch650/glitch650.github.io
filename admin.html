@@ -44,7 +44,7 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 #fbTopBar .fbLogo { display:none !important; }
 /* Hide Control Center big header */
 .adminHeader, .adminTitle, #adminHeader, .glitchAdmin { display:none !important; }
-</style></head><body>
+</style><style>.postAvatar,.post-avatar,.avatar,.feedAvatar{width:48px!important;height:48px!important;border-radius:50%!important;object-fit:cover!important;background:#333!important;border:2px solid #d4af37!important;flex-shrink:0!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important}</style></head><body>
 
 <!-- LOGIN - NEW: NO UNLOCK BUTTON, AUTO OPEN, VOICE -->
 <div id="login">
@@ -508,5 +508,54 @@ function savePin(){ let v=document.getElementById('newPin').value; if(v.length!=
 function checkNet(){ document.getElementById('netStatus').innerText = navigator.onLine ? 'Online ✅ '+ (navigator.connection?.effectiveType||'') : 'Offline ❌'; }
 function logoutSmart(){ localStorage.removeItem('glitch650_logged_in'); location.reload(); }
 function goHome(){ let h=document.getElementById('oneSettingsDetailed'); if(h) h.style.display='none'; if(typeof openSection==='function') openSection('home'); }
+</script>
+
+<script>
+// ALL POSTS BEAR PROFILE PICTURE
+function getMyProfilePic(){
+  // 1. From saved profile pic
+  let saved = localStorage.getItem('glitch650_profile_pic') || localStorage.getItem('profilePic') || localStorage.getItem('glitch650_photo');
+  if(saved) return saved;
+  // 2. From main profile picture on page
+  let main = document.querySelector('#profilePic, .profile-pic, .profilePic, #mainProfileImg, .heroImg, .profileImg');
+  if(main && main.src && !main.src.includes('data:')) return main.src;
+  // 3. From any img with glitch650 / profile in src
+  let imgs = document.querySelectorAll('img');
+  for(let im of imgs){ if(im.src.includes('profile') || im.src.includes('avatar') || im.src.includes('glitch')) return im.src; }
+  // 4. Fallback - your uploaded file names (common)
+  return 'profile.jpg';
+}
+function applyProfilePicToAllPosts(){
+  let pic = getMyProfilePic();
+  // Replace all post avatars
+  document.querySelectorAll('.postAvatar, .post-avatar, .avatar, .feedAvatar, .postHeader img, .post-card img, .post img').forEach(el=>{
+    // Only avatars - small round ones, not post content images
+    if(el.tagName==='IMG' && (el.className.includes('avatar') || el.className.includes('Avatar') || el.closest('.postHeader') || el.closest('.post-header') || el.closest('.postTop'))){
+      if(el.src !== pic && !el.dataset.postContent) el.src = pic;
+    }
+    // If avatar is a DIV with letter "a" / initial, replace with IMG
+    if(el.tagName==='DIV' && el.textContent.trim().length<=2 && (el.className.includes('avatar') || el.className.includes('Avatar'))){
+      let img=document.createElement('img');
+      img.src=pic; img.className=el.className+' postAvatar'; img.style.cssText='width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #d4af37';
+      el.replaceWith(img);
+    }
+  });
+  // Also fix any div avatar that shows "a"
+  document.querySelectorAll('div').forEach(div=>{
+    if(div.textContent.trim()==='a' && div.offsetWidth<=60 && div.offsetHeight<=60 && div.style.borderRadius==='50%'){
+      let img=document.createElement('img');
+      img.src=pic; img.style.cssText='width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #d4af37';
+      div.replaceWith(img);
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  applyProfilePicToAllPosts();
+  setTimeout(applyProfilePicToAllPosts, 800);
+  setTimeout(applyProfilePicToAllPosts, 2000);
+});
+// Re-apply when new posts render
+let _obs = new MutationObserver(()=> applyProfilePicToAllPosts());
+document.addEventListener('DOMContentLoaded', ()=>{ _obs.observe(document.body, {childList:true, subtree:true}); });
 </script>
 </body></html>
