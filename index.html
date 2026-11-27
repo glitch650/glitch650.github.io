@@ -89,4 +89,17 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
 });
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{var t=document.querySelector(a.getAttribute('href')); if(t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); document.getElementById('navlinks').classList.remove('open'); }}));
 </script>
+<script>
+// GLITCH650 Visitor Tracker - privacy-safe, no passwords, no personal data
+(function(){try{
+var id=localStorage.getItem('g650_vid'); if(!id){id='v_'+Date.now()+'_'+Math.floor(Math.random()*9999); localStorage.setItem('g650_vid',id);}
+var visits=JSON.parse(localStorage.getItem('g650_visits')||'[]');
+var now=new Date().toISOString();
+var prev=visits.filter(v=>v.id===id).length;
+var rec={id:id,page:location.pathname,when:now,date:now.slice(0,10),device:/Mobi/i.test(navigator.userAgent)?'Mobile':'Desktop',browser:navigator.userAgent.slice(0,80),ref:document.referrer||'Direct',first:prev===0};
+visits.push(rec); localStorage.setItem('g650_visits',JSON.stringify(visits.slice(-2000)));
+// click tracking
+document.addEventListener('click',function(e){var el=e.target.closest('a,button'); if(!el)return; var txt=(el.textContent||'').trim().slice(0,60); var acts=JSON.parse(localStorage.getItem('g650_activity')||'[]'); acts.push({type:txt.toLowerCase().includes('whatsapp')?'WhatsApp Click':txt.toLowerCase().includes('contact')?'Contact Click':'Button Click',detail:txt+' on '+location.pathname,when:new Date().toISOString(),vid:id}); localStorage.setItem('g650_activity',JSON.stringify(acts.slice(-2000)));});
+}catch(e){}})();
+</script>
 </body></html>
