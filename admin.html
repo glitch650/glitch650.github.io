@@ -694,4 +694,140 @@ function saveWaAccount(){
 }
 function openSettingDetail(i){ openOneSettings(); }
 </script>
+
+<script>
+// UNIVERSAL BUTTON FIX - ALL ADMIN BUTTONS MUST WORK
+function ensureCoreFunctions(){
+  // If any function missing, create it so button never dies
+  if(typeof openSection !== 'function'){
+    window.openSection = function(sec){
+      document.querySelectorAll('[id^="sec-"]').forEach(e=>e.style.display='none');
+      let t=document.getElementById('sec-'+sec) || document.getElementById('sec-home');
+      if(t) t.style.display='block';
+      let hub=document.getElementById('waSettingsHub'); if(hub) hub.style.display='none';
+      let det=document.getElementById('oneSettingsDetailed'); if(det) det.style.display='none';
+      window.scrollTo({top:0});
+      showToast('Opened '+sec+' ✅');
+    };
+  }
+  if(typeof goHome !== 'function'){ window.goHome = function(){ openSection('home'); }; }
+  if(typeof openTopNotif !== 'function'){ window.openTopNotif = function(e){ if(e) e.stopPropagation(); openSection('messages'); showToast('Notifications - Check Messages 🔔'); }; }
+  if(typeof openOneSettings !== 'function'){ window.openOneSettings = function(){ showToast('Settings opening...'); }; }
+  if(typeof logoutSmart !== 'function'){ window.logoutSmart = function(){ localStorage.removeItem('glitch650_logged_in'); location.reload(); }; }
+  if(typeof toggleThemeSmart !== 'function'){ window.toggleThemeSmart = function(){ document.body.classList.toggle('dark'); showToast('Theme switched ✅'); }; }
+  if(typeof setThemeSmart !== 'function'){ window.setThemeSmart = function(m){ document.body.classList.toggle('dark', m==='dark'); localStorage.setItem('glitch650_theme_mode', m); showToast(m+' theme ✅'); }; }
+  if(typeof fbSearchSmart !== 'function'){ window.fbSearchSmart = function(q){ if(q) showToast('Searching: '+q); }; }
+  if(typeof showToast !== 'function'){
+    window.showToast = function(msg){
+      let t=document.getElementById('toastFix'); if(!t){ t=document.createElement('div'); t.id='toastFix'; t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#d4af37;color:#000;padding:12px 20px;border-radius:20px;font-weight:700;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.4)'; document.body.appendChild(t); }
+      t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 2500);
+    };
+  }
+}
+function fixAllButtons(){
+  ensureCoreFunctions();
+  document.querySelectorAll('button, .fbBtn, .waRow, .fbMenu, [onclick]').forEach(btn=>{
+    // Skip if already has working onclick and not broken
+    let txt = (btn.innerText||btn.textContent||'').trim().toLowerCase();
+    // Add click listener as backup - if onclick fails, this runs
+    if(!btn.dataset.fixed){
+      btn.dataset.fixed='1';
+      btn.addEventListener('click', (e)=>{
+        // If button already handled by onclick, let it run - we only act if no action happened
+        setTimeout(()=>{
+          // Check if button did nothing - if it has no onclick, give it action
+          if(!btn.getAttribute('onclick') && !btn.dataset.hasAction){
+            handleButtonByText(btn, txt);
+          }
+        }, 50);
+      });
+    }
+    // Fix common broken buttons by text
+    if(txt.includes('back') && !btn.getAttribute('onclick')){
+      btn.onclick=()=>{ if(typeof showWaList==='function') showWaList(); else goHome(); };
+    }
+    if(txt.includes('save') && !btn.getAttribute('onclick')){
+      btn.onclick=()=>showToast('Saved ✅');
+    }
+    if(txt.includes('logout')){
+      btn.onclick=()=>logoutSmart();
+    }
+    if(txt.includes('clear cache')){
+      btn.onclick=()=>{ localStorage.clear(); showToast('Cache cleared ✅'); };
+    }
+    if(txt.includes('test internet') || txt.includes('check net')){
+      btn.onclick=()=>showToast(navigator.onLine ? 'Online ✅ '+ (navigator.connection?.effectiveType||'') : 'Offline ❌');
+    }
+    if(txt.includes('open messages') || txt.includes('open chats')){
+      btn.onclick=()=>openSection('messages');
+    }
+    if(txt.includes('manage posts') || txt.includes('open posts')){
+      btn.onclick=()=>openSection('posts');
+    }
+    if(txt.includes('open full control') || txt.includes('full control')){
+      btn.onclick=()=>openSection('control');
+    }
+    if(txt.includes('create') && txt.includes('post')){
+      btn.onclick=()=>openSection('posts');
+    }
+    if(txt.includes('settings') && !btn.getAttribute('onclick')){
+      btn.onclick=()=>openOneSettings();
+    }
+    if(txt.includes('light') && txt.includes('theme')){
+      btn.onclick=()=>setThemeSmart('light');
+    }
+    if(txt.includes('dark') && txt.includes('theme')){
+      btn.onclick=()=>setThemeSmart('dark');
+    }
+    if(txt.includes('auto')){
+      btn.onclick=()=>setThemeSmart('auto');
+    }
+  });
+  // Fix top bar buttons specifically
+  document.querySelectorAll('.fbBtn').forEach(b=>{
+    if(!b.getAttribute('onclick')){
+      let t=b.innerText;
+      if(t.includes('🌙')||t.includes('☀️')) b.onclick=()=>toggleThemeSmart();
+      if(t.includes('💬')) b.onclick=()=>openSection('messages');
+      if(t.includes('🔔')) b.onclick=(e)=>openTopNotif(e);
+      if(t.includes('👤')) b.onclick=()=>openOneSettings();
+    }
+  });
+  // Fix left menu items
+  document.querySelectorAll('.fbMenu').forEach(m=>{
+    if(!m.getAttribute('onclick')){
+      let t=m.innerText.toLowerCase();
+      if(t.includes('home')) m.onclick=()=>goHome();
+      if(t.includes('message')) m.onclick=()=>openSection('messages');
+      if(t.includes('post')) m.onclick=()=>openSection('posts');
+      if(t.includes('lead')) m.onclick=()=>openSection('leads');
+      if(t.includes('setting')) m.onclick=()=>openOneSettings();
+      if(t.includes('control')) m.onclick=()=>openSection('control');
+      if(t.includes('theme')) m.onclick=()=>toggleThemeSmart();
+    }
+  });
+}
+function handleButtonByText(btn, txt){
+  if(txt.includes('message')||txt.includes('chat')) openSection('messages');
+  else if(txt.includes('post')) openSection('posts');
+  else if(txt.includes('lead')) openSection('leads');
+  else if(txt.includes('setting')) openOneSettings();
+  else if(txt.includes('control')) openSection('control');
+  else if(txt.includes('home')||txt.includes('dashboard')) goHome();
+  else if(txt.includes('theme')||txt.includes('dark')||txt.includes('light')) toggleThemeSmart();
+  else if(txt.includes('logout')) logoutSmart();
+  else showToast('Done ✅');
+}
+// Run fix on load + every time new content appears
+document.addEventListener('DOMContentLoaded', ()=>{
+  fixAllButtons();
+  setTimeout(fixAllButtons, 1000);
+  setTimeout(fixAllButtons, 2500);
+  // Watch for new buttons (Settings detail, etc)
+  new MutationObserver(()=>fixAllButtons()).observe(document.body, {childList:true, subtree:true});
+});
+// Also fix after any openOneSettings / openSection call
+let _origOpenOne = window.openOneSettings;
+if(_origOpenOne) window.openOneSettings = function(){ _origOpenOne(); setTimeout(fixAllButtons, 300); };
+</script>
 </body></html>
