@@ -16,7 +16,32 @@ input,textarea,select{width:100%;background:#0f0f0f;border:1px solid #292929;col
 .btn{background:#D4AF37;color:#000;border:none;padding:11px 18px;border-radius:8px;font-weight:700}.btn2{background:transparent;color:#fff;border:1px solid #292929;padding:11px 18px;border-radius:8px}.btnD{background:#3a1414;color:#ff8a8a;border:1px solid #5a2222;padding:8px 12px;border-radius:8px;font-size:12px}
 .sec{display:none}.sec.show{display:block}
 @media(max-width:900px){.side{transform:translateX(-100%);transition:.2s}.side.open{transform:none;width:280px;box-shadow:0 0 0 999px rgba(0,0,0,.6)}.main{margin-left:0}.grid4,.grid2{grid-template-columns:1fr}}
-</style></head>
+</style>
+<style id="g650-btn-system">
+/* ===== GLITCH650 GLOBAL BUTTON SYSTEM - Black + Champagne Gold ===== */
+button, .btn, .btn2, .navbtn, input[type="submit"], a.btn, a.btn2 { position:relative; overflow:hidden; transition: all .25s ease; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+button:hover, .btn:hover, .btn2:hover, .navbtn:hover { filter:brightness(1.15); box-shadow:0 0 18px rgba(212,175,55,.45), 0 4px 14px rgba(0,0,0,.4); transform:translateY(-1px); }
+button:active, .btn:active, .btn2:active, .navbtn:active { transform:scale(.97); filter:brightness(.95); transition:all .08s ease; }
+button:disabled, .btn:disabled, .btn2:disabled { opacity:.55; cursor:not-allowed; transform:none; box-shadow:none; }
+/* Loading state */
+.g650-loading { pointer-events:none; opacity:.85; }
+.g650-loading .g650-spin { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.3); border-top-color:#D4AF37; border-radius:50%; animation:g650-spin .7s linear infinite; vertical-align:middle; margin-right:6px; }
+@keyframes g650-spin { to { transform:rotate(360deg); } }
+/* Success / Error */
+.g650-success { background:#1A7F4A !important; border-color:#1A7F4A !important; box-shadow:0 0 16px rgba(26,127,74,.5) !important; }
+.g650-error { background:#B42318 !important; border-color:#B42318 !important; box-shadow:0 0 16px rgba(180,35,24,.5) !important; animation:g650-shake .3s ease; }
+@keyframes g650-shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)} }
+/* Ripple */
+.g650-ripple { position:absolute; border-radius:50%; background:rgba(212,175,55,.4); transform:scale(0); animation:g650-ripple .5s ease-out; pointer-events:none; }
+@keyframes g650-ripple { to { transform:scale(4); opacity:0; } }
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) { button, .btn, .btn2, .navbtn { transition:none !important; transform:none !important; } .g650-spin { animation-duration:1.2s; } }
+.g650-motion-off button, .g650-motion-off .btn, .g650-motion-off .btn2, .g650-motion-off .navbtn { transition:none !important; transform:none !important; box-shadow:none !important; }
+.g650-motion-off .g650-spin { animation:none !important; }
+.g650-hover-off button:hover, .g650-hover-off .btn:hover { box-shadow:none !important; transform:none !important; }
+</style>
+
+</head>
 <body>
 <div class="top"><button onclick="document.querySelector('.side').classList.toggle('open')" style="background:none;border:1px solid #292929;color:#fff;padding:8px;border-radius:8px">☰</button><div class="logo">GLITCH<span>650</span> COMMAND CENTER 2.0</div><button class="btn" onclick="localStorage.removeItem('g650_session');location.reload()">Logout</button></div>
 <nav class="side">
@@ -308,4 +333,31 @@ document.getElementById('recentLog').innerHTML=(JSON.parse(localStorage.getItem(
 }
 renderAll();renderAudit();
 </script>
+
+<script id="g650-btn-js">
+(function(){
+  function getSettings(){ try{return JSON.parse(localStorage.getItem('g650_appearance')||'{}')}catch(e){return{}} }
+  function applySettings(){ let s=getSettings(); document.body.classList.toggle('g650-motion-off', s.motion==='off'); document.body.classList.toggle('g650-hover-off', s.hover===false); }
+  window.g650ApplyAppearance = applySettings;
+  // Ripple + Press feedback - works for dynamically created buttons too
+  document.addEventListener('pointerdown', function(e){ let b=e.target.closest('button, .btn, .btn2, .navbtn, a.btn'); if(!b||b.disabled) return; let s=getSettings(); if(s.click===false) return; let r=b.getBoundingClientRect(); let ripple=document.createElement('span'); ripple.className='g650-ripple'; let size=Math.max(r.width,r.height); ripple.style.width=ripple.style.height=size+'px'; ripple.style.left=(e.clientX-r.left-size/2)+'px'; ripple.style.top=(e.clientY-r.top-size/2)+'px'; b.appendChild(ripple); setTimeout(()=>ripple.remove(), 550); });
+  // Global button state helper - use this for async ops: g650Btn(this, 'loading'|'success'|'error'|'reset')
+  window.g650Btn = function(btn, state, text){
+    if(!btn) return;
+    if(state==='loading'){ if(btn.dataset.g650Busy==='1') return false; btn.dataset.g650Busy='1'; btn.dataset.g650Orig=btn.innerHTML; btn.disabled=true; btn.classList.add('g650-loading'); btn.innerHTML='<span class="g650-spin"></span>'+(text||'Processing...'); return true; }
+    if(state==='success'){ btn.classList.remove('g650-loading'); btn.classList.add('g650-success'); btn.innerHTML='✓ '+(text||'Done'); setTimeout(()=>{ btn.classList.remove('g650-success'); btn.innerHTML=btn.dataset.g650Orig||btn.innerHTML; btn.disabled=false; delete btn.dataset.g650Busy; }, 1600); return true; }
+    if(state==='error'){ btn.classList.remove('g650-loading'); btn.classList.add('g650-error'); btn.innerHTML='✕ '+(text||'Failed - Tap to retry'); setTimeout(()=>{ btn.classList.remove('g650-error'); btn.innerHTML=btn.dataset.g650Orig||btn.innerHTML; btn.disabled=false; delete btn.dataset.g650Busy; }, 2200); return true; }
+    if(state==='reset'){ btn.classList.remove('g650-loading','g650-success','g650-error'); if(btn.dataset.g650Orig) btn.innerHTML=btn.dataset.g650Orig; btn.disabled=false; delete btn.dataset.g650Busy; return true; }
+  };
+  // Auto-prevent double submit on forms
+  document.addEventListener('submit', function(e){ let f=e.target; let btn=f.querySelector('button[type="submit"], input[type="submit"]'); if(btn && btn.dataset.g650Busy==='1'){ e.preventDefault(); return; } if(btn) g650Btn(btn,'loading','Sending...'); });
+  // Auto-wrap existing async handlers: if a button triggers an alert/prompt, it still works - we only add visual feedback
+  document.addEventListener('click', function(e){ let b=e.target.closest('button, .btn, .btn2'); if(!b) return; // Don't block nav buttons - just let ripple handle it
+  });
+  applySettings();
+  // Example: hook Export/Backup buttons to show real loading->success
+  window.g650WithFeedback = async function(btn, fn, successText){ if(!g650Btn(btn,'loading')) return; try{ await fn(); g650Btn(btn,'success', successText||'Done'); }catch(err){ g650Btn(btn,'error'); } };
+})();
+</script>
+
 </body></html>
