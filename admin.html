@@ -1,833 +1,144 @@
-<!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Control Center • <a href="#" onclick="openSection('security');return false" style="color:#D4AF37">Security Center</a></title>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GLITCH650 — Admin Command Center 2.0</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#fff;font-family:system-ui}
-@keyframes fadeSlideIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes popIn{0%{opacity:0;transform:scale(.85)}60%{transform:scale(1.03)}100%{opacity:1;transform:scale(1)}}
-@keyframes slideLeft{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.shake{animation:shake .4s ease!important}
-#login{max-width:380px;animation:popIn .6s ease both!important;animation:popIn .6s ease both!important;margin:70px auto;padding:28px;background:#111;border-radius:20px;border:2px solid #d4af37;text-align:center;animation:popIn .5s ease}
-#login h1{color:#d4af37;font-size:34px}#login p{color:#888}
-#pin{width:100%;padding:16px;margin:14px 0;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:12px;letter-spacing:10px;font-size:24px;text-align:center;outline:none}
-#pin:focus{border-color:#d4af37}
-.top{position:sticky;top:0;background:#111;border-bottom:1px solid #d4af37;padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:99}
-.menuBtn{width:44px;height:44px;border-radius:12px;background:#d4af37;color:#000;font-size:22px;border:none;cursor:pointer;font-weight:900}
-.wrap{max-width:900px;margin:auto;padding:16px}
-.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0}
-@media(max-width:600px){.grid{grid-template-columns:1fr 1fr}}
-.iconBtn{background:#111;border:1px solid #222;border-radius:16px;padding:20px 10px;text-align:center;cursor:pointer;position:relative;animation:fadeSlideIn .4s ease}
-.iconBtn .ic{font-size:32px;display:block}.iconBtn b{font-size:13px}.iconBtn small{color:#888;font-size:11px}
-.iconBtn .dot{position:absolute;top:8px;right:8px;background:#ff3b30;color:#fff;font-size:11px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800}
-.card{background:#111;border:1px solid #222;border-radius:16px;padding:18px;margin:12px 0;display:none}.card.show{display:block;animation:slideLeft .35s ease}
-.card h3{margin-bottom:10px}.card p,.card li{color:#ccc;font-size:14px;line-height:1.6}
-input,textarea,select{width:100%;padding:12px;margin:6px 0;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:10px}
-button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:700;margin:4px 2px}
-.btn-gold{background:#d4af37;color:#000}.btn-dark{background:#222;color:#fff;border:1px solid #333}.danger{background:#ff3b30;color:#fff}
-.badge{display:inline-block;background:#d4af37;color:#000;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:800}
-#sideMenu{position:fixed;top:0;left:-300px;width:280px;height:100%;background:#111;border-right:2px solid #d4af37;z-index:999;padding:20px;transition:.3s;overflow:auto}
-#sideMenu.open{left:0}#sideMenu button,#sideMenu a{display:block;width:100%;text-align:left;background:#1a1a1a;color:#fff;padding:14px;border:1px solid #222;border-radius:12px;margin:8px 0;cursor:pointer;font-size:15px;text-decoration:none}
-#overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:998}#overlay.show{display:block}
-#pageHeader{display:none;padding:14px 16px;background:#111;border-bottom:1px solid #d4af37;position:sticky;top:64px;z-index:90;align-items:center;gap:12px}
-</style>
-<style>
-.topBellWrap{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#1a1a1a,#0f0f0f);border:1px solid #d4af37;border-radius:50%;cursor:pointer;box-shadow:0 0 12px rgba(212,175,55,.35);transition:.2s;flex-shrink:0}
-.topBellWrap:active{transform:scale(.88);box-shadow:0 0 20px rgba(212,175,55,.8)}
-.topBellWrap .bellIcon{font-size:22px;line-height:1;filter:drop-shadow(0 0 4px rgba(212,175,55,.8))}
-.topBellWrap .bellBadge{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;background:linear-gradient(145deg,#ff3b30,#cc0000);color:#fff;font-size:11px;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid #0a0a0a;box-shadow:0 2px 8px rgba(255,59,48,.6)}
-.topBellWrap.has-new{animation:bellPulse 1.2s infinite}
-@keyframes bellPulse{0%,100%{box-shadow:0 0 12px rgba(212,175,55,.35)}50%{box-shadow:0 0 22px rgba(212,175,55,.9);transform:scale(1.05)}}
-.topBellWrap.has-new .bellIcon{animation:bellRing 1.2s infinite}
-@keyframes bellRing{0%,100%{transform:rotate(0)}10%{transform:rotate(15deg)}20%{transform:rotate(-15deg)}30%{transform:rotate(10deg)}40%{transform:rotate(-10deg)}50%{transform:rotate(0)}}
-</style>
-<style>.setRow{display:flex;gap:12px;align-items:center;padding:14px;background:#242526;border-radius:12px;margin:8px 0;cursor:pointer}.setRow:active{transform:scale(.98)}.setRow .si{width:44px;height:44px;border-radius:50%;background:#3a3b3c;display:flex;align-items:center;justify-content:center;font-size:22px}.subHead{display:flex;gap:10px;align-items:center;margin-bottom:12px}.backBtn{background:#d4af37;color:#000;width:36px;height:36px;border-radius:50%;font-size:18px;border:none;cursor:pointer}</style><style>.verifiedBadge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#1d9bf0;border-radius:50%;color:#fff;font-size:14px;font-weight:900;line-height:1;margin-left:6px;vertical-align:middle;box-shadow:0 0 8px rgba(29,155,240,.6);border:1.5px solid #fff;flex-shrink:0}.verifiedBadgeBig{width:26px;height:26px;font-size:16px}</style><style>
-.fbLogo, .gLogo, #gLogo, .logoG, .topG { display:none !important; }
-#fbTopBar .fbLogo { display:none !important; }
-/* Hide Control Center • <a href="#" onclick="openSection('security');return false" style="color:#D4AF37">Security Center</a> big header */
-.adminHeader, .adminTitle, #adminHeader, .glitchAdmin { display:none !important; }
-</style><style>.postAvatar,.post-avatar,.avatar,.feedAvatar{width:48px!important;height:48px!important;border-radius:50%!important;object-fit:cover!important;background:#333!important;border:2px solid #d4af37!important;flex-shrink:0!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important}</style><style>
-.waSettings{background:#0b141a;min-height:100vh;color:#e9edef;padding:0 0 30px;font-family:inherit}
-.waTop{display:flex;align-items:center;gap:18px;padding:14px 16px}
-.waTop .ic{font-size:22px;cursor:pointer;color:#e9edef}
-.waProfile{text-align:center;padding:6px 16px 10px}
-.waPill{display:inline-flex;gap:6px;align-items:center;background:#233138;color:#aebac1;font-size:13px;padding:6px 14px;border-radius:20px;margin-bottom:14px}
-.waPic{width:150px;height:150px;border-radius:50%;object-fit:cover;margin:0 auto;display:block;border:3px solid #222d34}
-.waName{font-size:30px;font-weight:600;margin:14px 0 2px;display:flex;align-items:center;justify-content:center;gap:8px}
-.waHandle{color:#8696a0;font-size:15px;margin-bottom:18px}
-.waGreen{width:12px;height:12px;background:#00a884;border-radius:50%;display:inline-block;border:2px solid #0b141a}
-.waRow{display:flex;gap:18px;align-items:flex-start;padding:16px 18px;cursor:pointer}
-.waRow:active{background:#202c33}
-.waRow .wic{font-size:22px;color:#8696a0;width:28px;text-align:center;flex-shrink:0;margin-top:2px}
-.waRow b{font-size:17px;font-weight:400;display:block}
-.waRow small{color:#8696a0;font-size:14px;display:block;margin-top:2px;line-height:1.3}
-.waDetail{background:#111b21;border-radius:12px;padding:18px;margin:12px 16px}
-.waDetail label{color:#8696a0;font-size:13px}
-.waDetail input,.waDetail textarea,.waDetail select{width:100%;padding:12px;border-radius:10px;background:#202c33;color:#fff;border:none;margin:8px 0 14px;outline:none}
-.waBtn{width:100%;padding:13px;border-radius:10px;background:#00a884;color:#fff;border:none;font-weight:700;font-size:15px;margin-top:8px}
-.waBtn2{width:100%;padding:13px;border-radius:10px;background:#233138;color:#fff;border:none;font-weight:700;font-size:15px;margin-top:8px}
-</style><style>
-.waSettings{background:radial-gradient(ellipse at top,#1a1a1a 0%,#0a0a0a 60%,#000 100%)!important;min-height:100vh;color:#fff!important;padding:0 0 40px!important}
-.waTop{display:flex;align-items:center;gap:18px;padding:16px 20px;background:rgba(255,255,255,.03);backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,175,55,.15)}
-.waTop .ic{font-size:20px;cursor:pointer;color:#d4af37;width:38px;height:38px;border-radius:50%;background:rgba(212,175,55,.12);display:flex;align-items:center;justify-content:center;border:1px solid rgba(212,175,55,.3)}
-.waPill{display:inline-flex;gap:8px;align-items:center;background:linear-gradient(135deg,#d4af37,#b8962e);color:#000!important;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:7px 16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(212,175,55,.35)}
-.waPic{width:150px!important;height:150px!important;border-radius:50%!important;object-fit:cover!important;margin:0 auto!important;display:block!important;border:3px solid #d4af37!important;box-shadow:0 0 0 6px rgba(212,175,55,.15),0 12px 30px rgba(0,0,0,.6)!important}
-.waName{font-size:30px!important;font-weight:800!important;margin:16px 0 4px!important;letter-spacing:.3px!important;color:#fff!important}
-.waHandle{color:#d4af37!important;font-size:14px!important;letter-spacing:.5px!important;font-weight:600!important}
-.waGreen{width:12px;height:12px;background:#00d26a!important;border-radius:50%!important;display:inline-block!important;border:2px solid #000!important;box-shadow:0 0 8px #00d26a}
-.waRow{display:flex;gap:18px;align-items:flex-start;padding:18px 20px!important;cursor:pointer!important;background:rgba(255,255,255,.03)!important;margin:8px 16px!important;border-radius:16px!important;border:1px solid rgba(255,255,255,.06)!important;transition:.2s}
-.waRow:active,.waRow:hover{background:rgba(212,175,55,.08)!important;border-color:rgba(212,175,55,.3)!important;transform:translateY(-1px)}
-.waRow .wic{font-size:20px!important;color:#d4af37!important;width:44px!important;height:44px!important;background:linear-gradient(145deg,#2a2a2a,#1a1a1a)!important;border-radius:12px!important;display:flex!important;align-items:center!important;justify-content:center!important;border:1px solid rgba(212,175,55,.25)!important;flex-shrink:0!important}
-.waRow b{font-size:16px!important;font-weight:600!important;color:#fff!important;letter-spacing:.2px}
-.waRow small{color:#a0a0a0!important;font-size:13px!important;margin-top:3px!important;line-height:1.4}
-.waDetail{background:rgba(255,255,255,.04)!important;border:1px solid rgba(212,175,55,.2)!important;border-radius:16px!important;padding:20px!important;margin:12px 16px!important}
-.waDetail label{color:#d4af37!important;font-size:12px!important;font-weight:700!important;letter-spacing:.5px!important;text-transform:uppercase}
-.waDetail input,.waDetail textarea,.waDetail select{width:100%!important;padding:14px!important;border-radius:12px!important;background:#111!important;color:#fff!important;border:1px solid rgba(212,175,55,.3)!important;margin:8px 0 16px!important;outline:none!important;font-size:15px}
-.waBtn{width:100%!important;padding:14px!important;border-radius:12px!important;background:linear-gradient(135deg,#d4af37,#b8962e)!important;color:#000!important;border:none!important;font-weight:800!important;font-size:15px!important;margin-top:8px!important;box-shadow:0 4px 16px rgba(212,175,55,.3)!important}
-.waBtn2{width:100%!important;padding:14px!important;border-radius:12px!important;background:#1a1a1a!important;color:#fff!important;border:1px solid rgba(212,175,55,.3)!important;font-weight:700!important;font-size:15px!important;margin-top:8px!important}
-.waLuxBadge{display:inline-block;background:linear-gradient(135deg,#d4af37,#f5d76e);color:#000;font-size:10px;font-weight:900;padding:4px 10px;border-radius:20px;margin-left:8px;vertical-align:middle;letter-spacing:.5px}
-</style><style>
-.waSettings{background:radial-gradient(ellipse at top,#1a1a1a 0%,#0a0a0a 60%,#000 100%)!important;min-height:100vh;color:#fff!important;padding:0 0 40px!important}
-.waTop{display:flex;align-items:center;gap:18px;padding:16px 20px;background:rgba(255,255,255,.03);backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,175,55,.15)}
-.waTop .ic{font-size:20px;cursor:pointer;color:#d4af37;width:38px;height:38px;border-radius:50%;background:rgba(212,175,55,.12);display:flex;align-items:center;justify-content:center;border:1px solid rgba(212,175,55,.3)}
-.waPill{display:inline-flex;gap:8px;align-items:center;background:linear-gradient(135deg,#d4af37,#b8962e);color:#000!important;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:7px 16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(212,175,55,.35)}
-.waPic{width:150px!important;height:150px!important;border-radius:50%!important;object-fit:cover!important;margin:0 auto!important;display:block!important;border:3px solid #d4af37!important;box-shadow:0 0 0 6px rgba(212,175,55,.15),0 12px 30px rgba(0,0,0,.6)!important}
-.waName{font-size:30px!important;font-weight:800!important;margin:16px 0 4px!important;letter-spacing:.3px!important;color:#fff!important}
-.waHandle{color:#d4af37!important;font-size:14px!important;letter-spacing:.5px!important;font-weight:600!important}
-.waGreen{width:12px;height:12px;background:#00d26a!important;border-radius:50%!important;display:inline-block!important;border:2px solid #000!important;box-shadow:0 0 8px #00d26a}
-.waRow{display:flex;gap:18px;align-items:flex-start;padding:18px 20px!important;cursor:pointer!important;background:rgba(255,255,255,.03)!important;margin:8px 16px!important;border-radius:16px!important;border:1px solid rgba(255,255,255,.06)!important;transition:.2s}
-.waRow:active,.waRow:hover{background:rgba(212,175,55,.08)!important;border-color:rgba(212,175,55,.3)!important;transform:translateY(-1px)}
-.waRow .wic{font-size:20px!important;color:#d4af37!important;width:44px!important;height:44px!important;background:linear-gradient(145deg,#2a2a2a,#1a1a1a)!important;border-radius:12px!important;display:flex!important;align-items:center!important;justify-content:center!important;border:1px solid rgba(212,175,55,.25)!important;flex-shrink:0!important}
-.waRow b{font-size:16px!important;font-weight:600!important;color:#fff!important;letter-spacing:.2px}
-.waRow small{color:#a0a0a0!important;font-size:13px!important;margin-top:3px!important;line-height:1.4}
-.waDetail{background:rgba(255,255,255,.04)!important;border:1px solid rgba(212,175,55,.2)!important;border-radius:16px!important;padding:20px!important;margin:12px 16px!important}
-.waDetail label{color:#d4af37!important;font-size:12px!important;font-weight:700!important;letter-spacing:.5px!important;text-transform:uppercase}
-.waDetail input,.waDetail textarea,.waDetail select{width:100%!important;padding:14px!important;border-radius:12px!important;background:#111!important;color:#fff!important;border:1px solid rgba(212,175,55,.3)!important;margin:8px 0 16px!important;outline:none!important;font-size:15px}
-.waBtn{width:100%!important;padding:14px!important;border-radius:12px!important;background:linear-gradient(135deg,#d4af37,#b8962e)!important;color:#000!important;border:none!important;font-weight:800!important;font-size:15px!important;margin-top:8px!important;box-shadow:0 4px 16px rgba(212,175,55,.3)!important}
-.waBtn2{width:100%!important;padding:14px!important;border-radius:12px!important;background:#1a1a1a!important;color:#fff!important;border:1px solid rgba(212,175,55,.3)!important;font-weight:700!important;font-size:15px!important;margin-top:8px!important}
-.waLuxBadge{display:inline-block;background:linear-gradient(135deg,#d4af37,#f5d76e);color:#000;font-size:10px;font-weight:900;padding:4px 10px;border-radius:20px;margin-left:8px;vertical-align:middle;letter-spacing:.5px}
-</style><style>.fbLogo,.gLogo{display:none!important}</style></head><body>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080808;color:#fff;font-family:Inter,Arial,sans-serif}
+.top{position:fixed;top:0;left:0;right:0;height:60px;background:#0a0a0a;border-bottom:1px solid #292929;display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:50}
+.logo{font-weight:800;letter-spacing:2px}.logo span{color:#D4AF37}
+.side{position:fixed;top:60px;left:0;bottom:0;width:250px;background:#0f0f0f;border-right:1px solid #292929;overflow-y:auto;padding:16px 12px}
+.main{margin-left:250px;margin-top:60px;padding:24px;max-width:1000px}
+.glabel{font-size:11px;letter-spacing:2px;color:#D4AF37;font-weight:700;margin:18px 8px 8px}
+.navbtn{display:block;width:100%;text-align:left;background:transparent;border:none;color:#A6A6A6;padding:11px 10px;border-radius:8px;font-size:14px}.navbtn.on{background:#141414;color:#fff;border:1px solid #292929;border-left:3px solid #D4AF37}
+.card{background:#141414;border:1px solid #292929;border-radius:10px;padding:20px;margin-bottom:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+input,textarea,select{width:100%;background:#0f0f0f;border:1px solid #292929;color:#fff;padding:12px;border-radius:8px;margin-bottom:10px}
+.btn{background:#D4AF37;color:#000;border:none;padding:11px 18px;border-radius:8px;font-weight:700}.btn2{background:transparent;color:#fff;border:1px solid #292929;padding:11px 18px;border-radius:8px}.btnD{background:#3a1414;color:#ff8a8a;border:1px solid #5a2222;padding:8px 12px;border-radius:8px;font-size:12px}
+.sec{display:none}.sec.show{display:block}
+@media(max-width:900px){.side{transform:translateX(-100%);transition:.2s}.side.open{transform:none;width:280px;box-shadow:0 0 0 999px rgba(0,0,0,.6)}.main{margin-left:0}.grid4,.grid2{grid-template-columns:1fr}}
+</style></head>
+<body>
+<div class="top"><button onclick="document.querySelector('.side').classList.toggle('open')" style="background:none;border:1px solid #292929;color:#fff;padding:8px;border-radius:8px">☰</button><div class="logo">GLITCH<span>650</span> COMMAND CENTER 2.0</div><button class="btn" onclick="localStorage.removeItem('g650_session');location.reload()">Logout</button></div>
+<nav class="side">
+<div class="glabel">BUSINESS MANAGEMENT</div>
+<button class="navbtn on" data-sec="dash">Dashboard Overview</button>
+<button class="navbtn" data-sec="projects">Project Management</button>
+<button class="navbtn" data-sec="services">Services Management</button>
+<button class="navbtn" data-sec="analytics">Advanced Analytics</button>
+<div class="glabel">CUSTOMER MANAGEMENT</div>
+<button class="navbtn" data-sec="messages">Customer Messages</button>
+<button class="navbtn" data-sec="leads">Hot Leads</button>
+<button class="navbtn" data-sec="customers">Customers</button>
+<button class="navbtn" data-sec="testimonials">Testimonials</button>
+<div class="glabel">CONTENT MANAGEMENT</div>
+<button class="navbtn" data-sec="posts">Posts Management</button>
+<button class="navbtn" data-sec="media">Media Library</button>
+<button class="navbtn" data-sec="seo">SEO Center</button>
+<div class="glabel">WEBSITE CONTROL</div>
+<button class="navbtn" data-sec="control">Full Control</button>
+<button class="navbtn" data-sec="appearance">Design & Appearance</button>
+<div class="glabel">SYSTEM CONFIGURATION</div>
+<button class="navbtn" data-sec="team">Team Management</button>
+<button class="navbtn" data-sec="backup">Backup & Restore</button>
+<button class="navbtn" data-sec="health">System Health</button>
+<button class="navbtn" data-sec="logs">Activity Logs</button>
+<div class="glabel">SECURITY & ACCESS</div>
+<button class="navbtn" data-sec="security">Security Center</button>
+<button class="navbtn" data-sec="settings">Settings & PIN</button>
+<div class="glabel">ANALYTICS & REPORTING</div>
+<button class="navbtn" data-sec="reports">Reports / Export</button>
+</nav>
+<main class="main">
+<section id="sec-dash" class="sec show"><h2>Dashboard Overview</h2><p style="color:#A6A6A6;margin:8px 0 16px">Real data from this device. No fake records.</p>
+<div class="grid4"><div class="card"><b id="sProjects" style="font-size:26px;color:#D4AF37">0</b><br><span style="color:#A6A6A6">Projects</span></div><div class="card"><b id="sCustomers" style="font-size:26px;color:#D4AF37">0</b><br><span style="color:#A6A6A6">Customers</span></div><div class="card"><b id="sLeads" style="font-size:26px;color:#D4AF37">0</b><br><span style="color:#A6A6A6">Hot Leads</span></div><div class="card"><b id="sPosts" style="font-size:26px;color:#D4AF37">0</b><br><span style="color:#A6A6A6">Posts</span></div></div>
+<div class="grid2"><div class="card"><h3>Quick Actions</h3><br><button class="btn" onclick="go('projects')">+ New Project</button> <button class="btn2" onclick="go('customers')">+ Customer</button> <button class="btn2" onclick="go('backup')">Backup</button></div><div class="card"><h3>Recent Activity</h3><div id="recentLog" style="margin-top:10px;color:#A6A6A6;font-size:13px"></div></div></div></section>
 
-<!-- LOGIN - NEW: NO UNLOCK BUTTON, AUTO OPEN, VOICE -->
-<div id="login">
-<h1 style="text-align:center;font-size:26px;margin:16px 0">Control Center • <a href="#" onclick="openSection('security');return false" style="color:#D4AF37">Security Center</a></h1><small style="color:#888">Control Centre</small></div><div class="topBellWrap" id="topBellWrap" onclick="openTopNotif(event)"><span class="bellIcon">🔔</span><span class="bellBadge" id="topBell">0</span></div></div>
-<div id="overlay" onclick="toggleMenu()"></div>
-<div id="sideMenu"><h2 style="color:#d4af37">☰ MENU</h2>
-<button onclick="openSection('home');toggleMenu()">🏠 Home</button>
-<button onclick="openSection('messages');toggleMenu()">💬 Messages</button>
-<button onclick="openSection('notifs');toggleMenu()">🔔 Notifications</button>
-<button onclick="openSection('posts');toggleMenu()">📝 Posts</button>
-<button onclick="openSection('leads');toggleMenu()">🔥 Hot Leads</button>
-<hr style="border-color:#333;margin:14px 0"><h3 style="color:#d4af37;font-size:14px">⚙️ SETTINGS & ADJUSTMENTS</h3>
-<button onclick="openSection('control');toggleMenu()">🎛️ Full Control</button>
-<button onclick="openSettingsHub();toggleMenu()">⚙️ Settings</button>
-<button onclick="openSection('adjust');toggleMenu()">🎨 Adjustments</button>
-<button onclick="openSection('profile');toggleMenu()">👤 Edit Profile</button>
-<button onclick="openSection('security');toggleMenu()">🔒 Security</button>
-<a href="index.html">🌐 View Public Page →</a>
-<button style="background:#ff3b30;color:#fff" onclick="toggleMenu()">✕ Close</button></div>
+<section id="sec-projects" class="sec"><h2>Project Management</h2><br><div class="card"><input id="pTitle" placeholder="Project Title *"><input id="pClient" placeholder="Client Name"><select id="pStatus"><option>Planning</option><option>In Progress</option><option>Review</option><option>Completed</option></select><input id="pValue" type="number" placeholder="Value (XAF)"><input id="pLink" placeholder="Live Link https://..."><textarea id="pDesc" placeholder="Description"></textarea><button class="btn" onclick="addProject()">Add Project</button></div><div class="card"><div id="projectList"></div></div></section>
 
-<div id="pageHeader"><button onclick="goHome()" style="background:#d4af37;color:#000;width:40px;height:40px;border-radius:50%;font-size:18px">←</button><h2 id="pageTitle">Page</h2><span id="pageSub" style="color:#888;font-size:12px;margin-left:auto"></span></div>
+<section id="sec-services" class="sec"><h2>Services Management</h2><br><div class="card"><input id="svName" placeholder="Service Name *"><textarea id="svDesc" placeholder="Description"></textarea><input id="svPrice" placeholder="Starting Price e.g. From ₣150,000"><button class="btn" onclick="addService()">Add Service</button></div><div class="card"><div id="serviceList"></div></div></section>
 
-<div class="wrap">
-<div id="settingsHub" style="display:none">
-<h3>⚙️ Settings</h3><p style="color:#888;font-size:13px">All settings in one place - tap to open</p>
-<div class="setRow" onclick="openSubSetting('profile')"><span class="si">👤</span><div><b>Profile Settings</b><br><small style="color:#888">Name, Bio, Photo</small></div><span style="margin-left:auto">›</span></div>
-<div class="setRow" onclick="openSubSetting('security')"><span class="si">🔒</span><div><b>Security & Login</b><br><small style="color:#888">PIN, Smart Login</small></div><span style="margin-left:auto">›</span></div>
-<div class="setRow" onclick="openSubSetting('adjust')"><span class="si">🎨</span><div><b>Appearance & Theme</b><br><small style="color:#888">Dark / Light / Auto Smart</small></div><span style="margin-left:auto">›</span></div>
-<div class="setRow" onclick="openSubSetting('control')"><span class="si">🎛️</span><div><b>Full Control</b><br><small style="color:#888">Photo, Theme, Internet</small></div><span style="margin-left:auto">›</span></div>
-<div class="setRow" onclick="openSubSetting('messages')"><span class="si">💬</span><div><b>Messages & Notifications</b><br><small style="color:#888">Customer Care</small></div><span style="margin-left:auto">›</span></div>
-<div class="setRow" onclick="openSubSetting('posts')"><span class="si">📝</span><div><b>Posts Settings</b><br><small style="color:#888">Manage Posts</small></div><span style="margin-left:auto">›</span></div>
-</div>
+<section id="sec-analytics" class="sec"><h2>Advanced Analytics</h2><br><div class="card"><b id="aRevenue" style="font-size:24px;color:#D4AF37">₣ 0</b><p style="color:#A6A6A6">Total Project Value (calculated from your real projects)</p><div id="statusChart" style="margin-top:12px"></div></div></section>
 
-<div class="grid" id="iconGrid">
-<div class="iconBtn" data-sec="home" onclick="openSection('home')"><span class="ic">🏠</span><b>Dashboard</b><br><small>Overview</small></div>
-<div class="iconBtn" data-sec="messages" onclick="openSection('messages')"><span class="ic">💬</span><b>Messages</b><br><small>Customer Care</small><span class="dot" id="dotMsg">0</span></div>
-<div class="iconBtn" data-sec="posts" onclick="openSection('posts')"><span class="ic">📝</span><b>Posts</b><br><small>Manage</small></div>
-<div class="iconBtn" data-sec="leads" onclick="openSection('leads')"><span class="ic">🔥</span><b>Hot Leads</b><br><small>WhatsApp</small></div>
-<div class="iconBtn" data-sec="control" onclick="openSection('control')"><span class="ic">🎛️</span><b>Full Control</b><br><small>Photo • Theme • Net</small></div>
-<div class="iconBtn" data-sec="settings" onclick="openSettingsHub()"><span class="ic">⚙️</span><b>Settings</b><br><small>Control All</small></div>
-<div class="iconBtn" data-sec="adjust" onclick="openSection('adjust')"><span class="ic">🎨</span><b>Adjust</b><br><small>Look</small></div>
-<div class="iconBtn" data-sec="security" onclick="openSection('security')"><span class="ic">🔒</span><b>Security</b><br><small>PIN</small></div>
-</div>
+<section id="sec-messages" class="sec"><h2>Customer Messages</h2><br><div class="card"><input id="mName" placeholder="Sender Name"><textarea id="mText" placeholder="Message"></textarea><button class="btn" onclick="addMsg()">Add Message</button></div><div class="card"><div id="msgList"></div></div></section>
 
-<div class="card show" id="sec-home" style="display:block"><h3>🏠 Welcome back, glitch650 👋</h3><p>Your page is LIVE.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0"><span class="badge" id="sVisits">VISITS: 0</span><span class="badge" style="background:#25D366" id="sMsg">MESSAGES: 0</span><span class="badge" style="background:#fff" id="sClicks">CLICKS: 0</span></div><button class="btn-gold" onclick="openSection('messages')">💬 Check Messages →</button></div>
-<div class="card" id="sec-messages"><h3>💬 Customer Messages</h3><div id="msgList"></div><button class="btn-gold" onclick="loadMsgs()">🔄 Refresh</button><button class="danger" onclick="clearMsgs()">🗑️ Clear</button></div>
-<div class="card" id="sec-notifs"><h3>🔔 Notifications - Live Report</h3><div id="notifList" style="max-height:400px;overflow:auto"></div><button class="btn-gold" onclick="refreshNotifs()">🔄 Refresh</button><button class="danger" onclick="clearNotifs()">🗑️ Clear</button></div>
-<div class="card" id="sec-posts"><h3>📝 My Posts</h3><textarea rows="3" placeholder="Write new post..."></textarea><button class="btn-gold" onclick="alert('Post saved!')">+ Publish Post</button></div>
-<div class="card" id="sec-leads"><h3>🔥 Hot Leads</h3><div id="leadList"></div><button class="btn-gold" onclick="refreshNotifs()">🔄 Refresh</button></div>
-<div class="card" id="sec-control"><h3>🎛️ FULL CONTROL</h3><h4 style="color:#d4af37">📸 Upload Profile Picture</h4><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><img id="adminPreview" src="https://via.placeholder.com/100/d4af37/000000?text=G" style="width:80px;height:80px;border-radius:50%;border:3px solid #d4af37;object-fit:cover"><div><input type="file" id="picInput" accept="image/*"><button class="btn-gold" onclick="savePic()">💾 Save Photo</button></div></div><h4 style="color:#d4af37;margin-top:16px">🌙☀️ Theme</h4><div style="display:flex;gap:8px"><button onclick="setTheme('dark')" style="background:#111;color:#fff;border:2px solid #d4af37;padding:14px">🌙 Dark</button><button onclick="setTheme('light')" style="background:#fff;color:#111;border:2px solid #d4af37;padding:14px">☀️ Light</button><button onclick="setTheme('gold')" style="background:#d4af37;color:#000;padding:14px">🏆 Gold</button></div><p id="themeStatus" style="color:#888;font-size:13px">Current: Dark</p><h4 style="color:#d4af37;margin-top:16px">🌐 Internet Management</h4><div style="background:#1a1a1a;padding:14px;border-radius:12px"><div style="display:flex;justify-content:space-between"><span>📶 Connection:</span><b id="netStatus" style="color:#25D366">● ONLINE</b></div><div style="display:flex;justify-content:space-between;margin-top:8px"><span>⚡ Speed:</span><b id="netSpeed">Testing...</b></div><div style="display:flex;justify-content:space-between;margin-top:8px"><span>📊 Data Today:</span><b id="netData">0 MB</b></div><button class="btn-gold" onclick="testSpeed()" style="margin-top:10px">⚡ Test Speed</button><button class="btn-dark" onclick="window.open('index.html','_blank')">🌐 View Live Site</button></div></div>
-<div class="card" id="sec-settings"><h3>⚙️ Settings</h3><label>WhatsApp Number</label><input value="2349012461903"><label>Page Title</label><input value="glitch650 | Web Developer"><button class="btn-gold" onclick="alert('✅ Settings Saved!')">💾 Save Settings</button></div>
-<div class="card" id="sec-adjust"><h3>🎨 Adjustments</h3><label>Theme Color</label><select><option>🏆 Luxury Gold</option><option>💚 Green</option><option>💙 Blue</option></select><label>Cover Style</label><select><option>Gold Luxury</option><option>Dark Premium</option></select><button class="btn-gold" onclick="alert('✅ Look Updated!')">✨ Apply Look</button></div>
-<div class="card" id="sec-profile"><h3>👤 Edit Profile</h3><label>Name</label><input value="glitch650"><label>Bio</label><input value="Web Developer • Designer"><button class="btn-gold" onclick="alert('✅ Profile Updated!')">💾 Save</button></div>
-<div class="card" id="sec-security"><h3>🔒 Security & PIN</h3><label>Current PIN</label><input value="0296" type="password"><label>New PIN</label><input placeholder="Enter new PIN"><button class="btn-gold" onclick="alert('✅ PIN Updated!')">🔒 Change PIN</button><button class="danger" onclick="localStorage.clear();alert('Cleared')">🗑️ Clear All Data</button></div>
-</div></div>
+<section id="sec-leads" class="sec"><h2>Hot Leads</h2><br><div class="card"><input id="lName" placeholder="Lead Name *"><input id="lPhone" placeholder="WhatsApp / Phone"><select id="lScore"><option>Hot</option><option>Warm</option><option>Cold</option></select><button class="btn" onclick="addLead()">Add Lead</button></div><div class="card"><div id="leadList"></div></div></section>
 
+<section id="sec-customers" class="sec"><h2>Customers</h2><br><div class="card"><input id="cuName" placeholder="Customer Name *"><input id="cuEmail" placeholder="Email"><input id="cuPhone" placeholder="Phone / WhatsApp"><button class="btn" onclick="addCustomer()">Add Customer</button></div><div class="card"><div id="custList"></div></div></section>
+
+<section id="sec-testimonials" class="sec"><h2>Testimonials Management</h2><p style="color:#A6A6A6;font-size:13px">Only add testimonials you have permission to publish.</p><br><div class="card"><input id="tName" placeholder="Client Name *"><textarea id="tText" placeholder="Testimonial"></textarea><label style="color:#A6A6A6;font-size:13px"><input type="checkbox" id="tPerm" style="width:auto"> I have permission to publish</label><br><br><button class="btn" onclick="addTesti()">Add Testimonial</button></div><div class="card"><div id="testiList"></div></div></section>
+
+<section id="sec-posts" class="sec"><h2>Posts Management</h2><br><div class="card"><input id="poTitle" placeholder="Post Title *"><textarea id="poBody" placeholder="Post content"></textarea><button class="btn" onclick="addPost()">Save Post</button></div><div class="card"><div id="postList"></div></div></section>
+
+<section id="sec-media" class="sec"><h2>Media Library</h2><br><div class="card"><input type="file" id="mediaFile" accept="image/*"><p style="color:#A6A6A6;font-size:13px">Stored locally in this browser.</p><div id="mediaGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px"></div></div></section>
+
+<section id="sec-seo" class="sec"><h2>SEO Center</h2><br><div class="card"><input id="seoTitle" value="GLITCH650 — Digital Experiences That Define Brands"><textarea id="seoDesc">We design and develop exceptional digital experiences that help ambitious businesses build credibility, attract customers and grow.</textarea><input id="seoKeys" value="website development, e-commerce, UI/UX, Bata"><button class="btn" onclick="saveSEO()">Save SEO</button><p id="seoOut" style="color:#A6A6A6;font-size:13px;margin-top:10px"></p></div></section>
+
+<section id="sec-control" class="sec"><h2>Full Control</h2><br><div class="card"><label style="color:#A6A6A6">Maintenance Mode</label><select id="maintMode"><option>Off - Live</option><option>On - Maintenance</option></select><label style="color:#A6A6A6">WhatsApp Number</label><input id="waNum" placeholder="240..."><button class="btn" onclick="saveControl()">Save Control</button></div><div class="card"><h3>Danger Zone</h3><br><button class="btnD" onclick="clearAll()">Clear All Dashboard Data</button></div></section>
+
+<section id="sec-appearance" class="sec"><h2>Design & Appearance</h2><br><div class="card"><p style="color:#A6A6A6">Theme: Premium Black #080808 + Champagne Gold #D4AF37 (locked for brand consistency)</p><br><label style="color:#A6A6A6">Site Tagline</label><input id="tagline" value="Building Digital Experiences That Matter."><button class="btn" onclick="saveAppearance()">Save Appearance</button></div></section>
+
+<section id="sec-team" class="sec"><h2>Team Management</h2><br><div class="card"><input id="tmName" placeholder="Member Name *"><select id="tmRole"><option>Super Admin</option><option>Admin</option><option>Editor</option><option>Viewer</option></select><input id="tmEmail" placeholder="Email"><button class="btn" onclick="addTeam()">Add Member</button></div><div class="card"><div id="teamList"></div></div></section>
+
+<section id="sec-backup" class="sec"><h2>Backup & Restore</h2><br><div class="card"><p style="color:#A6A6A6">Backup is encrypted with AES-256-GCM. Password never leaves this device.</p><br><input id="bkPw" type="password" placeholder="Backup Password (min 12 chars)"><button class="btn" onclick="exportBackup()">Export Encrypted Backup</button> <button class="btn2" onclick="document.getElementById('bkFile').click()">Restore Backup</button><input type="file" id="bkFile" hidden accept=".json"><p id="bkOut" style="color:#A6A6A6;font-size:13px;margin-top:10px"></p></div></section>
+
+<section id="sec-health" class="sec"><h2>System Health</h2><br><div class="card"><button class="btn2" onclick="checkHealth()">Run Health Check</button><div id="healthOut" style="margin-top:12px;color:#A6A6A6;font-size:13px"></div></div></section>
+
+<section id="sec-logs" class="sec"><h2>Activity Logs</h2><br><div class="card"><div id="auditList"></div></div></section>
+
+<section id="sec-security" class="sec"><h2>Security Center</h2><br><div class="card"><h3>Admin Password (Hashed)</h3><br><input id="secNewPw" type="password" placeholder="New password min 12 chars"><button class="btn" onclick="setAdminPw()">Set / Change Password</button></div><div class="card"><h3>Encrypt Sensitive Note (AES-256-GCM)</h3><br><textarea id="secPlain" rows="2" placeholder="Sensitive text"></textarea><input id="secEncPw" type="password" placeholder="Encryption password"><button class="btn" onclick="doEncrypt()">Encrypt</button> <button class="btn2" onclick="doDecrypt()">Decrypt</button><p id="secEncOut" style="word-break:break-all;color:#A6A6A6;font-size:12px;margin-top:10px"></p></div><div class="card"><h3>Session</h3><p id="sessionInfo" style="color:#A6A6A6">No active session</p></div></section>
+
+<section id="sec-settings" class="sec"><h2>Settings & PIN</h2><br><div class="card"><h3>Security PIN (4-6 digits)</h3><br><input id="pinInput" type="password" placeholder="Set PIN" maxlength="6"><button class="btn" onclick="savePin()">Save PIN (Hashed)</button></div><div class="card"><h3>Business Info</h3><br><input id="bizEmail" placeholder="hello@glitch650.com"><input id="bizWa" placeholder="WhatsApp 240..."><button class="btn" onclick="saveBiz()">Save Business Info</button></div></section>
+
+<section id="sec-reports" class="sec"><h2>Reports / Export</h2><br><div class="card"><p style="color:#A6A6A6">Export real data as CSV.</p><br><button class="btn" onclick="exportCSV('projects')">Export Projects CSV</button> <button class="btn2" onclick="exportCSV('customers')">Export Customers CSV</button> <button class="btn2" onclick="exportCSV('leads')">Export Leads CSV</button></div></section>
+</main>
 <script>
-let voiceOn=true, peekTimer=null, tempPic='';
-function speak(t){ if(!voiceOn) return; try{ window.speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t); u.lang='en-US'; window.speechSynthesis.speak(u);}catch(e){} }
-function toggleVoice(){ voiceOn=!voiceOn; document.getElementById('voiceBtn').innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF'; if(voiceOn) speak('Voice on'); }
-function updateDots(n){ for(let i=1;i<=4;i++){ document.getElementById('dot'+i).style.color=i<=n?'#d4af37':'#333'; } }
-function doUnlock(){ localStorage.setItem('glitch650_logged_in','yes'); localStorage.setItem('glitch650_logged_in','yes'); speak('Welcome back, glitch six fifty'); document.getElementById('login').style.display='none'; let m=document.getElementById('main'); m.style.display='block'; m.style.animation='none'; void m.offsetWidth; m.style.animation='fadeSlideIn .5s ease'; refreshAll(); }
-function toggleMenu(){ document.getElementById('sideMenu').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
-const TITLES={home:['🏠 Dashboard','Overview'],messages:['💬 Messages','Customer Care'],notifs:['🔔 Notifications','Visits'],posts:['📝 Posts','Manage'],leads:['🔥 Hot Leads','WhatsApp'],settings:['⚙️ Settings','Control'],control:['🎛️ Full Control','Photo • Theme • Net'],adjust:['🎨 Adjustments','Look'],profile:['👤 Profile','Info'],security:['🔒 Security','PIN']};
-function openSection(id){
-  document.getElementById('iconGrid').style.display='none';
-  let h=document.getElementById('pageHeader'); h.style.display='flex';
-  document.getElementById('pageTitle').innerText=TITLES[id]?TITLES[id][0]:id;
-  document.getElementById('pageSub').innerText=TITLES[id]?TITLES[id][1]:'';
-  document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';});
-  let sec=document.getElementById('sec-'+id); if(sec){ sec.classList.add('show'); sec.style.display='block'; sec.style.animation='none'; void sec.offsetWidth; sec.style.animation='slideLeft .35s ease'; }
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='messages') loadMsgs(); if(id==='notifs'||id==='leads') refreshNotifs();
+// GLITCH650 Admin 2.0 - Real persistence + AES-GCM, no external file needed
+const DB={get(k){try{return JSON.parse(localStorage.getItem('g650_'+k)||'[]')}catch{return[]}},set(k,v){localStorage.setItem('g650_'+k,JSON.stringify(v))}};
+function esc(s){return String(s||'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
+function audit(a,d){const l=JSON.parse(localStorage.getItem('g650_audit')||'[]');l.unshift({t:Date.now(),action:a,detail:d||''});localStorage.setItem('g650_audit',JSON.stringify(l.slice(0,100)))}
+function go(sec){document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.sec===sec));document.querySelectorAll('.sec').forEach(s=>s.classList.remove('show'));document.getElementById('sec-'+sec).classList.add('show');document.querySelector('.side').classList.remove('open');window.scrollTo({top:0});if(sec==='analytics')renderAnalytics();if(sec==='logs')renderAudit()}
+document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>go(b.dataset.sec));
+function addItem(key,obj){const a=DB.get(key);obj.id=Date.now();obj.created=new Date().toISOString().slice(0,10);a.unshift(obj);DB.set(key,a);audit('DATA_CREATE',key+': '+(obj.title||obj.name||''));renderAll()}
+function delItem(key,id){if(!confirm('Delete this item?'))return;DB.set(key,DB.get(key).filter(x=>x.id!=id));audit('DATA_DELETE',key+' deleted');renderAll()}
+function addProject(){const t=document.getElementById('pTitle').value.trim();if(!t)return alert('Title required');addItem('projects',{title:t,client:document.getElementById('pClient').value,status:document.getElementById('pStatus').value,value:Number(document.getElementById('pValue').value||0),link:document.getElementById('pLink').value,desc:document.getElementById('pDesc').value});['pTitle','pClient','pValue','pLink','pDesc'].forEach(i=>document.getElementById(i).value='')}
+function addService(){const n=document.getElementById('svName').value.trim();if(!n)return alert('Name required');addItem('services',{name:n,desc:document.getElementById('svDesc').value,price:document.getElementById('svPrice').value})}
+function addMsg(){addItem('messages',{name:document.getElementById('mName').value||'Guest',text:document.getElementById('mText').value})}
+function addLead(){const n=document.getElementById('lName').value.trim();if(!n)return alert('Name required');addItem('leads',{name:n,phone:document.getElementById('lPhone').value,score:document.getElementById('lScore').value})}
+function addCustomer(){const n=document.getElementById('cuName').value.trim();if(!n)return alert('Name required');addItem('customers',{name:n,email:document.getElementById('cuEmail').value,phone:document.getElementById('cuPhone').value})}
+function addTesti(){if(!document.getElementById('tPerm').checked)return alert('You must confirm permission to publish.');const n=document.getElementById('tName').value.trim();if(!n)return alert('Name required');addItem('testimonials',{name:n,text:document.getElementById('tText').value})}
+function addPost(){const t=document.getElementById('poTitle').value.trim();if(!t)return alert('Title required');addItem('posts',{title:t,body:document.getElementById('poBody').value})}
+function addTeam(){const n=document.getElementById('tmName').value.trim();if(!n)return alert('Name required');addItem('team',{name:n,role:document.getElementById('tmRole').value,email:document.getElementById('tmEmail').value})}
+function saveSEO(){localStorage.setItem('g650_seo',JSON.stringify({title:document.getElementById('seoTitle').value,desc:document.getElementById('seoDesc').value,keys:document.getElementById('seoKeys').value}));document.getElementById('seoOut').textContent='SEO saved locally.';audit('SEO_UPDATE','SEO updated')}
+function saveControl(){localStorage.setItem('g650_control',JSON.stringify({maint:document.getElementById('maintMode').value,wa:document.getElementById('waNum').value}));alert('Control saved');audit('CONTROL_UPDATE','Site control updated')}
+function saveAppearance(){localStorage.setItem('g650_tagline',document.getElementById('tagline').value);alert('Appearance saved')}
+function saveBiz(){localStorage.setItem('g650_biz',JSON.stringify({email:document.getElementById('bizEmail').value,wa:document.getElementById('bizWa').value}));alert('Business info saved')}
+function clearAll(){if(confirm('Delete ALL dashboard data?')){['projects','services','messages','leads','customers','testimonials','posts','team'].forEach(k=>localStorage.removeItem('g650_'+k));audit('DATA_WIPE','All data cleared');renderAll()}}
+async function savePin(){const p=document.getElementById('pinInput').value;if(p.length<4)return alert('PIN min 4 digits');const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('g650pin'+p));localStorage.setItem('g650_pin_hash',[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join(''));alert('PIN saved (hashed)');audit('PIN_CHANGED','PIN updated')}
+async function setAdminPw(){const pw=document.getElementById('secNewPw').value;if(pw.length<12)return alert('Min 12 chars');const salt=crypto.getRandomValues(new Uint8Array(16)).reduce((s,b)=>s+b.toString(16).padStart(2,'0'),'');const h=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(salt+pw));localStorage.setItem('g650_admin_hash',JSON.stringify({salt,hash:[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('')}));alert('Password set (hashed)');audit('PASSWORD_CHANGED','Admin password updated')}
+async function getKey(pw,salt){const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:100000,hash:'SHA-256'},km,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function encText(txt,pw){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await getKey(pw,salt),ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(txt));const b=(u)=>btoa(String.fromCharCode(...new Uint8Array(u)));return b(salt)+':'+b(iv)+':'+b(ct)}
+async function decText(enc,pw){const [s,i,c]=enc.split(':');const d=(x)=>Uint8Array.from(atob(x),ch=>ch.charCodeAt(0));const key=await getKey(pw,d(s));const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:d(i)},key,d(c));return new TextDecoder().decode(pt)}
+async function doEncrypt(){const t=document.getElementById('secPlain').value,pw=document.getElementById('secEncPw').value;if(!t||!pw)return alert('Enter text + password');const e=await encText(t,pw);document.getElementById('secEncOut').textContent='Encrypted: '+e;audit('ENCRYPT','Record encrypted')}
+async function doDecrypt(){const enc=document.getElementById('secEncOut').textContent.replace('Encrypted: ','').trim(),pw=document.getElementById('secEncPw').value;try{const d=await decText(enc,pw);document.getElementById('secEncOut').textContent='Decrypted: '+d;audit('DECRYPT','Record decrypted')}catch{alert('Wrong password / tampered')}}
+async function exportBackup(){const pw=document.getElementById('bkPw').value;if(pw.length<12)return alert('Backup password min 12 chars');const data={};['projects','services','messages','leads','customers','testimonials','posts','team'].forEach(k=>data[k]=DB.get(k));const e=await encText(JSON.stringify(data),pw);const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([e],{type:'application/json'}));a.download='glitch650-backup-'+new Date().toISOString().slice(0,10)+'.enc.json';a.click();document.getElementById('bkOut').textContent='Encrypted backup downloaded. Keep password safe.';audit('BACKUP_EXPORT','Backup exported')}
+document.getElementById('bkFile').addEventListener('change',async e=>{const pw=prompt('Enter backup password:');if(!pw)return;try{const dec=await decText(await e.target.files[0].text(),pw);const data=JSON.parse(dec);Object.keys(data).forEach(k=>DB.set(k,data[k]));alert('Backup restored!');audit('BACKUP_RESTORE','Backup restored');renderAll()}catch{alert('Wrong password or corrupted backup.') }});
+document.getElementById('mediaFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const a=DB.get('media');a.unshift({id:Date.now(),src:r.result,name:f.name});DB.set('media',a);renderAll()};r.readAsDataURL(f)});
+function checkHealth(){document.getElementById('healthOut').innerHTML='Connection: '+(navigator.onLine?'Online':'Offline')+'<br>Storage: '+Math.round(JSON.stringify(localStorage).length/1024)+' KB<br>Audit entries: '+(JSON.parse(localStorage.getItem('g650_audit')||'[]').length)+'<br>HTTPS: '+(location.protocol==='https:'?'Yes':'No');audit('HEALTH_CHECK','Health check')}
+function renderAnalytics(){const p=DB.get('projects');document.getElementById('aRevenue').textContent='₣ '+p.reduce((s,x)=>s+(x.value||0),0).toLocaleString();const c={};p.forEach(x=>c[x.status]=(c[x.status]||0)+1);document.getElementById('statusChart').innerHTML=Object.keys(c).map(k=>`<div style="margin:6px 0;color:#A6A6A6">${k}: <b style="color:#fff">${c[k]}</b></div>`).join('')||'No projects yet.'}
+function exportCSV(key){const rows=DB.get(key);if(!rows.length)return alert('No data to export');const cols=Object.keys(rows[0]);const csv=[cols.join(',')].concat(rows.map(r=>cols.map(c=>'"'+String(r[c]||'').replace(/"/g,'""')+'"').join(','))).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='glitch650-'+key+'.csv';a.click();audit('EXPORT_CSV','Exported '+key)}
+function renderAudit(){document.getElementById('auditList').innerHTML=(JSON.parse(localStorage.getItem('g650_audit')||'[]')).map(l=>`<div style="padding:10px 0;border-bottom:1px solid #292929;font-size:13px"><b style="color:#D4AF37">${esc(l.action)}</b> <span style="color:#A6A6A6">${new Date(l.t).toLocaleString()}</span><br><span style="color:#A6A6A6">${esc(l.detail)}</span></div>`).join('')||'No events.'}
+function renderAll(){
+document.getElementById('sProjects').textContent=DB.get('projects').length;document.getElementById('sCustomers').textContent=DB.get('customers').length;document.getElementById('sLeads').textContent=DB.get('leads').length;document.getElementById('sPosts').textContent=DB.get('posts').length;
+document.getElementById('projectList').innerHTML=DB.get('projects').map(p=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(p.title)}</b> - ${esc(p.client||'')} <span style="color:#D4AF37">${esc(p.status)}</span> ₣ ${(p.value||0).toLocaleString()}<br><button class="btnD" onclick="delItem('projects',${p.id})">Delete</button></div>`).join('')||'No projects yet.';
+document.getElementById('serviceList').innerHTML=DB.get('services').map(s=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(s.name)}</b> <span style="color:#D4AF37">${esc(s.price||'')}</span><p style="color:#A6A6A6">${esc(s.desc||'')}</p><button class="btnD" onclick="delItem('services',${s.id})">Delete</button></div>`).join('')||'No services yet.';
+document.getElementById('msgList').innerHTML=DB.get('messages').map(m=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(m.name)}</b> ${m.created}<p style="color:#A6A6A6">${esc(m.text||'')}</p><button class="btnD" onclick="delItem('messages',${m.id})">Delete</button></div>`).join('')||'No messages.';
+document.getElementById('leadList').innerHTML=DB.get('leads').map(l=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(l.name)}</b> ${esc(l.score)} ${esc(l.phone||'')} <button class="btnD" onclick="delItem('leads',${l.id})">Delete</button></div>`).join('')||'No leads.';
+document.getElementById('custList').innerHTML=DB.get('customers').map(c=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(c.name)}</b> ${esc(c.email||'')} ${esc(c.phone||'')} <button class="btnD" onclick="delItem('customers',${c.id})">Delete</button></div>`).join('')||'No customers.';
+document.getElementById('testiList').innerHTML=DB.get('testimonials').map(t=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(t.name)}</b><p style="color:#A6A6A6">"${esc(t.text||'')}"</p><button class="btnD" onclick="delItem('testimonials',${t.id})">Delete</button></div>`).join('')||'No testimonials.';
+document.getElementById('postList').innerHTML=DB.get('posts').map(p=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(p.title)}</b><p style="color:#A6A6A6">${esc(p.body||'')}</p><button class="btnD" onclick="delItem('posts',${p.id})">Delete</button></div>`).join('')||'No posts.';
+document.getElementById('teamList').innerHTML=DB.get('team').map(t=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(t.name)}</b> ${esc(t.role)} ${esc(t.email||'')} <button class="btnD" onclick="delItem('team',${t.id})">Delete</button></div>`).join('')||'No team members.';
+document.getElementById('mediaGrid').innerHTML=DB.get('media').map(m=>`<div><img src="${m.src}" style="width:100%;height:100px;object-fit:cover;border-radius:8px"><p style="font-size:12px;color:#A6A6A6">${esc(m.name)}</p><button class="btnD" onclick="delItem('media',${m.id})">Delete</button></div>`).join('')||'No media.';
+document.getElementById('recentLog').innerHTML=(JSON.parse(localStorage.getItem('g650_audit')||'[]').slice(0,5)).map(l=>`<div style="padding:6px 0;border-bottom:1px solid #1f1f1f">${esc(l.action)} - ${new Date(l.t).toLocaleString()}</div>`).join('')||'No activity yet.';
 }
-function goHome(){ document.getElementById('iconGrid').style.display='grid'; document.getElementById('pageHeader').style.display='none'; document.querySelectorAll('.card').forEach(c=>{c.classList.remove('show'); c.style.display='none';}); let h=document.getElementById('sec-home'); h.classList.add('show'); h.style.display='block'; }
-function loadMsgs(){ let m=JSON.parse(localStorage.getItem('glitch650_messages')||'[]'); document.getElementById('msgList').innerHTML=m.length?m.map(x=>`<div style="background:#1a1a1a;padding:12px;border-radius:10px;margin:8px 0;border-left:3px solid #25D366"><b>${x.name}</b> <small>${x.time}</small><br>${x.msg}</div>`).join(''):'<p style="color:#888">No messages yet.</p>'; document.getElementById('dotMsg').innerText=m.length; document.getElementById('sMsg').innerText='MESSAGES: '+m.length; }
-function refreshNotifs(){ let logs=JSON.parse(localStorage.getItem('glitch650_notifications')||'[]'); document.getElementById('notifList').innerHTML=logs.length?logs.map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0"><b>${l.type}</b><br><small>${l.detail}</small><br><small style="color:#888">${l.time}</small></div>`).join(''):'<p style="color:#888">No notifications yet.</p>'; document.getElementById('leadList').innerHTML=logs.filter(l=>l.type.includes('WHATSAPP')).length?logs.filter(l=>l.type.includes('WHATSAPP')).map(l=>`<div style="background:#1a1a1a;padding:10px;border-radius:10px;margin:6px 0">🔥 ${l.detail}</div>`).join(''):'<p style="color:#888">No leads yet.</p>'; document.getElementById('dotNotif').innerText=logs.length; updateTopBell(logs.length); document.getElementById('sClicks').innerText='CLICKS: '+logs.length; }
-function clearMsgs(){ if(confirm('Clear messages?')){localStorage.removeItem('glitch650_messages'); loadMsgs();} }
-function clearNotifs(){ if(confirm('Clear?')){localStorage.removeItem('glitch650_notifications'); refreshNotifs();} }
-function refreshAll(){ loadMsgs(); refreshNotifs(); }
-function savePic(){ if(!tempPic) return alert('Choose photo first'); localStorage.setItem('glitch650_profile_pic', tempPic); alert('✅ Photo saved!'); }
-function setTheme(t){ localStorage.setItem('glitch650_theme', t); document.getElementById('themeStatus').innerText='Current: '+t.toUpperCase(); alert('✅ Theme '+t); }
-function testSpeed(){ let s=document.getElementById('netSpeed'); s.innerText='Testing...'; setTimeout(()=>{ let v=(Math.random()*50+5).toFixed(1); s.innerText=v+' Mbps'; },1000); }
-document.addEventListener('DOMContentLoaded', ()=>{
-  let pin=document.getElementById('pin'); pin.focus();
-  pin.addEventListener('input', ()=>{
-    unlockAudioSilent(); // try silent unlock on typing too
-    unlockAudioSilent(); // try silent unlock on typing too
-    let v=pin.value; updateDots(v.length);
-    pin.type='text'; clearTimeout(peekTimer); peekTimer=setTimeout(()=>{ pin.type='password'; }, 600);
-    if(v==='0296'){ setTimeout(doUnlock, 300); }
-    if(v.length===4 && v!=='0296'){ speak('Wrong password, try again'); document.getElementById('err').innerText='❌ Wrong Password!'; document.getElementById('login').classList.remove('shake'); void document.getElementById('login').offsetWidth; document.getElementById('login').classList.add('shake'); setTimeout(()=>{ pin.value=''; updateDots(0); pin.type='password'; document.getElementById('err').innerText=''; }, 800); }
-  });
-  let pi=document.getElementById('picInput'); if(pi) pi.addEventListener('change', e=>{ let f=e.target.files[0]; if(!f) return; let r=new FileReader(); r.onload=ev=>{ tempPic=ev.target.result; document.getElementById('adminPreview').src=tempPic; }; r.readAsDataURL(f); });
-  setTimeout(()=>{ let p=localStorage.getItem('glitch650_profile_pic'); if(p) document.getElementById('adminPreview').src=p; testSpeed(); }, 800);
-});
+renderAll();renderAudit();
 </script>
-<script>
-// SMART VOICE SYSTEM
-let voiceOn = true;
-let voiceReady = false;
-let voiceUnlocked = false;
-function unlockAudio(){
-  // Must be called from a TAP - this unlocks voice on phones
-  try{
-    window.speechSynthesis.cancel();
-    let u = new SpeechSynthesisUtterance(' ');
-    u.volume = 0; window.speechSynthesis.speak(u);
-    let ctx = new (window.AudioContext||window.webkitAudioContext)();
-    ctx.resume();
-  }catch(e){}
-  voiceUnlocked = true;
-  document.getElementById('tapToEnable').style.display='none';
-  speak('Voice ready. Type your password.');
-}
-function speak(t){
-  if(!voiceOn) return;
-  if(!voiceUnlocked){ console.log('Voice locked - need tap first'); return; }
-  try{
-    window.speechSynthesis.cancel();
-    let u = new SpeechSynthesisUtterance(t);
-    u.lang='en-US'; u.rate=0.95; u.pitch=1; u.volume=1;
-    // Pick best English voice
-    let voices = window.speechSynthesis.getVoices();
-    let en = voices.find(v=>v.lang.includes('en') && v.name.includes('Google')) || voices.find(v=>v.lang.includes('en-US')) || voices[0];
-    if(en) u.voice = en;
-    window.speechSynthesis.speak(u);
-  }catch(e){}
-  // Fallback: also show text loudly
-  let err = document.getElementById('err');
-  if(err && t.includes('Wrong')){ err.style.fontSize='18px'; err.style.fontWeight='800'; }
-}
-if('speechSynthesis' in window){
-  window.speechSynthesis.onvoiceschanged = ()=>{ voiceReady=true; };
-}
-</script>
-<script>
-function unlockAudioSilent(){ try{ let ctx=new (window.AudioContext||window.webkitAudioContext)(); ctx.resume(); }catch(e){} }
-document.addEventListener('DOMContentLoaded', ()=>{
-  // If you already logged in before, auto-open instantly (smart login)
-  if(localStorage.getItem('glitch650_logged_in')==='yes'){
-    // Still show login for 0.8s for animation, then auto open
-    setTimeout(()=>{ speak('Welcome back'); doUnlock(); }, 800);
-  }
-});
-</script>
-<script>
-// SMART + STEADY PIN - v2
-let PIN_CORRECT = localStorage.getItem('glitch650_pin') || '0296';
-let pinBusy = false;
-let pinPeekTimer = null;
-function updatePinDots(n){
-  for(let i=1;i<=4;i++){
-    let d=document.getElementById('dot'+i);
-    if(d) d.style.color = i<=n ? '#d4af37' : '#ccc';
-  }
-}
-function sayPin(t){ try{ window.speechSynthesis.cancel(); let u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=0.95; window.speechSynthesis.speak(u); }catch(e){} }
-function pinWrong(){
-  if(pinBusy) return; pinBusy=true;
-  sayPin('Wrong password, try again');
-  if(navigator.vibrate) navigator.vibrate([60,40,60]);
-  let err=document.getElementById('err'); if(err) err.innerText='❌ Wrong Password! Try again';
-  let login=document.getElementById('login');
-  if(login){ login.classList.remove('shake'); void login.offsetWidth; login.classList.add('shake'); }
-  // STEADY: wait 1.2s before clearing, don't clear instantly
-  setTimeout(()=>{
-    let pin=document.getElementById('pin'); if(pin){ pin.value=''; pin.type='password'; }
-    updatePinDots(0); if(err) err.innerText='';
-    if(login) login.classList.remove('shake');
-    pinBusy=false;
-  }, 1200);
-}
-function pinCorrect(){
-  if(pinBusy) return; pinBusy=true;
-  sayPin('Welcome back, glitch650');
-  if(navigator.vibrate) navigator.vibrate(30);
-  let err=document.getElementById('err'); if(err){ err.style.color='#25D366'; err.innerText='✅ Correct! Opening...'; }
-  setTimeout(()=>{
-    if(typeof doUnlock==='function') doUnlock();
-    else { document.getElementById('login').style.display='none'; document.getElementById('main').style.display='block'; localStorage.setItem('glitch650_logged_in','yes'); }
-    pinBusy=false;
-  }, 500);
-}
-function setupSmartPin(){
-  let pin=document.getElementById('pin'); if(!pin) return;
-  // Remove old listeners by cloning
-  let newPin = pin.cloneNode(true);
-  pin.parentNode.replaceChild(newPin, pin);
-  pin = newPin;
-  pin.focus();
-  pin.addEventListener('input', ()=>{
-    if(pinBusy) return;
-    let v = pin.value.replace(/[^0-9]/g,'').slice(0,4);
-    pin.value = v;
-    updatePinDots(v.length);
-    // STEADY PEEK: show for 800ms, then hide - not flicker
-    pin.type='text';
-    clearTimeout(pinPeekTimer);
-    pinPeekTimer=setTimeout(()=>{ pin.type='password'; }, 800);
-    if(v.length===4){
-      if(v===PIN_CORRECT) pinCorrect();
-      else pinWrong();
-    }
-  });
-  // Allow backspace / steady typing
-  pin.addEventListener('keydown', (e)=>{ if(e.key==='Backspace') updatePinDots(pin.value.length-1); });
-}
-document.addEventListener('DOMContentLoaded', setupSmartPin);
-setTimeout(setupSmartPin, 800);
-</script>
-
-<script>
-// ONE SETTINGS - ALL INSIDE ONE
-function openOneSettings(){
-  // Hide everything else
-  document.querySelectorAll('.fbCard, .card, #sec-home, #sec-messages, #sec-posts, #sec-leads, #sec-control, #sec-settings, #sec-adjust, #sec-profile, #sec-security, #sec-notifs, #sec-settingsHub').forEach(el=>{ el.style.display='none'; });
-  let hub = document.getElementById('oneSettings');
-  if(!hub){
-    hub = document.createElement('div');
-    hub.id = 'oneSettings';
-    hub.innerHTML = `
-    <div style="background:var(--card,#242526);border-radius:14px;padding:16px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:10px"><button onclick="goHome()" style="background:#d4af37;color:#000;width:36px;height:36px;border-radius:50%;border:none;font-size:18px">←</button><div><h3 style="margin:0">⚙️ Settings</h3><p style="color:#888;font-size:13px;margin:0">All settings in one place</p></div></div>
-      <div id="oneSettingsList" style="margin-top:14px"></div>
-      <div id="oneSettingsPage" style="display:none;margin-top:14px"></div>
-    </div>`;
-    let center = document.querySelector('.fbCenter') || document.querySelector('.wrap') || document.getElementById('main');
-    if(center) center.appendChild(hub); else document.body.appendChild(hub);
-  }
-  hub.style.display='block';
-  showOneSettingsList();
-  window.scrollTo({top:0});
-}
-function showOneSettingsList(){
-  document.getElementById('oneSettingsList').style.display='block';
-  document.getElementById('oneSettingsPage').style.display='none';
-  let items = [
-    ['👤','Profile Settings','Name, Bio, Photo','profile'],
-    ['🔒','Security & Login','PIN, Smart Login, Logout','security'],
-    ['🎨','Appearance & Theme','Dark / Light / Auto Smart','adjust'],
-    ['🎛️','Full Control','Photo, Theme, Internet, Speed','control'],
-    ['💬','Messages & Notifications','Customer Care','messages'],
-    ['📝','Posts Settings','Create & Manage Posts','posts'],
-    ['🔥','Hot Leads','WhatsApp Leads','leads'],
-    ['🔔','Notifications','All alerts','notifs'],
-  ];
-  document.getElementById('oneSettingsList').innerHTML = items.map(i=>`
-    <div onclick="openOneSub('${i[3]}','${i[1]}')" style="display:flex;gap:12px;align-items:center;padding:14px;background:#1a1a1a;background:var(--bg,#1a1a1a);border-radius:12px;margin:8px 0;cursor:pointer">
-      <span style="width:44px;height:44px;border-radius:50%;background:#3a3b3c;display:flex;align-items:center;justify-content:center;font-size:22px">${i[0]}</span>
-      <div><b>${i[1]}</b><br><small style="color:#888">${i[2]}</small></div>
-      <span style="margin-left:auto;font-size:22px;color:#888">›</span>
-    </div>`).join('');
-}
-function openOneSub(id, title){
-  document.getElementById('oneSettingsList').style.display='none';
-  let page = document.getElementById('oneSettingsPage');
-  page.style.display='block';
-  // Try to reuse your existing section content, clone it inside Settings
-  let orig = document.getElementById('sec-'+id);
-  let content = orig ? orig.innerHTML : '<p style="color:#888">Coming soon</p>';
-  page.innerHTML = `
-    <button onclick="showOneSettingsList()" style="background:#d4af37;color:#000;padding:8px 14px;border-radius:20px;border:none;font-weight:700;margin-bottom:12px">← Back to Settings</button>
-    <h3>${title}</h3>
-    <div style="margin-top:10px">${content}</div>
-    <button onclick="showOneSettingsList()" style="background:#333;color:#fff;padding:10px 16px;border-radius:10px;border:none;margin-top:14px">← Back to All Settings</button>`;
-  // Re-bind buttons inside cloned content if needed
-  if(id==='messages' && typeof loadMsgs==='function') setTimeout(loadMsgs,100);
-  if((id==='notifs'||id==='leads') && typeof refreshNotifs==='function') setTimeout(refreshNotifs,100);
-  window.scrollTo({top:0});
-}
-// Make ALL Settings buttons open ONE Settings
-document.addEventListener('DOMContentLoaded', ()=>{
-  setTimeout(()=>{
-    document.querySelectorAll('[data-menu="settings"], [onclick*="openSection(\'settings\')"]').forEach(el=>{
-      el.onclick = (e)=>{ e.preventDefault(); openOneSettings(); };
-    });
-  }, 500);
-});
-function openSettingsHub(){ openOneSettings(); }
-</script>
-
-<style id="fbStyle">
-:root{--fb-bg:#f0f2f5;--fb-card:#fff;--fb-text:#050505;--fb-sub:#65676b;--fb-line:#ced0d4}
-body.dark{--fb-bg:#18191a;--fb-card:#242526;--fb-text:#e4e6eb;--fb-sub:#b0b3b8;--fb-line:#3a3b3c}
-body{background:var(--fb-bg)!important;color:var(--fb-text)!important}
-.fbTop{position:sticky;top:0;z-index:100;background:var(--fb-card);display:flex;align-items:center;gap:10px;padding:8px 14px;box-shadow:0 1px 4px rgba(0,0,0,.15);border-radius:0 0 12px 12px}
-.fbLogo{width:40px;height:40px;background:linear-gradient(145deg,#d4af37,#b8962e);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;color:#000;cursor:pointer;flex-shrink:0}
-.fbSearch{flex:1;max-width:300px;background:var(--fb-bg);border-radius:20px;padding:9px 12px;display:flex;gap:8px;color:var(--fb-sub);font-size:14px}
-.fbSearch input{background:transparent;border:none;outline:none;color:var(--fb-text);width:100%}
-.fbIcon{width:40px;height:40px;border-radius:50%;background:var(--fb-bg);display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;border:1px solid var(--fb-line);position:relative;flex-shrink:0}
-.fbIcon:active{transform:scale(.9)}
-.fbIcon .badge{position:absolute;top:-4px;right:-4px;background:#e41e3f;color:#fff;font-size:11px;min-width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0 4px;font-weight:700}
-.fbLayout{display:flex;gap:14px;max-width:1200px;margin:14px auto;padding:0 14px}
-.fbLeft{width:260px;flex-shrink:0;position:sticky;top:68px;height:fit-content}
-.fbCenter{flex:1;min-width:0}
-.fbRight{width:280px;flex-shrink:0;position:sticky;top:68px;height:fit-content}
-.fbMenu{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;cursor:pointer}
-.fbMenu:hover{background:var(--fb-bg)} .fbMenu.active{background:var(--fb-bg);border-left:4px solid #1877f2;font-weight:700}
-.fbMenu .mi{width:36px;height:36px;border-radius:50%;background:var(--fb-bg);display:flex;align-items:center;justify-content:center;font-size:18px}
-.fbCard2{background:var(--fb-card);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(0,0,0,.1)}
-.themeSwitch{display:flex;background:var(--fb-bg);border-radius:20px;padding:4px;gap:4px}
-.themeOpt{flex:1;padding:10px;border-radius:16px;text-align:center;cursor:pointer;font-size:13px;font-weight:700}
-.themeOpt.active{background:var(--fb-card);box-shadow:0 1px 4px rgba(0,0,0,.2)}
-@media(max-width:900px){.fbRight{display:none}}
-@media(max-width:700px){.fbLeft{display:none}.fbSearch{display:none}}
-</style>
-<script>
-// FACEBOOK LAYOUT + SMART THEME
-function buildFacebookLayout(){
-  if(document.getElementById('fbTopBar')) return;
-  let main=document.getElementById('main'); if(!main) return;
-  // Create Top Bar
-  let top=document.createElement('div'); top.id='fbTopBar'; top.className='fbTop';
-  top.innerHTML=`<div class="fbLogo" onclick="goHomeFb()">G</div>
-  <div class="fbSearch">🔍 <input placeholder="Search settings, messages..." oninput="fbSearchSmart(this.value)"></div>
-  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-    <div class="fbIcon" id="fbThemeBtn" onclick="toggleSmartTheme()" title="Smart Theme">🌙</div>
-    <div class="fbIcon" onclick="openSectionFb('messages')">💬<span class="badge" id="fbMsgBadge">0</span></div>
-    <div class="fbIcon" onclick="openTopNotif(event)" style="border:1px solid #d4af37">🔔<span class="badge" id="fbBellBadge">0</span></div>
-    <div class="fbIcon" onclick="openOneSettings()" style="background:#d4af37">👤</div>
-  </div>`;
-  main.prepend(top);
-  // Wrap existing content into FB Layout if not already
-  let wrap=document.createElement('div'); wrap.className='fbLayout';
-  let left=document.createElement('div'); left.className='fbLeft';
-  left.innerHTML=`<div class="fbCard2"><div style="display:flex;gap:10px;align-items:center"><div style="width:48px;height:48px;border-radius:50%;background:#d4af37;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#000">G</div><div><b>glitch650 <span style="color:#1d9bf0">✓</span></b><br><small style="color:#888">Web Developer • Admin</small></div></div></div>
-  <div class="fbMenu active" onclick="openSectionFb('home',this)"><span class="mi">🏠</span> Home</div>
-  <div class="fbMenu" onclick="openSectionFb('messages',this)"><span class="mi">💬</span> Messages</div>
-  <div class="fbMenu" onclick="openSectionFb('posts',this)"><span class="mi">📝</span> Posts</div>
-  <div class="fbMenu" onclick="openSectionFb('leads',this)"><span class="mi">🔥</span> Hot Leads</div>
-  <hr><p style="font-size:12px;color:#888;padding:0 12px;font-weight:700">SETTINGS & PRIVACY</p>
-  <div class="fbMenu" onclick="openOneSettings()"><span class="mi">⚙️</span> Settings (All in One)</div>
-  <div class="fbMenu" onclick="openOneSub('adjust','Appearance & Theme')"><span class="mi">🎨</span> Appearance</div>
-  <div class="fbMenu" onclick="openOneSub('profile','Profile Settings')"><span class="mi">👤</span> Edit Profile</div>
-  <div class="fbMenu" onclick="openOneSub('security','Security & Login')"><span class="mi">🔒</span> Security & Login</div>
-  <div class="fbCard2" style="margin-top:12px"><b>🌙 Smart Theme</b><p style="font-size:12px;color:#888">Auto by time & system</p>
-  <div class="themeSwitch" style="margin-top:10px"><div class="themeOpt" id="fbLight" onclick="setSmartTheme('light')">☀️ Light</div><div class="themeOpt" id="fbDark" onclick="setSmartTheme('dark')">🌙 Dark</div><div class="themeOpt" id="fbAuto" onclick="setSmartTheme('auto')">🤖 Auto</div></div>
-  <p id="fbThemeStatus" style="font-size:12px;color:#888;margin-top:8px"></p></div>`;
-  let center=document.createElement('div'); center.className='fbCenter';
-  let right=document.createElement('div'); right.className='fbRight';
-  right.innerHTML=`<div class="fbCard2"><h3>📊 Insights</h3><p id="fbStats" style="color:#888;font-size:14px">Visits • Clicks • Messages</p><button onclick="openTopNotif(event)" style="width:100%;padding:10px;border-radius:8px;background:#1877f2;color:#fff;border:none;font-weight:700;margin-top:8px">View Notifications →</button></div>
-  <div class="fbCard2"><h3>⚡ Quick Actions</h3><button onclick="openSectionFb('posts')" style="width:100%;padding:10px;border-radius:8px;background:#1877f2;color:#fff;border:none;font-weight:700;margin:4px 0">+ New Post</button><button onclick="openSectionFb('messages')" style="width:100%;padding:10px;border-radius:8px;background:#d4af37;color:#000;border:none;font-weight:700;margin:4px 0">💬 Messages</button><button onclick="openOneSettings()" style="width:100%;padding:10px;border-radius:8px;background:#333;color:#fff;border:none;font-weight:700;margin:4px 0">⚙️ All Settings</button></div>
-  <div class="fbCard2"><h3>🌙 Theme</h3><p id="fbRightTheme" style="color:#888">Smart Auto</p><button onclick="toggleSmartTheme()" style="width:100%;padding:10px;border-radius:8px;background:#333;color:#fff;border:none;font-weight:700">🔄 Switch Theme</button></div>`;
-  // Move all old children (except top) into center
-  let olds=[...main.childNodes].filter(n=>n!==top);
-  olds.forEach(n=>center.appendChild(n));
-  wrap.appendChild(left); wrap.appendChild(center); wrap.appendChild(right);
-  main.appendChild(wrap);
-}
-function goHomeFb(){ if(typeof openSection==='function') openSection('home'); document.querySelectorAll('.fbMenu').forEach(m=>m.classList.remove('active')); }
-function openSectionFb(id, el){ if(el){ document.querySelectorAll('.fbMenu').forEach(m=>m.classList.remove('active')); el.classList.add('active'); } if(typeof openSection==='function') openSection(id); if(id==='home') goHomeFb(); }
-function fbSearchSmart(q){ q=q.toLowerCase(); if(!q) return; if(q.includes('mess')) openSectionFb('messages'); else if(q.includes('post')) openSectionFb('posts'); else if(q.includes('theme')||q.includes('appear')) openOneSub('adjust','Appearance & Theme'); else if(q.includes('secur')||q.includes('pin')) openOneSub('security','Security & Login'); else if(q.includes('profile')) openOneSub('profile','Profile Settings'); else if(q.includes('set')) openOneSettings(); }
-// SMART THEME - Facebook + Smarter
-function setSmartTheme(mode){
-  localStorage.setItem('glitch650_theme_mode', mode);
-  if(mode==='auto') applySmartTheme();
-  else applyFbTheme(mode);
-  ['fbLight','fbDark','fbAuto'].forEach(id=>{ let el=document.getElementById(id); if(el) el.classList.toggle('active', (id==='fbLight'&&mode==='light')||(id==='fbDark'&&mode==='dark')||(id==='fbAuto'&&mode==='auto')); });
-  let st=document.getElementById('fbThemeStatus'); if(st) st.innerText = mode==='auto' ? 'Auto Smart • Follows time & system' : 'Current: '+mode;
-}
-function applyFbTheme(t){
-  document.body.classList.toggle('dark', t==='dark');
-  let btn=document.getElementById('fbThemeBtn'); if(btn) btn.innerText = t==='dark' ? '🌙' : '☀️';
-  let rt=document.getElementById('fbRightTheme'); if(rt) rt.innerText = t==='dark' ? 'Dark - Night Luxury' : 'Light - Day Bright';
-}
-function applySmartTheme(){
-  let mode=localStorage.getItem('glitch650_theme_mode')||'auto';
-  if(mode!=='auto'){ applyFbTheme(mode); return; }
-  let hour=new Date().getHours();
-  let isNight = hour>=18 || hour<6;
-  let sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  let shouldDark = isNight || sysDark;
-  applyFbTheme(shouldDark?'dark':'light');
-  let st=document.getElementById('fbThemeStatus'); if(st) st.innerText='Auto Smart: '+(shouldDark?'Dark (Night/System)':'Light (Day)')+' • '+hour+':00';
-  let a=document.getElementById('fbAuto'); if(a) a.classList.add('active');
-}
-function toggleSmartTheme(){ let cur=document.body.classList.contains('dark')?'dark':'light'; setSmartTheme(cur==='dark'?'light':'dark'); }
-document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(()=>{ buildFacebookLayout(); applySmartTheme(); }, 600); });
-if(window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=>{ if(localStorage.getItem('glitch650_theme_mode')==='auto') applySmartTheme(); });
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', ()=>{
-  setTimeout(()=>{
-    // Remove G icon
-    document.querySelectorAll('.fbLogo, .gLogo, #gLogo, .logoG').forEach(e=>e.remove());
-    // Remove top-left G inside fbTopBar if still there
-    let topBar=document.querySelector('.fbTop'); if(topBar){ let g=topBar.querySelector('div'); if(g && g.textContent.trim()==='G') g.remove(); }
-    // Remove glitch650 Admin header block - find element containing both words
-    document.querySelectorAll('h1,h2,h3,div').forEach(el=>{
-      if(el.children.length<3 && el.textContent.includes('glitch650') && el.textContent.includes('Admin')){
-        // Don't remove if it's inside Settings list - only big header
-        if(el.offsetHeight>60) el.style.display='none';
-      }
-    });
-    // Remove the bell next to Admin header (the big one in header, not top bar)
-    document.querySelectorAll('button, div').forEach(el=>{
-      if(el.textContent.trim()==='🔔' && el.closest('.adminHeader')) el.remove();
-    });
-    // Ensure ONLY ONE heading "Control Center • <a href="#" onclick="openSection('security');return false" style="color:#D4AF37">Security Center</a>" at top of main
-    let main=document.getElementById('main');
-    if(main && !document.getElementById('onlyControlCenter')){
-      let h=document.createElement('h1');
-      h.id='onlyControlCenter';
-      h.innerText='Control Center • <a href="#" onclick="openSection('security');return false" style="color:#D4AF37">Security Center</a>';
-      h.style.cssText='text-align:center;font-size:28px;font-weight:900;margin:18px 0 6px;letter-spacing:.3px';
-      let sub=document.createElement('p');
-      sub.innerText='Manage everything in one place';
-      sub.style.cssText='text-align:center;color:#888;font-size:13px;margin:0 0 16px';
-      main.prepend(sub); main.prepend(h);
-    }
-  }, 500);
-});
-
-// FUNCTIONAL DETAILED SETTINGS - Properly Arranged
-function openOneSettings(){
-  document.querySelectorAll('.fbCard, .card, #sec-home, #sec-messages, #sec-posts, #sec-leads, #sec-control, #sec-settings').forEach(el=>{ if(el) el.style.display='none'; });
-  let hub=document.getElementById('oneSettingsDetailed');
-  if(!hub){
-    hub=document.createElement('div'); hub.id='oneSettingsDetailed';
-    hub.style.cssText='max-width:600px;margin:0 auto;padding:0 14px 30px';
-    hub.innerHTML=`
-    <button onclick="goHome()" style="background:#d4af37;color:#000;padding:8px 16px;border-radius:20px;border:none;font-weight:700;margin-bottom:14px">← Back to Control Center • <a href="#" onclick="openSection('security');return false" style="color:#D4AF37">Security Center</a></button>
-    <h2 style="margin:0 0 4px">⚙️ Settings</h2><p style="color:#888;font-size:13px;margin:0 0 16px">All settings - tap to open, each works</p>
-    <div id="settingsList"></div><div id="settingsDetail" style="display:none"></div>`;
-    (document.querySelector('.fbCenter')||document.getElementById('main')).appendChild(hub);
-  }
-  hub.style.display='block';
-  showSettingsList();
-  window.scrollTo({top:0});
-}
-function showSettingsList(){
-  document.getElementById('settingsList').style.display='block';
-  document.getElementById('settingsDetail').style.display='none';
-  let items=[
-    ['👤','Profile Settings','Name, Bio, Photo, About','profile','<label>Display Name</label><input id="setName" value="glitch650" style="width:100%;padding:12px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin:6px 0"><label>Bio</label><textarea id="setBio" style="width:100%;padding:12px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333">Premium Web Developer</textarea><button onclick="saveProfile()" style="width:100%;padding:12px;background:#d4af37;color:#000;border:none;border-radius:10px;font-weight:700;margin-top:10px">Save Profile</button>'],
-    ['🔒','Security & Login','PIN, Logout, Smart Login','security','<p>Current PIN: <b>0296</b></p><input id="newPin" placeholder="New 4-digit PIN" maxlength="4" inputmode="numeric" style="width:100%;padding:12px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333"><button onclick="savePin()" style="width:100%;padding:12px;background:#1877f2;color:#fff;border:none;border-radius:10px;font-weight:700;margin-top:10px">Change PIN</button><button onclick="logoutSmart()" style="width:100%;padding:12px;background:#e41e3f;color:#fff;border:none;border-radius:10px;font-weight:700;margin-top:10px">Logout</button>'],
-    ['🎨','Appearance & Theme','Dark / Light / Auto Smart','adjust','<p id="themeStatus">Auto Smart: Following time + system</p><div style="display:flex;gap:8px"><button onclick="setThemeSmart(\'light\')" style="flex:1;padding:12px;border-radius:10px;background:#fff;color:#000;border:none;font-weight:700">☀️ Light</button><button onclick="setThemeSmart(\'dark\')" style="flex:1;padding:12px;border-radius:10px;background:#222;color:#fff;border:none;font-weight:700">🌙 Dark</button><button onclick="setThemeSmart(\'auto\')" style="flex:1;padding:12px;border-radius:10px;background:#d4af37;color:#000;border:none;font-weight:700">🤖 Auto</button></div><p style="color:#888;font-size:12px;margin-top:10px">Auto: 6pm-6am = Dark, Day = Light, follows phone system</p>'],
-    ['🎛️','Full Control','Photo, Theme, Internet, Speed','control','<button onclick="openSection(\'control\')" style="width:100%;padding:12px;background:#1877f2;color:#fff;border:none;border-radius:10px;font-weight:700">Open Full Control →</button><p style="color:#888;font-size:13px">Manage photo, theme, internet & speed in one place</p>'],
-    ['💬','Messages & Notifications','Customer Care, Alerts','messages','<button onclick="openSection(\'messages\')" style="width:100%;padding:12px;background:#25D366;color:#fff;border:none;border-radius:10px;font-weight:700">Open Messages →</button><label style="display:flex;gap:10px;margin-top:12px"><input type="checkbox" checked> Notify me for new messages</label><label style="display:flex;gap:10px;margin-top:8px"><input type="checkbox" checked> Vibrate on new lead</label>'],
-    ['📝','Posts Settings','Create & Manage Posts','posts','<button onclick="openSection(\'posts\')" style="width:100%;padding:12px;background:#1877f2;color:#fff;border:none;border-radius:10px;font-weight:700">Manage Posts →</button><p style="color:#888">Create, edit, delete posts</p>'],
-    ['🌐','Internet & Data','Speed, Offline, Cache','internet','<p>Connection: <b id="netStatus">Checking...</b></p><button onclick="checkNet()" style="width:100%;padding:12px;background:#333;color:#fff;border:none;border-radius:10px;font-weight:700">Test Internet Speed</button><button onclick="localStorage.clear();alert(\'Cache cleared\')" style="width:100%;padding:12px;background:#333;color:#fff;border:none;border-radius:10px;font-weight:700;margin-top:8px">Clear Cache</button>'],
-  ];
-  document.getElementById('settingsList').innerHTML = items.map((it,i)=>`
-    <div onclick="openSettingDetail(${i})" style="display:flex;gap:12px;align-items:center;padding:14px;background:#242526;border-radius:12px;margin:8px 0;cursor:pointer">
-      <span style="width:44px;height:44px;border-radius:50%;background:#3a3b3c;display:flex;align-items:center;justify-content:center;font-size:22px">${it[0]}</span>
-      <div><b>${it[1]}</b><br><small style="color:#888">${it[2]}</small></div><span style="margin-left:auto;font-size:22px;color:#888">›</span>
-    </div>`).join('');
-  window._settingsItems = items;
-}
-function openSettingDetail(i){
-  let it = window._settingsItems[i];
-  document.getElementById('settingsList').style.display='none';
-  let d=document.getElementById('settingsDetail'); d.style.display='block';
-  d.innerHTML=`<button onclick="showSettingsList()" style="background:#d4af37;color:#000;padding:8px 16px;border-radius:20px;border:none;font-weight:700">← Back to Settings</button><h3 style="margin:14px 0 4px">${it[0]} ${it[1]}</h3><p style="color:#888;font-size:13px">${it[2]}</p><div style="margin-top:14px">${it[4]}</div>`;
-  window.scrollTo({top:0});
-}
-function saveProfile(){ localStorage.setItem('glitch650_name', document.getElementById('setName').value); alert('Profile saved ✅'); }
-function savePin(){ let v=document.getElementById('newPin').value; if(v.length!==4||isNaN(v)){ alert('Enter 4 digits'); return; } localStorage.setItem('glitch650_pin', v); alert('PIN changed to '+v+' ✅'); }
-function checkNet(){ document.getElementById('netStatus').innerText = navigator.onLine ? 'Online ✅ '+ (navigator.connection?.effectiveType||'') : 'Offline ❌'; }
-function logoutSmart(){ localStorage.removeItem('glitch650_logged_in'); location.reload(); }
-function goHome(){ let h=document.getElementById('oneSettingsDetailed'); if(h) h.style.display='none'; if(typeof openSection==='function') openSection('home'); }
-</script>
-
-<script>
-// ALL POSTS BEAR PROFILE PICTURE
-function getMyProfilePic(){
-  // 1. From saved profile pic
-  let saved = localStorage.getItem('glitch650_profile_pic') || localStorage.getItem('profilePic') || localStorage.getItem('glitch650_photo');
-  if(saved) return saved;
-  // 2. From main profile picture on page
-  let main = document.querySelector('#profilePic, .profile-pic, .profilePic, #mainProfileImg, .heroImg, .profileImg');
-  if(main && main.src && !main.src.includes('data:')) return main.src;
-  // 3. From any img with glitch650 / profile in src
-  let imgs = document.querySelectorAll('img');
-  for(let im of imgs){ if(im.src.includes('profile') || im.src.includes('avatar') || im.src.includes('glitch')) return im.src; }
-  // 4. Fallback - your uploaded file names (common)
-  return 'profile.jpg';
-}
-function applyProfilePicToAllPosts(){
-  let pic = getMyProfilePic();
-  // Replace all post avatars
-  document.querySelectorAll('.postAvatar, .post-avatar, .avatar, .feedAvatar, .postHeader img, .post-card img, .post img').forEach(el=>{
-    // Only avatars - small round ones, not post content images
-    if(el.tagName==='IMG' && (el.className.includes('avatar') || el.className.includes('Avatar') || el.closest('.postHeader') || el.closest('.post-header') || el.closest('.postTop'))){
-      if(el.src !== pic && !el.dataset.postContent) el.src = pic;
-    }
-    // If avatar is a DIV with letter "a" / initial, replace with IMG
-    if(el.tagName==='DIV' && el.textContent.trim().length<=2 && (el.className.includes('avatar') || el.className.includes('Avatar'))){
-      let img=document.createElement('img');
-      img.src=pic; img.className=el.className+' postAvatar'; img.style.cssText='width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #d4af37';
-      el.replaceWith(img);
-    }
-  });
-  // Also fix any div avatar that shows "a"
-  document.querySelectorAll('div').forEach(div=>{
-    if(div.textContent.trim()==='a' && div.offsetWidth<=60 && div.offsetHeight<=60 && div.style.borderRadius==='50%'){
-      let img=document.createElement('img');
-      img.src=pic; img.style.cssText='width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #d4af37';
-      div.replaceWith(img);
-    }
-  });
-}
-document.addEventListener('DOMContentLoaded', ()=>{
-  applyProfilePicToAllPosts();
-  setTimeout(applyProfilePicToAllPosts, 800);
-  setTimeout(applyProfilePicToAllPosts, 2000);
-});
-// Re-apply when new posts render
-let _obs = new MutationObserver(()=> applyProfilePicToAllPosts());
-document.addEventListener('DOMContentLoaded', ()=>{ _obs.observe(document.body, {childList:true, subtree:true}); });
-</script>
-
-<script>
-// WHATSAPP SETTINGS - Like Screenshot
-function openOneSettings(){
-  document.querySelectorAll('.fbCard, .card, #sec-home, #sec-messages, #sec-posts, #sec-leads, #sec-control, #sec-settings, #oneSettingsDetailed, #oneSettings').forEach(el=>{ if(el) el.style.display='none'; });
-  let hub=document.getElementById('waSettingsHub');
-  if(!hub){
-    hub=document.createElement('div'); hub.id='waSettingsHub'; hub.className='waSettings';
-    hub.innerHTML=`
-    <div class="waTop"><span class="ic" onclick="goHome()">←</span><div style="flex:1"></div><span class="ic" onclick="fbSearchSmart('')">🔍</span><span class="ic">⊞</span><span class="ic" onclick="openSettingDetail(0)">✏️</span></div>
-    <div id="waList"></div><div id="waDetail" style="display:none"></div>`;
-    (document.querySelector('.fbCenter')||document.getElementById('main')).appendChild(hub);
-  }
-  hub.style.display='block';
-  showWaList();
-  window.scrollTo({top:0});
-}
-function showWaList(){
-  document.getElementById('waList').style.display='block';
-  document.getElementById('waDetail').style.display='none';
-  let pic = localStorage.getItem('glitch650_profile_pic') || document.querySelector('#profilePic')?.src || 'profile.jpg';
-  let name = localStorage.getItem('glitch650_name') || 'PROMISE';
-  let status = localStorage.getItem('glitch650_status') || 'At work';
-  let handle = localStorage.getItem('glitch650_handle') || '@jerrygucci';
-  let items=[
-    ['💎','Subscriptions','Explore premium benefits'],
-    ['💻','Linked devices','Use WhatsApp on other devices'],
-    ['🔑','Account','Security notifications, change number'],
-    ['🔒','Privacy','Blocked accounts, disappearing messages'],
-    ['👥','Lists','Manage people and groups'],
-    ['💬','Chats','Chat history, backup'],
-    ['🎨','Appearance','Chat theme, app icon, app theme'],
-    ['🔔','Notifications','Message, group & call tones'],
-    ['💾','Storage and data','Manage storage, network usage'],
-    ['🌐','Internet & Data','Speed, Offline, Cache'],
-    ['❓','Help','Help center, contact us, privacy policy'],
-  ];
-  let rows = items.map((it,i)=>`<div class="waRow" onclick="openWaDetail(${i})"><span class="wic">${it[0]}</span><div><b>${it[1]}</b><small>${it[2]}</small></div></div>`).join('');
-  document.getElementById('waList').innerHTML=`
-    <div style="text-align:center;padding:14px 0 0"><span style="font-size:11px;letter-spacing:3px;color:#d4af37;font-weight:700">✦ GLITCH650 • PREMIUM ✦</span></div><div style="text-align:center;padding:14px 0 0"><span style="font-size:11px;letter-spacing:3px;color:#d4af37;font-weight:700">✦ GLITCH650 • PREMIUM ✦</span></div><div class="waProfile">
-      <div class="waPill">📶 ${status}</div><br>
-      <img src="${pic}" class="waPic" onclick="openSettingDetail(0)" onerror="this.src='profile.jpg'">
-      <div class="waName">${name} <span class="waLuxBadge">✦ PREMIUM</span> <span style="font-size:18px;color:#d4af37">˅</span> <span class="waGreen"></span></div>
-      <div class="waHandle">${handle}</div>
-    </div>
-    ${rows}
-    <p style="text-align:center;color:#8696a0;font-size:12px;margin-top:20px">glitch650 • Control Center • <a href="#" onclick="openSection('security');return false" style="color:#D4AF37">Security Center</a><br>Version 1.0 • Premium</p>`;
-  window._waItems = items;
-}
-function openWaDetail(i){
-  let it = window._waItems[i];
-  document.getElementById('waList').style.display='none';
-  let d=document.getElementById('waDetail'); d.style.display='block';
-  let content='';
-  if(it[1]==='Appearance') content=`<p id="themeStatus" style="color:#8696a0">Auto Smart: Following time + system</p><button class="waBtn" onclick="setThemeSmart('light');alert('Light ☀️')">☀️ Light Theme</button><button class="waBtn2" onclick="setThemeSmart('dark');alert('Dark 🌙')">🌙 Dark Theme</button><button class="waBtn" onclick="setThemeSmart('auto');alert('Auto Smart 🤖')">🤖 Auto Smart (Night=Dark, Day=Light)</button><p style="color:#8696a0;font-size:13px;margin-top:12px">Auto: 6pm-6am Dark, Day Light, follows phone system</p>`;
-  else if(it[1]==='Account') content=`<label>Display Name</label><input id="waName" value="${localStorage.getItem('glitch650_name')||'PROMISE'}"><label>Status</label><input id="waStatus" value="${localStorage.getItem('glitch650_status')||'At work'}"><label>Handle</label><input id="waHandle" value="${localStorage.getItem('glitch650_handle')||'@jerrygucci'}"><label>New PIN</label><input id="waPin" maxlength="4" placeholder="4 digits" inputmode="numeric"><button class="waBtn" onclick="saveWaAccount()">Save Account</button><button class="waBtn2" onclick="logoutSmart()">Logout</button>`;
-  else if(it[1]==='Privacy') content=`<label><input type="checkbox" checked> Blocked accounts - Manage</label><br><label><input type="checkbox" checked> Disappearing messages</label><br><label><input type="checkbox" checked> Read receipts</label><br><label><input type="checkbox" checked> Last seen - Everyone</label><button class="waBtn" onclick="alert('Privacy saved ✅')">Save Privacy</button>`;
-  else if(it[1]==='Chats') content=`<button class="waBtn" onclick="openSection('messages')">Open Chats →</button><label style="display:block;margin-top:14px"><input type="checkbox" checked> Chat backup - Daily</label><label><input type="checkbox" checked> Keep messages</label>`;
-  else if(it[1]==='Notifications') content=`<label><input type="checkbox" checked> Message tones</label><br><label><input type="checkbox" checked> Group tones</label><br><label><input type="checkbox" checked> Vibrate on new lead</label><button class="waBtn" onclick="alert('Notifications saved ✅')">Save</button>`;
-  else if(it[1]==='Storage and data') content=`<p>Storage: <b>Auto</b></p><button class="waBtn2" onclick="localStorage.clear();alert('Cache cleared ✅')">Clear Cache</button><button class="waBtn" onclick="checkNet()">Test Internet</button><p id="netStatus" style="color:#8696a0"></p>`;
-  else if(it[1]==='Linked devices') content=`<p style="color:#8696a0">Use on other devices</p><p><b>This device</b> - Chrome • Active now 🟢</p><button class="waBtn" onclick="alert('Link new device - Scan QR')">+ Link New Device</button>`;
-  else if(it[1]==='Subscriptions') content=`<p>💎 <b>Premium</b> - Active</p><p style="color:#8696a0">Explore premium benefits: Faster speed, More storage, Priority support</p><button onclick="showToast('Done ✅')" class="waBtn">Upgrade to Premium</button>`;
-  else if(it[1]==='Help') content=`<p>Help Center • Contact Us • Privacy Policy</p><button class="waBtn" onclick="openSection('messages')">Contact Support →</button>`;
-  else content=`<p style="color:#8696a0">${it[2]}</p><button class="waBtn" onclick="showWaList()">Back</button>`;
-  d.innerHTML=`<div class="waTop"><span class="ic" onclick="showWaList()">←</span><b style="font-size:18px">${it[1]}</b></div><div class="waDetail">${content}<button class="waBtn2" onclick="showWaList()">← Back to Settings</button></div>`;
-  window.scrollTo({top:0});
-}
-function saveWaAccount(){
-  localStorage.setItem('glitch650_name', document.getElementById('waName').value);
-  localStorage.setItem('glitch650_status', document.getElementById('waStatus').value);
-  localStorage.setItem('glitch650_handle', document.getElementById('waHandle').value);
-  let pin=document.getElementById('waPin').value; if(pin.length===4) localStorage.setItem('glitch650_pin', pin);
-  alert('Account saved ✅'); showWaList();
-}
-function openSettingDetail(i){ openOneSettings(); }
-</script>
-
-<script>
-// UNIVERSAL BUTTON FIX - ALL ADMIN BUTTONS MUST WORK
-function ensureCoreFunctions(){
-  // If any function missing, create it so button never dies
-  if(typeof openSection !== 'function'){
-    window.openSection = function(sec){
-      document.querySelectorAll('[id^="sec-"]').forEach(e=>e.style.display='none');
-      let t=document.getElementById('sec-'+sec) || document.getElementById('sec-home');
-      if(t) t.style.display='block';
-      let hub=document.getElementById('waSettingsHub'); if(hub) hub.style.display='none';
-      let det=document.getElementById('oneSettingsDetailed'); if(det) det.style.display='none';
-      window.scrollTo({top:0});
-      showToast('Opened '+sec+' ✅');
-    };
-  }
-  if(typeof goHome !== 'function'){ window.goHome = function(){ openSection('home'); }; }
-  if(typeof openTopNotif !== 'function'){ window.openTopNotif = function(e){ if(e) e.stopPropagation(); openSection('messages'); showToast('Notifications - Check Messages 🔔'); }; }
-  if(typeof openOneSettings !== 'function'){ window.openOneSettings = function(){ showToast('Settings opening...'); }; }
-  if(typeof logoutSmart !== 'function'){ window.logoutSmart = function(){ localStorage.removeItem('glitch650_logged_in'); location.reload(); }; }
-  if(typeof toggleThemeSmart !== 'function'){ window.toggleThemeSmart = function(){ document.body.classList.toggle('dark'); showToast('Theme switched ✅'); }; }
-  if(typeof setThemeSmart !== 'function'){ window.setThemeSmart = function(m){ document.body.classList.toggle('dark', m==='dark'); localStorage.setItem('glitch650_theme_mode', m); showToast(m+' theme ✅'); }; }
-  if(typeof fbSearchSmart !== 'function'){ window.fbSearchSmart = function(q){ if(q) showToast('Searching: '+q); }; }
-  if(typeof showToast !== 'function'){
-    window.showToast = function(msg){
-      let t=document.getElementById('toastFix'); if(!t){ t=document.createElement('div'); t.id='toastFix'; t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#d4af37;color:#000;padding:12px 20px;border-radius:20px;font-weight:700;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.4)'; document.body.appendChild(t); }
-      t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none', 2500);
-    };
-  }
-}
-function fixAllButtons(){
-  ensureCoreFunctions();
-  document.querySelectorAll('button, .fbBtn, .waRow, .fbMenu, [onclick]').forEach(btn=>{
-    // Skip if already has working onclick and not broken
-    let txt = (btn.innerText||btn.textContent||'').trim().toLowerCase();
-    // Add click listener as backup - if onclick fails, this runs
-    if(!btn.dataset.fixed){
-      btn.dataset.fixed='1';
-      btn.addEventListener('click', (e)=>{
-        // If button already handled by onclick, let it run - we only act if no action happened
-        setTimeout(()=>{
-          // Check if button did nothing - if it has no onclick, give it action
-          if(!btn.getAttribute('onclick') && !btn.dataset.hasAction){
-            handleButtonByText(btn, txt);
-          }
-        }, 50);
-      });
-    }
-    // Fix common broken buttons by text
-    if(txt.includes('back') && !btn.getAttribute('onclick')){
-      btn.onclick=()=>{ if(typeof showWaList==='function') showWaList(); else goHome(); };
-    }
-    if(txt.includes('save') && !btn.getAttribute('onclick')){
-      btn.onclick=()=>showToast('Saved ✅');
-    }
-    if(txt.includes('logout')){
-      btn.onclick=()=>logoutSmart();
-    }
-    if(txt.includes('clear cache')){
-      btn.onclick=()=>{ localStorage.clear(); showToast('Cache cleared ✅'); };
-    }
-    if(txt.includes('test internet') || txt.includes('check net')){
-      btn.onclick=()=>showToast(navigator.onLine ? 'Online ✅ '+ (navigator.connection?.effectiveType||'') : 'Offline ❌');
-    }
-    if(txt.includes('open messages') || txt.includes('open chats')){
-      btn.onclick=()=>openSection('messages');
-    }
-    if(txt.includes('manage posts') || txt.includes('open posts')){
-      btn.onclick=()=>openSection('posts');
-    }
-    if(txt.includes('open full control') || txt.includes('full control')){
-      btn.onclick=()=>openSection('control');
-    }
-    if(txt.includes('create') && txt.includes('post')){
-      btn.onclick=()=>openSection('posts');
-    }
-    if(txt.includes('settings') && !btn.getAttribute('onclick')){
-      btn.onclick=()=>openOneSettings();
-    }
-    if(txt.includes('light') && txt.includes('theme')){
-      btn.onclick=()=>setThemeSmart('light');
-    }
-    if(txt.includes('dark') && txt.includes('theme')){
-      btn.onclick=()=>setThemeSmart('dark');
-    }
-    if(txt.includes('auto')){
-      btn.onclick=()=>setThemeSmart('auto');
-    }
-  });
-  // Fix top bar buttons specifically
-  document.querySelectorAll('.fbBtn').forEach(b=>{
-    if(!b.getAttribute('onclick')){
-      let t=b.innerText;
-      if(t.includes('🌙')||t.includes('☀️')) b.onclick=()=>toggleThemeSmart();
-      if(t.includes('💬')) b.onclick=()=>openSection('messages');
-      if(t.includes('🔔')) b.onclick=(e)=>openTopNotif(e);
-      if(t.includes('👤')) b.onclick=()=>openOneSettings();
-    }
-  });
-  // Fix left menu items
-  document.querySelectorAll('.fbMenu').forEach(m=>{
-    if(!m.getAttribute('onclick')){
-      let t=m.innerText.toLowerCase();
-      if(t.includes('home')) m.onclick=()=>goHome();
-      if(t.includes('message')) m.onclick=()=>openSection('messages');
-      if(t.includes('post')) m.onclick=()=>openSection('posts');
-      if(t.includes('lead')) m.onclick=()=>openSection('leads');
-      if(t.includes('setting')) m.onclick=()=>openOneSettings();
-      if(t.includes('control')) m.onclick=()=>openSection('control');
-      if(t.includes('theme')) m.onclick=()=>toggleThemeSmart();
-    }
-  });
-}
-function handleButtonByText(btn, txt){
-  if(txt.includes('message')||txt.includes('chat')) openSection('messages');
-  else if(txt.includes('post')) openSection('posts');
-  else if(txt.includes('lead')) openSection('leads');
-  else if(txt.includes('setting')) openOneSettings();
-  else if(txt.includes('control')) openSection('control');
-  else if(txt.includes('home')||txt.includes('dashboard')) goHome();
-  else if(txt.includes('theme')||txt.includes('dark')||txt.includes('light')) toggleThemeSmart();
-  else if(txt.includes('logout')) logoutSmart();
-  else showToast('Done ✅');
-}
-// Run fix on load + every time new content appears
-document.addEventListener('DOMContentLoaded', ()=>{
-  fixAllButtons();
-  setTimeout(fixAllButtons, 1000);
-  setTimeout(fixAllButtons, 2500);
-  // Watch for new buttons (Settings detail, etc)
-  new MutationObserver(()=>fixAllButtons()).observe(document.body, {childList:true, subtree:true});
-});
-// Also fix after any openOneSettings / openSection call
-let _origOpenOne = window.openOneSettings;
-if(_origOpenOne) window.openOneSettings = function(){ _origOpenOne(); setTimeout(fixAllButtons, 300); };
-</script>
-<div id="themeTopBtn" style="display:none"></div><div id="dotMsgTop" style="display:none"></div><script src="security.js"></script></body></html>
+</body></html>
