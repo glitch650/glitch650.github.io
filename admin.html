@@ -68,6 +68,78 @@ a[href*="wa.me"]:hover, .wa-btn:hover {
 }
 </style>
 
+
+<style id="g650-menu-fix">
+/* ===== FIX: Sidebar must be SOLID, never transparent ===== */
+aside, .sidebar, #sidebar, nav.sidebar {
+  background: #0A0A0A !important;
+  background-color: #0A0A0A !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+  border-right: 1px solid rgba(212,175,55,.25) !important;
+  box-shadow: 12px 0 40px rgba(0,0,0,.85) !important;
+  z-index: 9999 !important;
+  position: fixed !important;
+  top: 0 !important; left: 0 !important; bottom: 0 !important;
+  width: 280px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 18px 14px 90px 14px !important;
+}
+/* Overlay behind menu - dims background so it can't show through */
+.g650-menu-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.65);
+  z-index: 9998; display: none; backdrop-filter: blur(2px);
+}
+.g650-menu-overlay.show { display: block; }
+/* Luxury menu items */
+aside .navbtn, .sidebar .navbtn, aside button[data-sec] {
+  display: block !important;
+  width: 100% !important;
+  text-align: left !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  padding: 13px 14px !important;
+  margin: 3px 0 !important;
+  font-size: 15px !important;
+  color: #E8E8E8 !important;
+  letter-spacing: .2px !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: all .2s ease !important;
+}
+aside .navbtn:hover, .sidebar .navbtn:hover {
+  background: rgba(212,175,55,.10) !important;
+  border-color: rgba(212,175,55,.30) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  transform: translateX(3px) !important;
+}
+aside .navbtn.active, .sidebar .navbtn.active {
+  background: linear-gradient(90deg, rgba(212,175,55,.22), rgba(212,175,55,.06)) !important;
+  border-color: rgba(212,175,55,.45) !important;
+  color: #F5D67B !important;
+  font-weight: 600 !important;
+}
+/* Section labels - WEBSITE CONTROL etc */
+aside h3, aside .menu-label, .sidebar h3 {
+  color: #D4AF37 !important;
+  font-size: 11px !important;
+  letter-spacing: 2.5px !important;
+  text-transform: uppercase !important;
+  margin: 22px 0 8px 14px !important;
+  font-weight: 700 !important;
+  opacity: .95 !important;
+}
+/* Hide floating action buttons when menu is open - they were overlapping */
+body.menu-open .fab, body.menu-open [class*="New Project"] { display: none !important; }
+/* Main content should not peek through */
+main { position: relative; z-index: 1; }
+/* Top bar solid too */
+header, .topbar { background: #0A0A0A !important; z-index: 10000 !important; position: relative; }
+</style>
+
 </head>
 <body>
 <div class="top"><button onclick="document.querySelector('.side').classList.toggle('open')" style="background:none;border:1px solid #292929;color:#fff;padding:8px;border-radius:8px">☰</button><div class="logo">GLITCH<span>650</span> COMMAND CENTER 2.0</div><button class="btn" onclick="localStorage.removeItem('g650_session');location.reload()">Logout</button></div>
@@ -385,6 +457,20 @@ renderAll();renderAudit();
   // Example: hook Export/Backup buttons to show real loading->success
   window.g650WithFeedback = async function(btn, fn, successText){ if(!g650Btn(btn,'loading')) return; try{ await fn(); g650Btn(btn,'success', successText||'Done'); }catch(err){ g650Btn(btn,'error'); } };
 })();
+</script>
+
+
+<script id="g650-menu-js">
+function closeMenuFix(){ try{ document.body.classList.remove('menu-open'); let ov=document.getElementById('menuOverlay'); if(ov) ov.classList.remove('show'); let sb=document.querySelector('aside, .sidebar'); if(sb) sb.style.transform=''; }catch(e){} }
+function openMenuFix(){ try{ document.body.classList.add('menu-open'); let ov=document.getElementById('menuOverlay'); if(ov) ov.classList.add('show'); }catch(e){} }
+// Auto-close menu when a nav item is tapped + set active luxury state
+document.addEventListener('click', function(e){
+  let btn = e.target.closest('aside .navbtn, .sidebar .navbtn, aside button[data-sec]');
+  if(btn){ document.querySelectorAll('aside .navbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); setTimeout(closeMenuFix, 150); }
+  // Hamburger toggle
+  let ham = e.target.closest('[class*="hamburger"], [class*="menu-toggle"], button[onclick*="toggle"]');
+  if(ham && !e.target.closest('aside')){ let isOpen=document.body.classList.contains('menu-open'); if(isOpen) closeMenuFix(); else openMenuFix(); }
+});
 </script>
 
 </body></html>
