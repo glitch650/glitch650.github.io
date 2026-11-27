@@ -138,6 +138,75 @@ function exportFinReport(){const ads=DB.get('advertisers');const total=ads.reduc
 function renderMonetization(){const ads=DB.get('advertisers');const total=ads.reduce((s,x)=>s+(x.price||0),0);const paid=ads.filter(x=>x.pay==='Paid - Confirmed').reduce((s,x)=>s+(x.price||0),0);const te=document.getElementById('rTotal');if(te)te.textContent=total.toLocaleString();const pe=document.getElementById('rPending');if(pe)pe.textContent=(total-paid).toLocaleString();const cfg=JSON.parse(localStorage.getItem('g650_adsense')||'{}');const se=document.getElementById('adsenseStatus');if(se)se.textContent=cfg.status?cfg.status.toUpperCase():'NOT CONNECTED';const pa=document.getElementById('payAcc');if(pa)pa.textContent=cfg.pub?cfg.pub:'Not Connected';const al=document.getElementById('adList');if(al)al.innerHTML=ads.map(a=>'<div style="padding:8px 0;border-bottom:1px solid #222"><b>'+esc(a.name)+'</b> - '+(a.price||0)+' - '+esc(a.pay||'')+' <button class="btnD" onclick="delItem(\'advertisers\','+a.id+')">Delete</button></div>').join('')||'No campaigns yet.';const ph=document.getElementById('payHist');if(ph)ph.innerHTML=ads.map(a=>'<div>'+esc(a.name)+' - '+(a.price||0)+' - '+esc(a.pay||'')+'</div>').join('')||'No payments.';}
 const _oldR = renderAll; renderAll = function(){ _oldR(); try{renderMonetization()}catch(e){} };
 
+
+// ===== GLITCH650 VISIBILITY V2 - Real Data =====
+let anPage = 1;
+function anGet(k,def){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(def))}catch(e){return def}}
+function renderAnalyticsV2(){
+  const f = document.getElementById('anFilter')?.value || 'all';
+  const from = document.getElementById('anFrom')?.value || '';
+  const to = document.getElementById('anTo')?.value || '';
+  const q = (document.getElementById('anSearch')?.value||'').toLowerCase();
+  let visits = anGet('g650_visits',[]);
+  let acts = anGet('g650_activity',[]);
+  // date filter
+  let start=null,end=null; let now=new Date();
+  if(from){start=new Date(from+'T00:00:00')} else if(f==='today'){start=new Date(now);start.setHours(0,0,0,0)} else if(f==='yesterday'){start=new Date(now);start.setDate(start.getDate()-1);start.setHours(0,0,0,0);end=new Date(start);end.setDate(end.getDate()+1)} else if(f==='7'){start=new Date(now);start.setDate(start.getDate()-7)} else if(f==='30'){start=new Date(now);start.setDate(start.getDate()-30)}
+  if(to){end=new Date(to+'T23:59:59')}
+  if(start) visits=visits.filter(v=>new Date(v.when)>=start);
+  if(end) visits=visits.filter(v=>new Date(v.when)<=end);
+  if(start) acts=acts.filter(a=>new Date(a.when)>=start);
+  if(end) acts=acts.filter(a=>new Date(a.when)<=end);
+  if(q){visits=visits.filter(v=>(v.id+v.page+v.device+v.browser+v.ref).toLowerCase().includes(q)); acts=acts.filter(a=>(a.type+a.detail).toLowerCase().includes(q));}
+  const uniq=new Set(visits.map(v=>v.id)).size;
+  const first=new Set(visits.filter(v=>v.first).map(v=>v.id)).size;
+  const ret=uniq-first>0?uniq-first:visits.filter(v=>!v.first).length;
+  const wa=acts.filter(a=>a.type==='WhatsApp Click').length;
+  const msgs=anGet('messages',[]).concat(anGet('g650_messages',[]));
+  const logs=anGet('g650_audit',[]).concat(anGet('g650_admin_logs',[]));
+  // growth vs previous 7 days
+  const prevStart=new Date(now);prevStart.setDate(prevStart.getDate()-14);const prevEnd=new Date(now);prevEnd.setDate(prevEnd.getDate()-7);
+  const prevCount=anGet('g650_visits',[]).filter(v=>{let d=new Date(v.when);return d>=prevStart&&d<prevEnd}).length;
+  const growth=prevCount===0?(visits.length>0?100:0):Math.round((visits.length-prevCount)/prevCount*100);
+  const set=(id,val)=>{let el=document.getElementById(id);if(el)el.textContent=val};
+  set('anTotal',visits.length); set('anUnique',uniq); set('anViews',visits.length); set('anReturn',ret); set('anMsg',msgs.length); set('anWA',wa);
+  set('anActive',new Set(visits.filter(v=>Date.now()-new Date(v.when).getTime()<15*60000).map(v=>v.id)).size);
+  set('anAdmin',logs.length);
+  let g=document.getElementById('anGrowth'); if(g) g.textContent=(growth>=0?'+':'')+growth+'% vs prev period';
+  // top pages / sources / browsers / devices
+  let pages={}; visits.forEach(v=>pages[v.page]=(pages[v.page]||0)+1);
+  let top=Object.entries(pages).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  let tp=document.getElementById('anTopPages'); if(tp) tp.innerHTML='<b>Most Visited:</b><br>'+(top.map(x=>x[0]+' - '+x[1]).join('<br>')||'None');
+  let refs={}; visits.forEach(v=>refs[v.ref||'Direct']=(refs[v.ref||'Direct']||0)+1);
+  let rf=document.getElementById('anRefs'); if(rf) rf.innerHTML='<b>Traffic Sources:</b><br>'+Object.entries(refs).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0].slice(0,40)+' - '+x[1]).join('<br>');
+  let br={}; visits.forEach(v=>{let b=v.browser||'';let n=b.includes('Chrome')?'Chrome':b.includes('Safari')?'Safari':b.includes('Firefox')?'Firefox':'Other';br[n]=(br[n]||0)+1});
+  let dv=document.getElementById('anDevices'); if(dv) dv.textContent='Devices/Browsers: '+Object.entries(br).map(x=>x[0]+' '+x[1]).join(' | ');
+  // chart
+  let c=document.getElementById('anChart'); if(c){let ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#D4AF37';let days=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let key=d.toISOString().slice(0,10);days.push({key,count:anGet('g650_visits',[]).filter(v=>(v.when||'').slice(0,10)===key).length})}let max=Math.max(1,...days.map(d=>d.count));days.forEach((d,i)=>{let h=(d.count/max)*90;ctx.fillRect(10+i*42,110-h,28,h);ctx.fillStyle='#A6A6A6';ctx.font='9px sans-serif';ctx.fillText(d.key.slice(5),10+i*42,118);ctx.fillStyle='#D4AF37';});}
+  // paginated visitors
+  let per=20; let totalPages=Math.max(1,Math.ceil(visits.length/per)); if(anPage>totalPages)anPage=totalPages;
+  let pageVisits=visits.slice(-anPage*per).slice(0,per).reverse();
+  let vv=document.getElementById('anVisitors'); if(vv) vv.innerHTML=pageVisits.map(v=>'<div style="padding:6px 0;border-bottom:1px solid #222">'+new Date(v.when).toLocaleString()+' - '+esc(v.page)+' - '+esc(v.device)+' - '+esc(v.id.slice(0,10))+' - '+(v.first?'First':'Returning')+' - Ref: '+esc((v.ref||'').slice(0,30))+'</div>').join('')||'No visits yet. Visit public site once.';
+  let pg=document.getElementById('anPageInfo'); if(pg) pg.textContent='Page '+anPage+' / '+totalPages+' | Total: '+visits.length;
+  // live
+  let live=[...acts.map(a=>({when:a.when,txt:a.type+' - '+a.detail})),...visits.slice(-10).map(v=>({when:v.when,txt:'Visit - '+v.page+' ('+v.device+')'}))].sort((a,b)=>new Date(b.when)-new Date(a.when)).slice(0,15);
+  let lv=document.getElementById('anLive'); if(lv) lv.innerHTML=live.map(l=>'<div style="padding:6px 0;border-bottom:1px solid #222">'+new Date(l.when).toLocaleString()+' - '+esc(l.txt)+'</div>').join('')||'No activity yet.';
+  // messages with status
+  let mm=document.getElementById('anMessages'); if(mm) mm.innerHTML=msgs.slice(-20).reverse().map((m,i)=>'<div style="padding:8px 0;border-bottom:1px solid #222"><b>'+esc(m.name||'Guest')+'</b> - '+esc(m.email||'')+'<br>'+esc((m.subject||m.message||'').slice(0,100))+'<br><span style="color:#A6A6A6;font-size:12px">'+(m.created?new Date(m.created).toLocaleString():'')+' | '+(m.read?'Read':'Unread')+' | '+(m.replied?'Replied':'Pending')+'</span> <button class="btn2" onclick="markMsgRead('+ (msgs.length-1-i) +')">Mark Read</button> <button class="btn2" onclick="markMsgReplied('+(msgs.length-1-i)+')">Mark Replied</button></div>').join('')||'No messages yet.';
+  // admin logs
+  let al=document.getElementById('anAdminLogs'); if(al) al.innerHTML=logs.slice(-20).reverse().map(l=>'<div style="padding:6px 0;border-bottom:1px solid #222">'+new Date(l.when||l.time||Date.now()).toLocaleString()+' - '+esc(l.action||l.type||'')+' - '+esc(l.detail||l.admin||'')+'</div>').join('')||'No admin activity yet.';
+}
+function markMsgRead(i){let msgs=anGet('messages',[]); if(msgs[i]){msgs[i].read=true; localStorage.setItem('messages',JSON.stringify(msgs)); audit('MESSAGE_READ','Message '+i+' marked read'); renderAnalyticsV2();}}
+function markMsgReplied(i){let msgs=anGet('messages',[]); if(msgs[i]){msgs[i].replied=true; localStorage.setItem('messages',JSON.stringify(msgs)); audit('MESSAGE_REPLIED','Message '+i+' marked replied'); renderAnalyticsV2();}}
+function anNext(){anPage++; renderAnalyticsV2();}
+function anPrev(){if(anPage>1)anPage--; renderAnalyticsV2();}
+function exportAnalyticsCSV(){let visits=anGet('g650_visits',[]);let csv='date,visitor,page,device,referrer,first\n'+visits.map(v=>[v.when,v.id,v.page,v.device,v.ref,v.first].join(',')).join('\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv]));a.download='glitch650-visitors.csv';a.click(); audit('EXPORT','Visitors CSV exported');}
+// Override old render
+renderAnalytics = renderAnalyticsV2;
+setInterval(()=>{try{if(document.getElementById('sec-analytics')?.classList.contains('active')) renderAnalyticsV2();}catch(e){}},10000);
+// Log admin login/logout - hook if login function exists
+try{let _oldLogin = window.doLogin; if(_oldLogin){window.doLogin=function(){let r=_oldLogin.apply(this,arguments); let logs=anGet('g650_admin_logs',[]); logs.push({action:'ADMIN_LOGIN',detail:'Login attempt',when:new Date().toISOString()}); localStorage.setItem('g650_admin_logs',JSON.stringify(logs)); return r;}}}catch(e){}
+
 function renderAll(){
 document.getElementById('sProjects').textContent=DB.get('projects').length;document.getElementById('sCustomers').textContent=DB.get('customers').length;document.getElementById('sLeads').textContent=DB.get('leads').length;document.getElementById('sPosts').textContent=DB.get('posts').length;
 document.getElementById('projectList').innerHTML=DB.get('projects').map(p=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(p.title)}</b> - ${esc(p.client||'')} <span style="color:#D4AF37">${esc(p.status)}</span> ₣ ${(p.value||0).toLocaleString()}<br><button class="btnD" onclick="delItem('projects',${p.id})">Delete</button></div>`).join('')||'No projects yet.';
