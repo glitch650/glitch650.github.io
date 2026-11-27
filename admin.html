@@ -104,7 +104,7 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 .waBtn{width:100%!important;padding:14px!important;border-radius:12px!important;background:linear-gradient(135deg,#d4af37,#b8962e)!important;color:#000!important;border:none!important;font-weight:800!important;font-size:15px!important;margin-top:8px!important;box-shadow:0 4px 16px rgba(212,175,55,.3)!important}
 .waBtn2{width:100%!important;padding:14px!important;border-radius:12px!important;background:#1a1a1a!important;color:#fff!important;border:1px solid rgba(212,175,55,.3)!important;font-weight:700!important;font-size:15px!important;margin-top:8px!important}
 .waLuxBadge{display:inline-block;background:linear-gradient(135deg,#d4af37,#f5d76e);color:#000;font-size:10px;font-weight:900;padding:4px 10px;border-radius:20px;margin-left:8px;vertical-align:middle;letter-spacing:.5px}
-</style></head><body>
+</style><style>.fbLogo,.gLogo{display:none!important}</style></head><body>
 
 <!-- LOGIN - NEW: NO UNLOCK BUTTON, AUTO OPEN, VOICE -->
 <div id="login">
@@ -679,7 +679,7 @@ function openWaDetail(i){
   else if(it[1]==='Notifications') content=`<label><input type="checkbox" checked> Message tones</label><br><label><input type="checkbox" checked> Group tones</label><br><label><input type="checkbox" checked> Vibrate on new lead</label><button class="waBtn" onclick="alert('Notifications saved ✅')">Save</button>`;
   else if(it[1]==='Storage and data') content=`<p>Storage: <b>Auto</b></p><button class="waBtn2" onclick="localStorage.clear();alert('Cache cleared ✅')">Clear Cache</button><button class="waBtn" onclick="checkNet()">Test Internet</button><p id="netStatus" style="color:#8696a0"></p>`;
   else if(it[1]==='Linked devices') content=`<p style="color:#8696a0">Use on other devices</p><p><b>This device</b> - Chrome • Active now 🟢</p><button class="waBtn" onclick="alert('Link new device - Scan QR')">+ Link New Device</button>`;
-  else if(it[1]==='Subscriptions') content=`<p>💎 <b>Premium</b> - Active</p><p style="color:#8696a0">Explore premium benefits: Faster speed, More storage, Priority support</p><button class="waBtn">Upgrade to Premium</button>`;
+  else if(it[1]==='Subscriptions') content=`<p>💎 <b>Premium</b> - Active</p><p style="color:#8696a0">Explore premium benefits: Faster speed, More storage, Priority support</p><button onclick="showToast('Done ✅')" class="waBtn">Upgrade to Premium</button>`;
   else if(it[1]==='Help') content=`<p>Help Center • Contact Us • Privacy Policy</p><button class="waBtn" onclick="openSection('messages')">Contact Support →</button>`;
   else content=`<p style="color:#8696a0">${it[2]}</p><button class="waBtn" onclick="showWaList()">Back</button>`;
   d.innerHTML=`<div class="waTop"><span class="ic" onclick="showWaList()">←</span><b style="font-size:18px">${it[1]}</b></div><div class="waDetail">${content}<button class="waBtn2" onclick="showWaList()">← Back to Settings</button></div>`;
@@ -830,4 +830,4 @@ document.addEventListener('DOMContentLoaded', ()=>{
 let _origOpenOne = window.openOneSettings;
 if(_origOpenOne) window.openOneSettings = function(){ _origOpenOne(); setTimeout(fixAllButtons, 300); };
 </script>
-</body></html>
+<div id="themeTopBtn" style="display:none"></div><div id="dotMsgTop" style="display:none"></div></body></html>
