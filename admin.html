@@ -69,153 +69,70 @@ a[href*="wa.me"]:hover, .wa-btn:hover {
 </style>
 
 
-<style id="g650-menu-fix">
-/* ===== FIX: Sidebar must be SOLID, never transparent ===== */
-aside, .sidebar, #sidebar, nav.sidebar {
-  background: #0A0A0A !important;
-  background-color: #0A0A0A !important;
-  opacity: 1 !important;
-  backdrop-filter: none !important;
-  border-right: 1px solid rgba(212,175,55,.25) !important;
-  box-shadow: 12px 0 40px rgba(0,0,0,.85) !important;
-  z-index: 9999 !important;
-  position: fixed !important;
-  top: 0 !important; left: 0 !important; bottom: 0 !important;
-  width: 280px !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  padding: 18px 14px 90px 14px !important;
+
+
+
+
+
+
+<style id="g650-menu-final">
+/* ===== GLITCH650 MENU REBUILD - Clean Layout ===== */
+/* Reset layout - no more fighting */
+body { margin:0 !important; display:flex !important; min-height:100vh !important; overflow-x:hidden !important; background:#080808 !important; }
+header { position:fixed !important; top:0 !important; left:0 !important; right:0 !important; height:62px !important; z-index:1000 !important; background:#0A0A0A !important; border-bottom:1px solid rgba(212,175,55,.25) !important; display:flex !important; align-items:center !important; padding:0 14px !important; }
+/* SIDEBAR - DESKTOP: fixed left, MAIN sits beside it */
+aside, nav.sidebar, #sidebar {
+  position:fixed !important; top:62px !important; left:0 !important; bottom:0 !important;
+  width:280px !important; flex-shrink:0 !important;
+  background:#0A0A0A !important; background-image:none !important;
+  border-right:1px solid rgba(212,175,55,.22) !important;
+  overflow-y:auto !important; overflow-x:hidden !important;
+  z-index:900 !important; opacity:1 !important; transform:none !important;
+  padding:18px 0 100px 0 !important; display:block !important;
 }
-/* Overlay behind menu - dims background so it can't show through */
-.g650-menu-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,.65);
-  z-index: 9998; display: none; backdrop-filter: blur(2px);
+/* MAIN - DESKTOP: pushed right, never under sidebar */
+main, .main, #mainContent {
+  margin-left:280px !important; margin-top:62px !important;
+  flex:1 !important; min-width:0 !important; width:auto !important;
+  padding:18px !important; background:#080808 !important;
+  position:relative !important; z-index:1 !important;
 }
-.g650-menu-overlay.show { display: block; }
 /* Luxury menu items */
-aside .navbtn, .sidebar .navbtn, aside button[data-sec] {
-  display: block !important;
-  width: 100% !important;
-  text-align: left !important;
-  background: transparent !important;
-  border: 1px solid transparent !important;
-  border-radius: 12px !important;
-  padding: 13px 14px !important;
-  margin: 3px 0 !important;
-  font-size: 15px !important;
-  color: #E8E8E8 !important;
-  letter-spacing: .2px !important;
-  box-shadow: none !important;
-  transform: none !important;
-  transition: all .2s ease !important;
+aside button, aside .navbtn {
+  display:block !important; width:100% !important; text-align:left !important;
+  background:transparent !important; border:none !important; border-left:3px solid transparent !important;
+  color:#CFCFCF !important; padding:13px 22px !important; font-size:15px !important;
+  border-radius:0 !important; box-shadow:none !important; transform:none !important; margin:0 !important; cursor:pointer !important;
 }
-aside .navbtn:hover, .sidebar .navbtn:hover {
-  background: rgba(212,175,55,.10) !important;
-  border-color: rgba(212,175,55,.30) !important;
-  color: #fff !important;
-  box-shadow: none !important;
-  transform: translateX(3px) !important;
+aside button:hover, aside .navbtn:hover { background:rgba(212,175,55,.09) !important; color:#fff !important; border-left-color:#D4AF37 !important; box-shadow:none !important; }
+aside button.active, aside .navbtn.active { background:rgba(212,175,55,.13) !important; color:#F5D67B !important; border-left-color:#D4AF37 !important; font-weight:600 !important; }
+aside h3, aside .menu-label { color:#D4AF37 !important; font-size:11px !important; letter-spacing:2.5px !important; text-transform:uppercase !important; padding:24px 22px 8px !important; margin:0 !important; font-weight:700 !important; }
+/* Overlay - hidden on desktop */
+.g650-overlay { display:none !important; }
+/* ===== MOBILE: Sidebar OFF-CANVAS, Main FULL WIDTH ===== */
+@media (max-width: 900px) {
+  aside, nav.sidebar, #sidebar {
+    transform: translateX(-105%) !important;
+    transition: transform .28s ease !important;
+    top:62px !important; box-shadow: 20px 0 50px rgba(0,0,0,.9) !important;
+    width: 280px !important; max-width: 85vw !important;
+  }
+  body.sidebar-open aside, body.sidebar-open nav.sidebar, body.menu-open aside {
+    transform: translateX(0) !important;
+  }
+  main, .main, #mainContent { margin-left:0 !important; padding:14px !important; width:100% !important; }
+  body.sidebar-open .g650-overlay, body.menu-open .g650-overlay {
+    display:block !important; position:fixed !important; inset:0 !important; top:62px !important;
+    background:rgba(0,0,0,.70) !important; z-index:850 !important;
+  }
+  /* When menu is OPEN on mobile, main must NOT be visible through it - dim it */
+  body.sidebar-open main, body.menu-open main { pointer-events:none !important; }
 }
-aside .navbtn.active, .sidebar .navbtn.active {
-  background: linear-gradient(90deg, rgba(212,175,55,.22), rgba(212,175,55,.06)) !important;
-  border-color: rgba(212,175,55,.45) !important;
-  color: #F5D67B !important;
-  font-weight: 600 !important;
-}
-/* Section labels - WEBSITE CONTROL etc */
-aside h3, aside .menu-label, .sidebar h3 {
-  color: #D4AF37 !important;
-  font-size: 11px !important;
-  letter-spacing: 2.5px !important;
-  text-transform: uppercase !important;
-  margin: 22px 0 8px 14px !important;
-  font-weight: 700 !important;
-  opacity: .95 !important;
-}
-/* Hide floating action buttons when menu is open - they were overlapping */
-body.menu-open .fab, body.menu-open [class*="New Project"] { display: none !important; }
-/* Main content should not peek through */
-main { position: relative; z-index: 1; }
-/* Top bar solid too */
-header, .topbar { background: #0A0A0A !important; z-index: 10000 !important; position: relative; }
-</style>
-
-
-<style id="g650-menu-luxury">
-/* ===== LUXURY MENU FIX - Solid, Premium, No Background Leak ===== */
-aside, .sidebar, #sidebar, nav.sidebar {
-  background: #0A0A0A !important;
-  background-image: none !important;
-  opacity: 1 !important;
-  backdrop-filter: none !important;
-  border-right: 1px solid rgba(212,175,55,.25) !important;
-  box-shadow: 8px 0 40px rgba(0,0,0,.8) !important;
-  z-index: 9999 !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-}
-/* Dim + block background when menu is open */
-body.menu-open::before, body.sidebar-open::before {
-  content:''; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index: 9990; pointer-events:auto;
-}
-body.menu-open main, body.sidebar-open main { filter: blur(2px); pointer-events:none; }
-/* Menu items - luxury spacing */
-aside button, aside .navbtn, .sidebar button, .sidebar a {
-  background: transparent !important;
-  border: none !important;
-  border-left: 2px solid transparent !important;
-  color: #D8D8D8 !important;
-  text-align: left !important;
-  width: 100% !important;
-  padding: 13px 20px !important;
-  font-size: 15px !important;
-  letter-spacing: .3px !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  transform: none !important;
-  margin: 0 !important;
-}
-aside button:hover, aside .navbtn:hover {
-  background: rgba(212,175,55,.08) !important;
-  color: #FFFFFF !important;
-  border-left-color: #D4AF37 !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-aside button.active, aside .navbtn.active {
-  background: rgba(212,175,55,.12) !important;
-  color: #D4AF37 !important;
-  border-left-color: #D4AF37 !important;
-  font-weight: 600 !important;
-}
-/* Section titles - WEBSITE CONTROL etc */
-aside h3, aside .menu-title, aside .section-label, .sidebar h3 {
-  color: #D4AF37 !important;
-  font-size: 11px !important;
-  letter-spacing: 2.5px !important;
-  text-transform: uppercase !important;
-  padding: 22px 20px 8px !important;
-  margin: 0 !important;
-  font-weight: 700 !important;
-  border: none !important;
-}
-/* Divider */
-aside hr { border: none; border-top: 1px solid rgba(255,255,255,.07); margin: 10px 20px; }
-/* FIX: Bottom action buttons should NOT float over menu */
-main .top-actions, header .top-actions, .actions-bar {
-  position: relative !important; z-index: 1 !important;
-}
-/* If those + New Project buttons are fixed, un-fix them when menu open */
-body.menu-open .top-actions, body.sidebar-open .top-actions { display: none !important; }
-/* Header luxury */
-header { background:#0A0A0A !important; border-bottom:1px solid rgba(212,175,55,.2) !important; }
-/* Scrollbar luxury */
-aside::-webkit-scrollbar { width: 4px; }
-aside::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
 </style>
 
 </head>
 <body>
+<div class="g650-overlay" id="g650Overlay"></div>
 <div class="top"><button onclick="document.querySelector('.side').classList.toggle('open')" style="background:none;border:1px solid #292929;color:#fff;padding:8px;border-radius:8px">☰</button><div class="logo">GLITCH<span>650</span> COMMAND CENTER 2.0</div><button class="btn" onclick="localStorage.removeItem('g650_session');location.reload()">Logout</button></div>
 <nav class="side">
 <div class="glabel">BUSINESS MANAGEMENT</div>
@@ -534,18 +451,7 @@ renderAll();renderAudit();
 </script>
 
 
-<script id="g650-menu-js">
-function closeMenuFix(){ try{ document.body.classList.remove('menu-open'); let ov=document.getElementById('menuOverlay'); if(ov) ov.classList.remove('show'); let sb=document.querySelector('aside, .sidebar'); if(sb) sb.style.transform=''; }catch(e){} }
-function openMenuFix(){ try{ document.body.classList.add('menu-open'); let ov=document.getElementById('menuOverlay'); if(ov) ov.classList.add('show'); }catch(e){} }
-// Auto-close menu when a nav item is tapped + set active luxury state
-document.addEventListener('click', function(e){
-  let btn = e.target.closest('aside .navbtn, .sidebar .navbtn, aside button[data-sec]');
-  if(btn){ document.querySelectorAll('aside .navbtn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); setTimeout(closeMenuFix, 150); }
-  // Hamburger toggle
-  let ham = e.target.closest('[class*="hamburger"], [class*="menu-toggle"], button[onclick*="toggle"]');
-  if(ham && !e.target.closest('aside')){ let isOpen=document.body.classList.contains('menu-open'); if(isOpen) closeMenuFix(); else openMenuFix(); }
-});
-</script>
+
 
 
 <script id="g650MenuLuxury">
@@ -578,6 +484,30 @@ document.addEventListener('click', function(e){
     }
   });
   window.addEventListener('resize', syncMenu);
+})();
+</script>
+
+
+<script id="g650MenuFinal">
+(function(){
+  function toggleMenu(force){
+    let open = force !== undefined ? force : !document.body.classList.contains('sidebar-open');
+    document.body.classList.toggle('sidebar-open', open);
+    document.body.classList.toggle('menu-open', open);
+  }
+  window.toggleMenu = toggleMenu;
+  document.addEventListener('click', function(e){
+    let ham = e.target.closest('button');
+    // Hamburger is the button with ☰ in header
+    if(ham && ham.textContent.trim().startsWith('☰')){ e.preventDefault(); e.stopPropagation(); toggleMenu(); return; }
+    // Overlay click = close
+    if(e.target.id==='g650Overlay'){ toggleMenu(false); return; }
+    // Nav item click on mobile = close + set active
+    let nav = e.target.closest('aside button, aside .navbtn');
+    if(nav){ document.querySelectorAll('aside button').forEach(b=>b.classList.remove('active')); nav.classList.add('active'); if(window.innerWidth<=900) setTimeout(()=>toggleMenu(false), 120); }
+  });
+  // On desktop, menu always visible - remove open classes
+  window.addEventListener('resize', function(){ if(window.innerWidth>900){ document.body.classList.remove('sidebar-open','menu-open'); } });
 })();
 </script>
 
