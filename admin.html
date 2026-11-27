@@ -75,64 +75,70 @@ a[href*="wa.me"]:hover, .wa-btn:hover {
 
 
 
-<style id="g650-menu-final">
-/* ===== GLITCH650 MENU REBUILD - Clean Layout ===== */
-/* Reset layout - no more fighting */
-body { margin:0 !important; display:flex !important; min-height:100vh !important; overflow-x:hidden !important; background:#080808 !important; }
-header { position:fixed !important; top:0 !important; left:0 !important; right:0 !important; height:62px !important; z-index:1000 !important; background:#0A0A0A !important; border-bottom:1px solid rgba(212,175,55,.25) !important; display:flex !important; align-items:center !important; padding:0 14px !important; }
-/* SIDEBAR - DESKTOP: fixed left, MAIN sits beside it */
-aside, nav.sidebar, #sidebar {
+
+
+
+<style id="g650-menu-fullscreen">
+/* ===== MENU = FULL SCREEN LUXURY PAGE ===== */
+body { background:#080808 !important; }
+/* Header stays on top */
+header { position:fixed !important; top:0 !important; left:0 !important; right:0 !important; height:62px !important; z-index:10000 !important; background:#0A0A0A !important; border-bottom:1px solid rgba(212,175,55,.25) !important; }
+/* DESKTOP: sidebar left, main right - no overlap */
+aside {
   position:fixed !important; top:62px !important; left:0 !important; bottom:0 !important;
-  width:280px !important; flex-shrink:0 !important;
-  background:#0A0A0A !important; background-image:none !important;
+  width:280px !important; background:#0B0B0B !important;
   border-right:1px solid rgba(212,175,55,.22) !important;
-  overflow-y:auto !important; overflow-x:hidden !important;
-  z-index:900 !important; opacity:1 !important; transform:none !important;
-  padding:18px 0 100px 0 !important; display:block !important;
+  overflow-y:auto !important; z-index:900 !important; padding:18px 0 40px 0 !important;
 }
-/* MAIN - DESKTOP: pushed right, never under sidebar */
-main, .main, #mainContent {
-  margin-left:280px !important; margin-top:62px !important;
-  flex:1 !important; min-width:0 !important; width:auto !important;
-  padding:18px !important; background:#080808 !important;
-  position:relative !important; z-index:1 !important;
-}
-/* Luxury menu items */
-aside button, aside .navbtn {
-  display:block !important; width:100% !important; text-align:left !important;
-  background:transparent !important; border:none !important; border-left:3px solid transparent !important;
-  color:#CFCFCF !important; padding:13px 22px !important; font-size:15px !important;
-  border-radius:0 !important; box-shadow:none !important; transform:none !important; margin:0 !important; cursor:pointer !important;
-}
-aside button:hover, aside .navbtn:hover { background:rgba(212,175,55,.09) !important; color:#fff !important; border-left-color:#D4AF37 !important; box-shadow:none !important; }
-aside button.active, aside .navbtn.active { background:rgba(212,175,55,.13) !important; color:#F5D67B !important; border-left-color:#D4AF37 !important; font-weight:600 !important; }
-aside h3, aside .menu-label { color:#D4AF37 !important; font-size:11px !important; letter-spacing:2.5px !important; text-transform:uppercase !important; padding:24px 22px 8px !important; margin:0 !important; font-weight:700 !important; }
-/* Overlay - hidden on desktop */
-.g650-overlay { display:none !important; }
-/* ===== MOBILE: Sidebar OFF-CANVAS, Main FULL WIDTH ===== */
+main { margin-left:280px !important; margin-top:62px !important; padding:18px !important; }
+/* MOBILE: menu becomes FULL SCREEN, covers everything */
 @media (max-width: 900px) {
-  aside, nav.sidebar, #sidebar {
-    transform: translateX(-105%) !important;
-    transition: transform .28s ease !important;
-    top:62px !important; box-shadow: 20px 0 50px rgba(0,0,0,.9) !important;
-    width: 280px !important; max-width: 85vw !important;
+  aside {
+    top:0 !important; left:0 !important; right:0 !important; bottom:0 !important;
+    width:100vw !important; max-width:100vw !important; height:100dvh !important;
+    transform: translateX(-100%) !important;
+    transition: transform .3s ease !important;
+    z-index:9999 !important;
+    padding: 78px 0 40px 0 !important;
+    background:#0B0B0B !important;
+    box-shadow:none !important; border-right:none !important;
   }
-  body.sidebar-open aside, body.sidebar-open nav.sidebar, body.menu-open aside {
-    transform: translateX(0) !important;
-  }
-  main, .main, #mainContent { margin-left:0 !important; padding:14px !important; width:100% !important; }
-  body.sidebar-open .g650-overlay, body.menu-open .g650-overlay {
-    display:block !important; position:fixed !important; inset:0 !important; top:62px !important;
-    background:rgba(0,0,0,.70) !important; z-index:850 !important;
-  }
-  /* When menu is OPEN on mobile, main must NOT be visible through it - dim it */
-  body.sidebar-open main, body.menu-open main { pointer-events:none !important; }
+  body.sidebar-open aside, body.menu-open aside { transform: translateX(0) !important; }
+  main { margin-left:0 !important; margin-top:62px !important; }
+  /* When menu open: HIDE main + HIDE floating buttons completely */
+  body.sidebar-open main, body.menu-open main { display:none !important; }
+  body.sidebar-open .fab, body.menu-open .fab,
+  body.sidebar-open [class*="top-actions"], body.menu-open [class*="top-actions"],
+  body.sidebar-open button[onclick*="New Project"], body.menu-open button[onclick*="New Project"] { display:none !important; }
+  /* Hide ANY fixed bottom buttons when menu is open - this kills the overlap */
+  body.sidebar-open main ~ *, body.menu-open main ~ * { display:none !important; }
+  body.sidebar-open header, body.menu-open header { z-index:10000 !important; }
+}
+/* LUXURY MENU ITEMS - Simple, Professional, Premium */
+aside button, aside .navbtn {
+  display:flex !important; align-items:center !important; gap:10px !important;
+  width:100% !important; text-align:left !important;
+  background:transparent !important; border:none !important; border-left:3px solid transparent !important;
+  color:#D0D0D0 !important; padding:14px 24px !important; font-size:15px !important;
+  border-radius:0 !important; box-shadow:none !important; transform:none !important; margin:0 !important;
+}
+aside button:hover, aside .navbtn:hover { background:rgba(212,175,55,.08) !important; color:#fff !important; border-left-color:#D4AF37 !important; }
+aside button.active, aside .navbtn.active { background:linear-gradient(90deg, rgba(212,175,55,.18), transparent) !important; color:#F5D67B !important; border-left-color:#D4AF37 !important; font-weight:600 !important; }
+aside h3, aside .menu-label {
+  color:#D4AF37 !important; font-size:11px !important; letter-spacing:3px !important;
+  text-transform:uppercase !important; padding:26px 24px 10px !important; margin:0 !important; font-weight:700 !important;
+}
+/* Close button inside menu on mobile */
+.g650-menu-close { display:none !important; }
+@media (max-width: 900px) {
+  .g650-menu-close { display:flex !important; position:fixed !important; top:12px !important; right:14px !important; z-index:10001 !important; width:40px !important; height:40px !important; align-items:center !important; justify-content:center !important; background:rgba(212,175,55,.15) !important; border:1px solid rgba(212,175,55,.4) !important; border-radius:50% !important; color:#F5D67B !important; font-size:20px !important; }
 }
 </style>
 
 </head>
 <body>
-<div class="g650-overlay" id="g650Overlay"></div>
+<button class="g650-menu-close" id="menuCloseBtn" onclick="document.body.classList.remove('sidebar-open','menu-open')">✕</button>
+
 <div class="top"><button onclick="document.querySelector('.side').classList.toggle('open')" style="background:none;border:1px solid #292929;color:#fff;padding:8px;border-radius:8px">☰</button><div class="logo">GLITCH<span>650</span> COMMAND CENTER 2.0</div><button class="btn" onclick="localStorage.removeItem('g650_session');location.reload()">Logout</button></div>
 <nav class="side">
 <div class="glabel">BUSINESS MANAGEMENT</div>
@@ -454,60 +460,27 @@ renderAll();renderAudit();
 
 
 
-<script id="g650MenuLuxury">
-(function(){
-  function syncMenu(){
-    let aside=document.querySelector('aside, .sidebar, #sidebar');
-    let open = aside && (aside.classList.contains('open') || aside.classList.contains('active') || getComputedStyle(aside).left==='0px' || getComputedStyle(aside).transform==='none' && window.innerWidth<900);
-    // Simpler: if aside is visible on mobile, dim background
-    if(window.innerWidth<900 && aside && aside.offsetWidth>0 && getComputedStyle(aside).display!=='none'){
-      // Only dim if aside is actually overlaying (check if main is behind)
-      document.body.classList.add('menu-open');
-    } else {
-      // On desktop sidebar is always visible, don't dim
-      if(window.innerWidth>=900) document.body.classList.remove('menu-open');
-    }
-  }
-  document.addEventListener('click', function(e){
-    let btn=e.target.closest('button');
-    if(btn && (btn.textContent.includes('☰') || btn.textContent.includes('Menu') || btn.getAttribute('aria-label')==='menu')){
-      setTimeout(()=>{ document.body.classList.toggle('menu-open'); syncMenu(); }, 50);
-    }
-    // Close menu when tapping a nav item on mobile
-    if(e.target.closest('aside button, aside .navbtn') && window.innerWidth<900){
-      setTimeout(()=>document.body.classList.remove('menu-open'), 200);
-    }
-    // Close when tapping dim background
-    if(document.body.classList.contains('menu-open') && !e.target.closest('aside')){
-      // Only if tap is outside aside and not on hamburger
-      if(!e.target.closest('button')) document.body.classList.remove('menu-open');
-    }
-  });
-  window.addEventListener('resize', syncMenu);
-})();
-</script>
 
 
-<script id="g650MenuFinal">
+
+
+
+
+<script id="g650MenuFS">
 (function(){
-  function toggleMenu(force){
-    let open = force !== undefined ? force : !document.body.classList.contains('sidebar-open');
+  window.toggleMenu = function(force){
+    let open = force!==undefined ? force : !document.body.classList.contains('sidebar-open');
     document.body.classList.toggle('sidebar-open', open);
     document.body.classList.toggle('menu-open', open);
-  }
-  window.toggleMenu = toggleMenu;
+    // Lock scroll when full-screen menu is open
+    document.body.style.overflow = open && window.innerWidth<=900 ? 'hidden' : '';
+  };
   document.addEventListener('click', function(e){
     let ham = e.target.closest('button');
-    // Hamburger is the button with ☰ in header
     if(ham && ham.textContent.trim().startsWith('☰')){ e.preventDefault(); e.stopPropagation(); toggleMenu(); return; }
-    // Overlay click = close
-    if(e.target.id==='g650Overlay'){ toggleMenu(false); return; }
-    // Nav item click on mobile = close + set active
     let nav = e.target.closest('aside button, aside .navbtn');
-    if(nav){ document.querySelectorAll('aside button').forEach(b=>b.classList.remove('active')); nav.classList.add('active'); if(window.innerWidth<=900) setTimeout(()=>toggleMenu(false), 120); }
+    if(nav){ document.querySelectorAll('aside button').forEach(b=>b.classList.remove('active')); nav.classList.add('active'); if(window.innerWidth<=900) setTimeout(()=>toggleMenu(false), 100); }
   });
-  // On desktop, menu always visible - remove open classes
-  window.addEventListener('resize', function(){ if(window.innerWidth>900){ document.body.classList.remove('sidebar-open','menu-open'); } });
 })();
 </script>
 
