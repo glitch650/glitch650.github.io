@@ -219,6 +219,64 @@ function saveAdsense(){let v=document.getElementById('adsenseId')?.value||'';loc
 function optimizeFile(){alert('Optimize: images now lazy-load, use refreshStorage to check size.');}
 try{let _o=renderAll; renderAll=function(){_o();try{renderAnalyticsV2()}catch(e){}}}catch(e){}
 
+
+// ===== VISIBILITY V3 =====
+let v3Tab='overview'; let v3Page=1;
+function v3Get(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch(e){return[]}}
+function v3SetTab(tab){v3Tab=tab; v3Page=1; renderVisibilityV3();}
+function renderVisibilityV3(){
+  let visits=v3Get('g650_visits'); let clicks=v3Get('g650_clicks'); let acts=v3Get('g650_activity'); let msgs=v3Get('messages'); let logs=v3Get('g650_admin_logs').concat(v3Get('g650_api_logs').map(x=>({action:x.action,when:x.when,detail:''})));
+  let f=document.getElementById('v3Filter')?.value||'all'; let from=document.getElementById('v3From')?.value||''; let to=document.getElementById('v3To')?.value||''; let q=(document.getElementById('v3Search')?.value||'').toLowerCase();
+  let now=new Date(); let start=null,end=null;
+  if(from) start=new Date(from+'T00:00:00'); else if(f==='today'){start=new Date(now);start.setHours(0,0,0,0)} else if(f==='yesterday'){start=new Date(now);start.setDate(start.getDate()-1);start.setHours(0,0,0,0);end=new Date(start);end.setDate(end.getDate()+1)} else if(f==='7'){start=new Date(now);start.setDate(start.getDate()-7)} else if(f==='30'){start=new Date(now);start.setDate(start.getDate()-30)}
+  if(to) end=new Date(to+'T23:59:59');
+  let inRange=(d)=>{let dt=new Date(d); if(start&&dt<start)return false; if(end&&dt>end)return false; return true;};
+  visits=visits.filter(v=>inRange(v.when)); clicks=clicks.filter(c=>inRange(c.when)); acts=acts.filter(a=>inRange(a.when));
+  if(q){visits=visits.filter(v=>(v.id+v.url+v.title+v.device+v.ref).toLowerCase().includes(q)); clicks=clicks.filter(c=>(c.type+c.detail+c.vid).toLowerCase().includes(q));}
+  let uniq=new Set(visits.map(v=>v.id)).size;
+  let todayCount=v3Get('g650_visits').filter(v=>(v.when||'').slice(0,10)===new Date().toISOString().slice(0,10)).length;
+  let firstCount=new Set(visits.filter(v=>v.first).map(v=>v.id)).size;
+  let ret=uniq-firstCount;
+  let active=new Set(visits.filter(v=>Date.now()-new Date(v.when).getTime()<15*60000).map(v=>v.id)).size;
+  let avgTime=visits.length?Math.round(visits.reduce((s,v)=>s+(v.timeSpent||0),0)/visits.length):0;
+  let set=(id,val)=>{let e=document.getElementById(id); if(e)e.textContent=val};
+  set('v3Total',visits.length); set('v3Views',visits.length); set('v3Unique',uniq); set('v3Return',ret>0?ret:0); set('v3Today',todayCount); set('v3Active',active); set('v3Clicks',clicks.length); set('v3Msgs',msgs.length); set('v3Avg',avgTime+'s');
+  // Page performance
+  let pages={}; visits.forEach(v=>{let k=v.url||v.page||'/'; if(!pages[k])pages[k]={views:0,uniq:new Set(),time:0}; pages[k].views++; pages[k].uniq.add(v.id); pages[k].time+=v.timeSpent||0;});
+  let sorted=Object.entries(pages).sort((a,b)=>b[1].views-a[1].views);
+  let perf=document.getElementById('v3Perf'); if(perf) perf.innerHTML='<b>Most Viewed:</b> '+(sorted[0]?sorted[0][0]+' ('+sorted[0][1].views+')':'None')+'<br><b>Least Viewed:</b> '+(sorted[sorted.length-1]?sorted[sorted.length-1][0]+' ('+sorted[sorted.length-1][1].views+')':'None')+'<br><br>'+sorted.slice(0,8).map(x=>x[0]+' - '+x[1].views+' views | '+x[1].uniq.size+' unique | avg '+Math.round(x[1].time/Math.max(1,x[1].views))+'s').join('<br>');
+  // Build tab content
+  let out=document.getElementById('v3Content'); if(!out) return;
+  let per=20; let list=[]; let html='';
+  if(v3Tab==='overview'){
+    html='<h3>Overview - Recent Visits</h3>'+visits.slice(-10).reverse().map(v=>'<div style="padding:6px 0;border-bottom:1px solid #222">'+new Date(v.when).toLocaleString()+' - '+esc(v.title)+' ('+esc(v.url)+') - '+esc(v.device)+' - '+esc(v.id.slice(0,12))+'</div>').join('')||'No visits yet.';
+  } else if(v3Tab==='pageviews'){
+    list=visits.slice().reverse(); let totalPages=Math.max(1,Math.ceil(list.length/per)); if(v3Page>totalPages)v3Page=totalPages; let pg=list.slice((v3Page-1)*per, v3Page*per);
+    html='<h3>Page View Records ('+list.length+')</h3><div>Page '+v3Page+' / '+totalPages+'</div>'+pg.map(v=>'<div style="padding:8px 0;border-bottom:1px solid #222"><b>'+esc(v.title)+'</b><br>'+esc(v.url)+'<br><span style="color:#A6A6A6;font-size:12px">'+new Date(v.when).toLocaleString()+' | ID: '+esc(v.id.slice(0,12))+' | '+esc(v.device)+' | '+(v.timeSpent||0)+'s | Ref: '+esc((v.ref||'').slice(0,40))+'</span></div>').join('')||'No page views.';
+  } else if(v3Tab==='history'){
+    let by={}; visits.forEach(v=>{if(!by[v.id])by[v.id]={id:v.id,first:v.when,last:v.when,count:0,pages:new Set(),device:v.device,ref:v.ref}; by[v.id].count++; by[v.id].pages.add(v.url); if(v.when<by[v.id].first)by[v.id].first=v.when; if(v.when>by[v.id].last)by[v.id].last=v.when;});
+    let arr=Object.values(by).sort((a,b)=>new Date(b.last)-new Date(a.last));
+    html='<h3>Visitor History ('+arr.length+' visitors)</h3>'+arr.slice(0,20).map(v=>'<div style="padding:8px 0;border-bottom:1px solid #222"><b>'+esc(v.id.slice(0,16))+'</b> - '+v.count+' visits | '+v.pages.size+' pages<br><span style="color:#A6A6A6;font-size:12px">First: '+new Date(v.first).toLocaleString()+' | Last: '+new Date(v.last).toLocaleString()+' | '+esc(v.device)+' | Ref: '+esc((v.ref||'').slice(0,30))+'</span></div>').join('')||'No visitors yet.';
+  } else if(v3Tab==='live'){
+    let all=[...acts.map(a=>({when:a.when,txt:a.type+' - '+(a.detail||'')})),...visits.slice(-5).map(v=>({when:v.when,txt:'Visit - '+v.title}))].sort((a,b)=>new Date(b.when)-new Date(a.when)).slice(0,20);
+    html='<h3>Live Activity (auto-updates every 10s)</h3>'+all.map(l=>'<div style="padding:6px 0;border-bottom:1px solid #222">'+new Date(l.when).toLocaleString()+' - '+esc(l.txt)+'</div>').join('')||'No activity.';
+  } else if(v3Tab==='clicks'){
+    list=clicks.slice().reverse(); let pg=list.slice((v3Page-1)*per, v3Page*per);
+    html='<h3>Click Records ('+list.length+')</h3>'+pg.map(c=>'<div style="padding:6px 0;border-bottom:1px solid #222">'+new Date(c.when).toLocaleString()+' - <b>'+esc(c.type)+'</b> - '+esc(c.detail)+' - Page: '+esc(c.page)+' - ID: '+esc((c.vid||'').slice(0,12))+'</div>').join('')||'No clicks yet. Click WhatsApp / Project on public site.';
+  } else if(v3Tab==='admin'){
+    let al=logs.slice().reverse().slice(0,30);
+    html='<h3>Admin Audit Log ('+logs.length+')</h3>'+al.map(l=>'<div style="padding:6px 0;border-bottom:1px solid #222">'+new Date(l.when).toLocaleString()+' - '+esc(l.action||l.type||'')+' - '+esc(l.detail||l.admin||'')+'</div>').join('')||'No admin activity.';
+  }
+  out.innerHTML=html;
+  let pgEl=document.getElementById('v3PageInfo'); if(pgEl) pgEl.textContent='Page '+v3Page+' | Tab: '+v3Tab;
+}
+function v3Next(){v3Page++; renderVisibilityV3();}
+function v3Prev(){if(v3Page>1)v3Page--; renderVisibilityV3();}
+function v3Export(){let visits=v3Get('g650_visits');let clicks=v3Get('g650_clicks');let csv='type,date,visitor,page,detail\n'+visits.map(v=>['VIEW',v.when,v.id,v.url,v.title].join(',')).join('\n')+'\n'+clicks.map(c=>['CLICK',c.when,c.vid,c.page,c.type+' '+c.detail].join(',')).join('\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv]));a.download='glitch650-visibility.csv';a.click();}
+setInterval(()=>{try{if(document.getElementById('sec-analytics')?.classList.contains('active')) renderVisibilityV3();}catch(e){}},10000);
+// Override old render
+try{renderAnalytics = renderVisibilityV3; renderAnalyticsV2 = renderVisibilityV3;}catch(e){}
+
 function renderAll(){
 document.getElementById('sProjects').textContent=DB.get('projects').length;document.getElementById('sCustomers').textContent=DB.get('customers').length;document.getElementById('sLeads').textContent=DB.get('leads').length;document.getElementById('sPosts').textContent=DB.get('posts').length;
 document.getElementById('projectList').innerHTML=DB.get('projects').map(p=>`<div style="padding:10px 0;border-bottom:1px solid #1f1f1f"><b>${esc(p.title)}</b> - ${esc(p.client||'')} <span style="color:#D4AF37">${esc(p.status)}</span> ₣ ${(p.value||0).toLocaleString()}<br><button class="btnD" onclick="delItem('projects',${p.id})">Delete</button></div>`).join('')||'No projects yet.';
