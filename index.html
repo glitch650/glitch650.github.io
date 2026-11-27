@@ -61,30 +61,30 @@ button:disabled, .btn:disabled, .btn2:disabled { opacity:.55; cursor:not-allowed
 </style>
 
 
-<style id="g650-wa-bounce">
-/* ===== WHATSAPP BOUNCE - Only WhatsApp button bounces ===== */
-a[href*="wa.me"], a[href*="whatsapp"], .wa-btn, .whatsapp-btn, [data-wa] {
-  animation: g650-wa-bounce 2s ease-in-out infinite;
+
+
+
+<style id="g650-wa-bounce-steady">
+/* ===== WHATSAPP STEADY BOUNCE - Continuous, no pause ===== */
+a[href*="wa.me"], a[href*="whatsapp"], .wa-btn {
+  animation: g650-wa-steady 1.2s ease-in-out infinite !important;
   will-change: transform;
   box-shadow: 0 0 22px rgba(37,211,102,.55), 0 4px 14px rgba(0,0,0,.4) !important;
 }
-@keyframes g650-wa-bounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  25% { transform: translateY(-6px) scale(1.03); }
-  50% { transform: translateY(0) scale(1); }
-  75% { transform: translateY(-3px) scale(1.01); }
+@keyframes g650-wa-steady {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.04); }
+  100% { transform: translateY(0) scale(1); }
 }
-/* Pause bounce on hover so user can click easily, then resume */
-a[href*="wa.me"]:hover, a[href*="whatsapp"]:hover, .wa-btn:hover {
-  animation-play-state: paused;
-  transform: scale(1.08) !important;
-  box-shadow: 0 0 30px rgba(37,211,102,.75) !important;
+/* Even on hover, keep bouncing - steady, never stops */
+a[href*="wa.me"]:hover, .wa-btn:hover {
+  animation: g650-wa-steady 1.2s ease-in-out infinite !important;
+  box-shadow: 0 0 30px rgba(37,211,102,.8) !important;
 }
-/* Stop bounce when user prefers reduced motion */
+/* Reduced motion only - accessibility */
 @media (prefers-reduced-motion: reduce) {
-  a[href*="wa.me"], a[href*="whatsapp"], .wa-btn { animation: none !important; }
+  a[href*="wa.me"], .wa-btn { animation: none !important; }
 }
-.g650-motion-off a[href*="wa.me"], .g650-motion-off .wa-btn { animation: none !important; }
 </style>
 
 </head>
