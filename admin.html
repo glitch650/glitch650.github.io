@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>glitch650 Admin</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Control Center</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#fff;font-family:system-ui}
 @keyframes fadeSlideIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -39,20 +39,16 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 .topBellWrap.has-new .bellIcon{animation:bellRing 1.2s infinite}
 @keyframes bellRing{0%,100%{transform:rotate(0)}10%{transform:rotate(15deg)}20%{transform:rotate(-15deg)}30%{transform:rotate(10deg)}40%{transform:rotate(-10deg)}50%{transform:rotate(0)}}
 </style>
-<style>.setRow{display:flex;gap:12px;align-items:center;padding:14px;background:#242526;border-radius:12px;margin:8px 0;cursor:pointer}.setRow:active{transform:scale(.98)}.setRow .si{width:44px;height:44px;border-radius:50%;background:#3a3b3c;display:flex;align-items:center;justify-content:center;font-size:22px}.subHead{display:flex;gap:10px;align-items:center;margin-bottom:12px}.backBtn{background:#d4af37;color:#000;width:36px;height:36px;border-radius:50%;font-size:18px;border:none;cursor:pointer}</style><style>.verifiedBadge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#1d9bf0;border-radius:50%;color:#fff;font-size:14px;font-weight:900;line-height:1;margin-left:6px;vertical-align:middle;box-shadow:0 0 8px rgba(29,155,240,.6);border:1.5px solid #fff;flex-shrink:0}.verifiedBadgeBig{width:26px;height:26px;font-size:16px}</style></head><body>
+<style>.setRow{display:flex;gap:12px;align-items:center;padding:14px;background:#242526;border-radius:12px;margin:8px 0;cursor:pointer}.setRow:active{transform:scale(.98)}.setRow .si{width:44px;height:44px;border-radius:50%;background:#3a3b3c;display:flex;align-items:center;justify-content:center;font-size:22px}.subHead{display:flex;gap:10px;align-items:center;margin-bottom:12px}.backBtn{background:#d4af37;color:#000;width:36px;height:36px;border-radius:50%;font-size:18px;border:none;cursor:pointer}</style><style>.verifiedBadge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#1d9bf0;border-radius:50%;color:#fff;font-size:14px;font-weight:900;line-height:1;margin-left:6px;vertical-align:middle;box-shadow:0 0 8px rgba(29,155,240,.6);border:1.5px solid #fff;flex-shrink:0}.verifiedBadgeBig{width:26px;height:26px;font-size:16px}</style><style>
+.fbLogo, .gLogo, #gLogo, .logoG, .topG { display:none !important; }
+#fbTopBar .fbLogo { display:none !important; }
+/* Hide Control Center big header */
+.adminHeader, .adminTitle, #adminHeader, .glitchAdmin { display:none !important; }
+</style></head><body>
 
 <!-- LOGIN - NEW: NO UNLOCK BUTTON, AUTO OPEN, VOICE -->
 <div id="login">
-<h1>🔐 glitch650</h1><p>Admin Dashboard</p>
-<input id="pin" type="password" placeholder="••••" inputmode="numeric" maxlength="4" autocomplete="off">
-<div style="display:flex;gap:10px;justify-content:center"><span id="dot1" style="font-size:22px;color:#333">●</span><span id="dot2" style="font-size:22px;color:#333">●</span><span id="dot3" style="font-size:22px;color:#333">●</span><span id="dot4" style="font-size:22px;color:#333">●</span></div>
-<p id="err" style="color:#ff3b30;margin-top:10px;min-height:20px"></p>
-<button id="voiceBtn" onclick="toggleVoice()" style="background:#222;color:#fff;border:1px solid #333;padding:10px 16px;border-radius:20px">🔊 Voice: ON</button>
-<p style="color:#666;font-size:11px;margin-top:10px">Type PIN - It auto-opens • Phone speaks if wrong</p>
-</div>
-
-<div id="main" style="display:none">
-<div class="top"><button class="menuBtn" onclick="toggleMenu()">☰</button><div><h1>glitch650 <span style="color:#d4af37">Admin</span></h1><small style="color:#888">Control Centre</small></div><div class="topBellWrap" id="topBellWrap" onclick="openTopNotif(event)"><span class="bellIcon">🔔</span><span class="bellBadge" id="topBell">0</span></div></div>
+<h1 style="text-align:center;font-size:26px;margin:16px 0">Control Center</h1><small style="color:#888">Control Centre</small></div><div class="topBellWrap" id="topBellWrap" onclick="openTopNotif(event)"><span class="bellIcon">🔔</span><span class="bellBadge" id="topBell">0</span></div></div>
 <div id="overlay" onclick="toggleMenu()"></div>
 <div id="sideMenu"><h2 style="color:#d4af37">☰ MENU</h2>
 <button onclick="openSection('home');toggleMenu()">🏠 Home</button>
@@ -429,5 +425,88 @@ function applySmartTheme(){
 function toggleSmartTheme(){ let cur=document.body.classList.contains('dark')?'dark':'light'; setSmartTheme(cur==='dark'?'light':'dark'); }
 document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(()=>{ buildFacebookLayout(); applySmartTheme(); }, 600); });
 if(window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=>{ if(localStorage.getItem('glitch650_theme_mode')==='auto') applySmartTheme(); });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  setTimeout(()=>{
+    // Remove G icon
+    document.querySelectorAll('.fbLogo, .gLogo, #gLogo, .logoG').forEach(e=>e.remove());
+    // Remove top-left G inside fbTopBar if still there
+    let topBar=document.querySelector('.fbTop'); if(topBar){ let g=topBar.querySelector('div'); if(g && g.textContent.trim()==='G') g.remove(); }
+    // Remove glitch650 Admin header block - find element containing both words
+    document.querySelectorAll('h1,h2,h3,div').forEach(el=>{
+      if(el.children.length<3 && el.textContent.includes('glitch650') && el.textContent.includes('Admin')){
+        // Don't remove if it's inside Settings list - only big header
+        if(el.offsetHeight>60) el.style.display='none';
+      }
+    });
+    // Remove the bell next to Admin header (the big one in header, not top bar)
+    document.querySelectorAll('button, div').forEach(el=>{
+      if(el.textContent.trim()==='🔔' && el.closest('.adminHeader')) el.remove();
+    });
+    // Ensure ONLY ONE heading "Control Center" at top of main
+    let main=document.getElementById('main');
+    if(main && !document.getElementById('onlyControlCenter')){
+      let h=document.createElement('h1');
+      h.id='onlyControlCenter';
+      h.innerText='Control Center';
+      h.style.cssText='text-align:center;font-size:28px;font-weight:900;margin:18px 0 6px;letter-spacing:.3px';
+      let sub=document.createElement('p');
+      sub.innerText='Manage everything in one place';
+      sub.style.cssText='text-align:center;color:#888;font-size:13px;margin:0 0 16px';
+      main.prepend(sub); main.prepend(h);
+    }
+  }, 500);
+});
+
+// FUNCTIONAL DETAILED SETTINGS - Properly Arranged
+function openOneSettings(){
+  document.querySelectorAll('.fbCard, .card, #sec-home, #sec-messages, #sec-posts, #sec-leads, #sec-control, #sec-settings').forEach(el=>{ if(el) el.style.display='none'; });
+  let hub=document.getElementById('oneSettingsDetailed');
+  if(!hub){
+    hub=document.createElement('div'); hub.id='oneSettingsDetailed';
+    hub.style.cssText='max-width:600px;margin:0 auto;padding:0 14px 30px';
+    hub.innerHTML=`
+    <button onclick="goHome()" style="background:#d4af37;color:#000;padding:8px 16px;border-radius:20px;border:none;font-weight:700;margin-bottom:14px">← Back to Control Center</button>
+    <h2 style="margin:0 0 4px">⚙️ Settings</h2><p style="color:#888;font-size:13px;margin:0 0 16px">All settings - tap to open, each works</p>
+    <div id="settingsList"></div><div id="settingsDetail" style="display:none"></div>`;
+    (document.querySelector('.fbCenter')||document.getElementById('main')).appendChild(hub);
+  }
+  hub.style.display='block';
+  showSettingsList();
+  window.scrollTo({top:0});
+}
+function showSettingsList(){
+  document.getElementById('settingsList').style.display='block';
+  document.getElementById('settingsDetail').style.display='none';
+  let items=[
+    ['👤','Profile Settings','Name, Bio, Photo, About','profile','<label>Display Name</label><input id="setName" value="glitch650" style="width:100%;padding:12px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333;margin:6px 0"><label>Bio</label><textarea id="setBio" style="width:100%;padding:12px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333">Premium Web Developer</textarea><button onclick="saveProfile()" style="width:100%;padding:12px;background:#d4af37;color:#000;border:none;border-radius:10px;font-weight:700;margin-top:10px">Save Profile</button>'],
+    ['🔒','Security & Login','PIN, Logout, Smart Login','security','<p>Current PIN: <b>0296</b></p><input id="newPin" placeholder="New 4-digit PIN" maxlength="4" inputmode="numeric" style="width:100%;padding:12px;border-radius:10px;background:#1a1a1a;color:#fff;border:1px solid #333"><button onclick="savePin()" style="width:100%;padding:12px;background:#1877f2;color:#fff;border:none;border-radius:10px;font-weight:700;margin-top:10px">Change PIN</button><button onclick="logoutSmart()" style="width:100%;padding:12px;background:#e41e3f;color:#fff;border:none;border-radius:10px;font-weight:700;margin-top:10px">Logout</button>'],
+    ['🎨','Appearance & Theme','Dark / Light / Auto Smart','adjust','<p id="themeStatus">Auto Smart: Following time + system</p><div style="display:flex;gap:8px"><button onclick="setThemeSmart(\'light\')" style="flex:1;padding:12px;border-radius:10px;background:#fff;color:#000;border:none;font-weight:700">☀️ Light</button><button onclick="setThemeSmart(\'dark\')" style="flex:1;padding:12px;border-radius:10px;background:#222;color:#fff;border:none;font-weight:700">🌙 Dark</button><button onclick="setThemeSmart(\'auto\')" style="flex:1;padding:12px;border-radius:10px;background:#d4af37;color:#000;border:none;font-weight:700">🤖 Auto</button></div><p style="color:#888;font-size:12px;margin-top:10px">Auto: 6pm-6am = Dark, Day = Light, follows phone system</p>'],
+    ['🎛️','Full Control','Photo, Theme, Internet, Speed','control','<button onclick="openSection(\'control\')" style="width:100%;padding:12px;background:#1877f2;color:#fff;border:none;border-radius:10px;font-weight:700">Open Full Control →</button><p style="color:#888;font-size:13px">Manage photo, theme, internet & speed in one place</p>'],
+    ['💬','Messages & Notifications','Customer Care, Alerts','messages','<button onclick="openSection(\'messages\')" style="width:100%;padding:12px;background:#25D366;color:#fff;border:none;border-radius:10px;font-weight:700">Open Messages →</button><label style="display:flex;gap:10px;margin-top:12px"><input type="checkbox" checked> Notify me for new messages</label><label style="display:flex;gap:10px;margin-top:8px"><input type="checkbox" checked> Vibrate on new lead</label>'],
+    ['📝','Posts Settings','Create & Manage Posts','posts','<button onclick="openSection(\'posts\')" style="width:100%;padding:12px;background:#1877f2;color:#fff;border:none;border-radius:10px;font-weight:700">Manage Posts →</button><p style="color:#888">Create, edit, delete posts</p>'],
+    ['🌐','Internet & Data','Speed, Offline, Cache','internet','<p>Connection: <b id="netStatus">Checking...</b></p><button onclick="checkNet()" style="width:100%;padding:12px;background:#333;color:#fff;border:none;border-radius:10px;font-weight:700">Test Internet Speed</button><button onclick="localStorage.clear();alert(\'Cache cleared\')" style="width:100%;padding:12px;background:#333;color:#fff;border:none;border-radius:10px;font-weight:700;margin-top:8px">Clear Cache</button>'],
+  ];
+  document.getElementById('settingsList').innerHTML = items.map((it,i)=>`
+    <div onclick="openSettingDetail(${i})" style="display:flex;gap:12px;align-items:center;padding:14px;background:#242526;border-radius:12px;margin:8px 0;cursor:pointer">
+      <span style="width:44px;height:44px;border-radius:50%;background:#3a3b3c;display:flex;align-items:center;justify-content:center;font-size:22px">${it[0]}</span>
+      <div><b>${it[1]}</b><br><small style="color:#888">${it[2]}</small></div><span style="margin-left:auto;font-size:22px;color:#888">›</span>
+    </div>`).join('');
+  window._settingsItems = items;
+}
+function openSettingDetail(i){
+  let it = window._settingsItems[i];
+  document.getElementById('settingsList').style.display='none';
+  let d=document.getElementById('settingsDetail'); d.style.display='block';
+  d.innerHTML=`<button onclick="showSettingsList()" style="background:#d4af37;color:#000;padding:8px 16px;border-radius:20px;border:none;font-weight:700">← Back to Settings</button><h3 style="margin:14px 0 4px">${it[0]} ${it[1]}</h3><p style="color:#888;font-size:13px">${it[2]}</p><div style="margin-top:14px">${it[4]}</div>`;
+  window.scrollTo({top:0});
+}
+function saveProfile(){ localStorage.setItem('glitch650_name', document.getElementById('setName').value); alert('Profile saved ✅'); }
+function savePin(){ let v=document.getElementById('newPin').value; if(v.length!==4||isNaN(v)){ alert('Enter 4 digits'); return; } localStorage.setItem('glitch650_pin', v); alert('PIN changed to '+v+' ✅'); }
+function checkNet(){ document.getElementById('netStatus').innerText = navigator.onLine ? 'Online ✅ '+ (navigator.connection?.effectiveType||'') : 'Offline ❌'; }
+function logoutSmart(){ localStorage.removeItem('glitch650_logged_in'); location.reload(); }
+function goHome(){ let h=document.getElementById('oneSettingsDetailed'); if(h) h.style.display='none'; if(typeof openSection==='function') openSection('home'); }
 </script>
 </body></html>
