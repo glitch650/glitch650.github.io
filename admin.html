@@ -64,6 +64,26 @@ button{padding:12px 16px;border-radius:10px;border:none;cursor:pointer;font-weig
 .waDetail input,.waDetail textarea,.waDetail select{width:100%;padding:12px;border-radius:10px;background:#202c33;color:#fff;border:none;margin:8px 0 14px;outline:none}
 .waBtn{width:100%;padding:13px;border-radius:10px;background:#00a884;color:#fff;border:none;font-weight:700;font-size:15px;margin-top:8px}
 .waBtn2{width:100%;padding:13px;border-radius:10px;background:#233138;color:#fff;border:none;font-weight:700;font-size:15px;margin-top:8px}
+</style><style>
+.waSettings{background:radial-gradient(ellipse at top,#1a1a1a 0%,#0a0a0a 60%,#000 100%)!important;min-height:100vh;color:#fff!important;padding:0 0 40px!important}
+.waTop{display:flex;align-items:center;gap:18px;padding:16px 20px;background:rgba(255,255,255,.03);backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,175,55,.15)}
+.waTop .ic{font-size:20px;cursor:pointer;color:#d4af37;width:38px;height:38px;border-radius:50%;background:rgba(212,175,55,.12);display:flex;align-items:center;justify-content:center;border:1px solid rgba(212,175,55,.3)}
+.waPill{display:inline-flex;gap:8px;align-items:center;background:linear-gradient(135deg,#d4af37,#b8962e);color:#000!important;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:7px 16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(212,175,55,.35)}
+.waPic{width:150px!important;height:150px!important;border-radius:50%!important;object-fit:cover!important;margin:0 auto!important;display:block!important;border:3px solid #d4af37!important;box-shadow:0 0 0 6px rgba(212,175,55,.15),0 12px 30px rgba(0,0,0,.6)!important}
+.waName{font-size:30px!important;font-weight:800!important;margin:16px 0 4px!important;letter-spacing:.3px!important;color:#fff!important}
+.waHandle{color:#d4af37!important;font-size:14px!important;letter-spacing:.5px!important;font-weight:600!important}
+.waGreen{width:12px;height:12px;background:#00d26a!important;border-radius:50%!important;display:inline-block!important;border:2px solid #000!important;box-shadow:0 0 8px #00d26a}
+.waRow{display:flex;gap:18px;align-items:flex-start;padding:18px 20px!important;cursor:pointer!important;background:rgba(255,255,255,.03)!important;margin:8px 16px!important;border-radius:16px!important;border:1px solid rgba(255,255,255,.06)!important;transition:.2s}
+.waRow:active,.waRow:hover{background:rgba(212,175,55,.08)!important;border-color:rgba(212,175,55,.3)!important;transform:translateY(-1px)}
+.waRow .wic{font-size:20px!important;color:#d4af37!important;width:44px!important;height:44px!important;background:linear-gradient(145deg,#2a2a2a,#1a1a1a)!important;border-radius:12px!important;display:flex!important;align-items:center!important;justify-content:center!important;border:1px solid rgba(212,175,55,.25)!important;flex-shrink:0!important}
+.waRow b{font-size:16px!important;font-weight:600!important;color:#fff!important;letter-spacing:.2px}
+.waRow small{color:#a0a0a0!important;font-size:13px!important;margin-top:3px!important;line-height:1.4}
+.waDetail{background:rgba(255,255,255,.04)!important;border:1px solid rgba(212,175,55,.2)!important;border-radius:16px!important;padding:20px!important;margin:12px 16px!important}
+.waDetail label{color:#d4af37!important;font-size:12px!important;font-weight:700!important;letter-spacing:.5px!important;text-transform:uppercase}
+.waDetail input,.waDetail textarea,.waDetail select{width:100%!important;padding:14px!important;border-radius:12px!important;background:#111!important;color:#fff!important;border:1px solid rgba(212,175,55,.3)!important;margin:8px 0 16px!important;outline:none!important;font-size:15px}
+.waBtn{width:100%!important;padding:14px!important;border-radius:12px!important;background:linear-gradient(135deg,#d4af37,#b8962e)!important;color:#000!important;border:none!important;font-weight:800!important;font-size:15px!important;margin-top:8px!important;box-shadow:0 4px 16px rgba(212,175,55,.3)!important}
+.waBtn2{width:100%!important;padding:14px!important;border-radius:12px!important;background:#1a1a1a!important;color:#fff!important;border:1px solid rgba(212,175,55,.3)!important;font-weight:700!important;font-size:15px!important;margin-top:8px!important}
+.waLuxBadge{display:inline-block;background:linear-gradient(135deg,#d4af37,#f5d76e);color:#000;font-size:10px;font-weight:900;padding:4px 10px;border-radius:20px;margin-left:8px;vertical-align:middle;letter-spacing:.5px}
 </style></head><body>
 
 <!-- LOGIN - NEW: NO UNLOCK BUTTON, AUTO OPEN, VOICE -->
@@ -617,10 +637,10 @@ function showWaList(){
   ];
   let rows = items.map((it,i)=>`<div class="waRow" onclick="openWaDetail(${i})"><span class="wic">${it[0]}</span><div><b>${it[1]}</b><small>${it[2]}</small></div></div>`).join('');
   document.getElementById('waList').innerHTML=`
-    <div class="waProfile">
+    <div style="text-align:center;padding:14px 0 0"><span style="font-size:11px;letter-spacing:3px;color:#d4af37;font-weight:700">✦ GLITCH650 • PREMIUM ✦</span></div><div class="waProfile">
       <div class="waPill">📶 ${status}</div><br>
       <img src="${pic}" class="waPic" onclick="openSettingDetail(0)" onerror="this.src='profile.jpg'">
-      <div class="waName">${name} <span style="font-size:18px;color:#8696a0">˅</span> <span class="waGreen"></span></div>
+      <div class="waName">${name} <span class="waLuxBadge">✦ PREMIUM</span> <span style="font-size:18px;color:#d4af37">˅</span> <span class="waGreen"></span></div>
       <div class="waHandle">${handle}</div>
     </div>
     ${rows}
